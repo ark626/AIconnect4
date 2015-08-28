@@ -62,6 +62,7 @@ public class KICluster implements java.io.Serializable{
 			}
 			else{
 			k.isTesting = false;
+			k.fitness = 0;
 			}
 		}
 	}
@@ -120,11 +121,11 @@ public class KICluster implements java.io.Serializable{
 	         return e;
 	      }catch(IOException i)
 	      {
-	    	  return new KICluster(40,3,3,2);
+	    	  return new KICluster(42,3,8,1);
 
 	      }catch(ClassNotFoundException c)
 	      {
-	    	  return new KICluster(40,3,3,2);
+	    	  return new KICluster(42,3,8,1);
 	      }
 		
 	}

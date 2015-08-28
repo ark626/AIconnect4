@@ -183,20 +183,30 @@ public class KI implements java.io.Serializable, Comparable {
 				}
 				//Ändern des from
 				if(choice == 1){
-					//Wenn To ein Output ist, muss from ein Hid l2 sein
+					//Wenn To ein Output <= Hid l2 sein
 					if(changing.getTo() < out){
+						if(hidlayer > 1){
 						choice = random.nextInt(hid);
 						choice += in+out+hid;//*(hidlayer-1);
+						}
+						else{
+							choice = random.nextInt(hid);
+							choice += in+out;//*(hidlayer-1);
+						}
 					}
-					//Wenn To ein Hiddenl2 ist muss From ein Hiddenl1 sein
+					if(hidlayer > 1){
+					//Wenn To ein Hiddenl2 <= Hiddenl1 sein
 					if(changing.getTo() >=in+out+hid && changing.getTo() < out+in+hid*2){
 						choice = random.nextInt(hid);
 						choice += in+out;
 					}
-					//Wenn To Ein Hiddenl1 ist muss from ein Input sein
+					}
+					//Wenn To Ein Hiddenl1 <= Input sein
 					if(changing.getTo() >=out+in && changing.getTo() < in+out+hid){
+						//if(hidlayer > 1){
 						choice = random.nextInt(in);
 						choice += out;
+						
 					}
 					changing.setFrom(choice);
 //					choice = random.nextInt(in+out+hid-out);
@@ -221,17 +231,27 @@ public class KI implements java.io.Serializable, Comparable {
 //							changing.setTo(choice);
 //						}
 //					}
-					//Wenn From ein Hiddenl1 ist muss to ein Hiddenl2 sein
+					//Wenn From ein Hiddenl1 => Hiddenl2 sein
+					if(hidlayer > 1){
 					if(changing.getFrom() >=in+out && changing.getFrom() < out+in+hid){
+						if(hidlayer > 1){
 						choice = random.nextInt(hid);
 						choice += in+out+hid;
+						}
+						else{
+							choice = random.nextInt(out);
+							//choice += in+out+hid;
+						}
 					}
-					//Wenn From Ein hiddenl2 ist muss To ein output sein
+					}
+					//Wenn From Ein hiddenl2 => output sein
+					if(hidlayer > 1){
 					if(changing.getFrom() >=out+in+hid){
 						choice = random.nextInt(out);
 						//choice += out;
 					}
-					//Wenn From Ein Input ist muss to ein Hiddenl1 sein
+					}
+					//Wenn From Ein Input => Hiddenl1 sein
 					if(changing.getFrom() >=out&&changing.getFrom()<in+out){
 						choice = random.nextInt(hid);
 						choice += out+in;
@@ -263,14 +283,24 @@ public class KI implements java.io.Serializable, Comparable {
 					to += in+out;
 				}
 				//Wenn from Hiddenl1  ist ,muss to ein Hiddenl2
+				if(hidlayer >1){
 				if(from < out+in+hid && from >=out+in){
 					to =random.nextInt(hid);
 					to += in+out+hid;
 				}
+				}
 				//Wenn from ein Hiddenl2 ist muss to ein Output sein
+				if(hidlayer>1){
 				if(from >=out+in+hid){
 					to =random.nextInt(out);
 					//to += in+out+hid;
+				}
+				}
+				else{
+					if(from >=out+in){
+						to =random.nextInt(out);
+						//to += in+out+hid;
+					}
 				}
 //				//To darf nur Hidden oder Output sein
 //				//From is HIDDEN
@@ -324,7 +354,10 @@ public class KI implements java.io.Serializable, Comparable {
 		for(int i =0;i<ith.length;i++){
 	if(ith[i]>0){
 				
-				double j = this.Nodes.get(i).getValue()/ith[i];
+				double j = this.Nodes.get(i+this.in+this.out).getValue()/ith[i];
+				
+					//j = this.Nodes.get(i+this.in+this.out).getValue()/ith[i];
+				
 				//Binär
 //				if(j > 0){
 //					this.Nodes.get(i).setValue(1);	
@@ -351,12 +384,13 @@ public class KI implements java.io.Serializable, Comparable {
 				j = 1.0/(1.0+Math.exp(-j*a));
 				}
 				}
-				this.Nodes.get(i).setValue(j);
+				this.Nodes.get(i+this.in+this.out).setValue(j);
 				
 			}
 		}
 		
 		//Add nulify for Hiddensl2
+		if(hidlayer > 1){
 		for(int i=out+in+hid;i<in+out+hid*2;i++){
 			this.Nodes.get(i).setValue(0.0);
 		}
@@ -376,6 +410,7 @@ public class KI implements java.io.Serializable, Comparable {
 				}
 			}
 		}
+		
 		//Nullify endnodes
 		for(int i =0;i<out;i++){
 			this.Nodes.get(i).setValue(0.0);
@@ -383,7 +418,7 @@ public class KI implements java.io.Serializable, Comparable {
 		for(int i =0;i<hth.length;i++){
 	if(hth[i]>0){
 				
-				double j = this.Nodes.get(i).getValue()/hth[i];
+				double j = this.Nodes.get(i+in+out+hid).getValue()/hth[i];
 				//Binär
 //				if(j > 0){
 //					this.Nodes.get(i).setValue(1);	
@@ -410,9 +445,10 @@ public class KI implements java.io.Serializable, Comparable {
 				j = 1.0/(1.0+Math.exp(-j*a));
 				}
 				}
-				this.Nodes.get(i).setValue(j);
+				this.Nodes.get(i+in+out+hid).setValue(j);
 				
 			}
+		}
 		}
 		
 		//From Hidden to Output
@@ -431,6 +467,7 @@ public class KI implements java.io.Serializable, Comparable {
 			if(hto[i]>0){
 				
 				double j = this.Nodes.get(i).getValue()/hto[i];
+
 				//Binär
 //				if(j > 0){
 //					this.Nodes.get(i).setValue(1);	
@@ -473,18 +510,21 @@ public class KI implements java.io.Serializable, Comparable {
 //	System.out.println(s);
 		double max = 0.0;
 		int curmax= 0;
-	//	String nodes = "";
+		String nodes = "";
 		for(int i =out-1;i>=0;i--){
 				max = Math.round(this.Nodes.get(i).getValue());
 				if(((int)((double)curmax + max*Math.pow((double)2, (double)i)))>=0.0 ){
 					curmax = (int)((double)curmax + max*Math.pow((double)2, (double)i));
 				}
+				if(curmax >6){
+					curmax = 0;
+				}
 	
 			//	System.out.println(curmax);
 			
-		//	nodes += " "+this.Nodes.get(i).getValue();
+			nodes += " "+this.Nodes.get(i).getValue();
 		}
-		//System.out.println("Step Calculation: "+nodes+" Step: "+ Math.round(curmax));
+		System.out.println("Step Calculation: "+nodes+" Step: "+ Math.round(curmax));
 		
 		return Math.round(curmax);
 	}

@@ -9,7 +9,7 @@ public class Game {
 	int iteration;
 
 	public Game(Player a, Player b){
-		grid = new int[5][8];
+		grid = new int[6][7];
 		this.a = a;
 		this.b = b;
 		set = 0;
@@ -167,8 +167,8 @@ public class Game {
 		if(z.Playertype ==0){
 			int c =z.ki.out;
 		
-			for(int j = 0;j<5;j++){
-				for(int i = 0;i<8;i++){
+			for(int j = 0;j<6;j++){
+				for(int i = 0;i<7;i++){
 		z.ki.Nodes.get(c).setValue((double)grid[j][(i)]);
 	//	System.out.println("Set Node"+z.ki.Nodes.get(c)+" to "+z.ki.Nodes.get(c).getValue()+" wanted "+grid[j][i]);
 		c++;
@@ -181,7 +181,7 @@ public class Game {
 	public  boolean check(int player,int laststonex,int laststoney){
 		//Horizonzal check
 		int times = 0;
-		for(int i =0;i<5;i++){
+		for(int i =0;i<6;i++){
 			if(grid[i][laststonex]==player){
 				times +=1;
 				if(times >= 4){
@@ -195,7 +195,7 @@ public class Game {
 		
 		//Vertical Check
 		times = 0;
-		for(int i =0;i<8;i++){
+		for(int i =0;i<7;i++){
 			if(grid[laststoney][i]==player){
 				times +=1;
 				if(times >= 4){
@@ -215,7 +215,7 @@ public class Game {
 			x +=1;
 			y +=1;
 		}
-		for(int i =0;i+x<8 &&i+y<5;i++){
+		for(int i =0;i+x<7 &&i+y<6;i++){
 			if(grid[y+i][x+i]==player){
 				times +=1;
 				if(times >= 4){
@@ -230,11 +230,11 @@ public class Game {
 		times = 0;
 		y = 0;
 	    x = laststonex +laststoney;
-		while(x > 7){
+		while(x > 6){
 			x -=1;
 			y +=1;
 		}
-		for(int i =0;x-i>0 &&i+y<5;i++){
+		for(int i =0;x-i>0 &&i+y<6;i++){
 			if(grid[y+i][x-i]==player){
 				times +=1;
 				if(times >= 4){

@@ -27,31 +27,40 @@ public class visualizer {
       ig2.setFont(font);
       
       
-      //Erstellen der Input nodes
+      //Erstellen der Output nodes
       for(int i=0;i<ki.out;i++){
       
      // if(ki.Nodes.get(i).getValue() >0){
-    	  ig2.setPaint(Color.getHSBColor((float)0,(float)0,(float)ki.Nodes.get(i).getValue()));
+      ig2.setColor(Color.getHSBColor((float)0,(float)0,(float)ki.Nodes.get(i).getValue()));
       //}
       ig2.fillRect(530, 30+i*30, 25, 25);
-    //  ig2.drawString(message, (width - stringWidth) / 2, height / 2 + stringHeight / 4);
+      
+    //  g2d.drawString(message, (width - stringWidth) / 2, height / 2 + stringHeight / 4);
       }
       //Erstellen der Output nodes
-      int correctionvalue = (ki.out%8);
-      if (correctionvalue > -1*(ki.out%8-1)){
-    	  correctionvalue = -1*correctionvalue;
-      }
-      for(int i=ki.out;i<ki.out+ki.in;i++){
-      ig2.setColor(Color.getHSBColor((float)ki.Nodes.get(i).getValue()*560,(float)ki.Nodes.get(i).getValue()*500,(float)ki.Nodes.get(i).getValue()*60));
-      ig2.fillRect(20+30*((i+correctionvalue)%8), 30+((i+(correctionvalue))/8)*30, 25, 25);
+      int correctionvalue = 0;//(ki.out%8);
+//      if (correctionvalue > -1*(ki.out%8-1)){
+//    	  correctionvalue = -1*correctionvalue;
+//      }
+      for(int i=0;i<ki.in;i++){
+    	  float val = (float)ki.Nodes.get(i+ki.out).getValue();
+      ig2.setColor(Color.getHSBColor(val*560,val*500,val*60));
+      ig2.fillRect(20+30*((i+correctionvalue)%7), 30+((i+(correctionvalue))/7)*30, 25, 25);
     //  g2d.drawString(message, (width - stringWidth) / 2, height / 2 + stringHeight / 4);
       }   
-      int cor = 25;
-      for(int i=ki.out+ki.in;i<ki.Nodes.size();i++){
-          ig2.setColor(Color.getHSBColor((float)0,(float)0,(float)ki.Nodes.get(i).getValue()));
-          ig2.fillRect(320+(cor*((i-ki.in-ki.out)/ki.hid))+((i-ki.out-ki.in)/3)*30, 30+((i-ki.out-ki.in)%3)*30, 25, 25);
+      int cor = 75;
+      for(int i=0;i<ki.hid;i++){
+          ig2.setColor(Color.getHSBColor((float)0,(float)0,(float)ki.Nodes.get(i+ki.in+ki.out).getValue()));
+          ig2.fillRect(300+(i/4)*30, 30+(i%4)*30, 25, 25);
         //  ig2.drawString(message, (width - stringWidth) / 2, height / 2 + stringHeight / 4);
-          }  
+          } 
+      if(ki.hidlayer >1){
+      for(int i=0;i<ki.hid;i++){
+          ig2.setColor(Color.getHSBColor((float)0,(float)0,(float)ki.Nodes.get(i+ki.hid+ki.in+ki.out).getValue()));
+          ig2.fillRect(400+i/4*30, 30+(i%4)*30, 25, 25);
+        //  ig2.drawString(message, (width - stringWidth) / 2, height / 2 + stringHeight / 4);
+          } 
+      }
       
       int x1=0;
       int x2=0;
@@ -79,21 +88,30 @@ public class visualizer {
     		  }
     		  
     		  if(that.getFrom()>=ki.out){
-    			  x1 = 20+30*((that.getFrom()+(correctionvalue))%8)+12;
-    			  y1 = 30+((that.getFrom()+(correctionvalue))/8)*30+12;
+    			  x1 = 20+30*((that.getFrom()-ki.out)%7)+12;
+    			  y1 = 30+((that.getFrom()-ki.out)/7)*30+12;
     		  } 
     		  if(that.getTo()>=ki.out){
-    			  x2 = 20+30*(that.getTo()%8+12);
-    			  y2 = 30+(ki.Nodes.indexOf(that.getTo())/8)*30+12;
+    			  x2 = 20+30*((that.getTo()-ki.out)%7+12);
+    			  y2 = 30+(((that.getTo())-ki.out)/7)*30+12;
     		  }
     		  
     		  if(that.getFrom()>= ki.out+ki.in){
-    			  x1 = 320+(cor*((that.getFrom()-ki.in-ki.out)/ki.hid))+((that.getFrom()-ki.out-ki.in)/3)*30+12;
-    			  y1 = 30+((that.getFrom()-ki.out-ki.in)%3)*30+12;
+    			  x1 = 300+(that.getFrom()-ki.out-ki.in)/4*30+12;
+    			  y1 = 30+((that.getFrom()-ki.out-ki.in)%4)*30+12;
     		  }
     		  if(that.getTo()>= ki.out+ki.in){
-    			  x2 = 320+(cor*((that.getTo()-ki.in-ki.out)/ki.hid))+((that.getTo()-ki.out-ki.in)/3)*30+12;
-    			  y2 = 30*((that.getTo()-ki.out-ki.in)%3)+30+12;
+    			  x2 = 300+(that.getTo()-ki.out-ki.in)/4*30+12;
+    			  y2 = 30+((that.getTo()-ki.out-ki.in)%4)*30+12;
+    			//  (380+((i-48)/4)*30, 30+((i-48)%4)*30,
+    		  }
+    		  if(that.getFrom()>= ki.out+ki.in+ki.hid){
+    			  x1 = 400+(that.getFrom()-ki.out-ki.in-ki.hid)/4*30+12;
+    			  y1 = 30+((that.getFrom()-ki.out-ki.in-ki.hid)%4)*30+12;
+    		  }
+    		  if(that.getTo()>= ki.out+ki.in+ki.hid){
+    			  x2 = 400+(that.getTo()-ki.out-ki.in-ki.hid)/4*30+12;
+    			  y2 = 30+((that.getTo()-ki.out-ki.in-ki.hid)%4)*30+12;
     			//  (380+((i-48)/4)*30, 30+((i-48)%4)*30,
     		  }
     	  }

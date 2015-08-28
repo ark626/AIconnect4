@@ -178,7 +178,7 @@ public class GUI {
 					}
 					Player a = new Player(typeaa,strengtha);
 					Player b = new Player(typebb,strengthb);
-					KICluster test = new KICluster(40,3,3,2);
+					KICluster test = new KICluster(40,3,8,2);
 					try{
 						test = KICluster.load("/tmp/GLaDoS.ki");
 						}

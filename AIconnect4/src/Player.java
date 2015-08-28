@@ -63,9 +63,9 @@ public class Player {
 //			if(checkgrid(grid)){
 //			return 4;	
 //			}
-			int[][] pgrid = new int[5][8];
-			for(int i=0;i<5;i++){
-				for(int j=0;j<8;j++){
+			int[][] pgrid = new int[6][7];
+			for(int i=0;i<6;i++){
+				for(int j=0;j<7;j++){
 					pgrid[i][j] = grid[i][j];
 				}
 			}

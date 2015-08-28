@@ -71,6 +71,7 @@ gameDisplay dis;
 				game.b.ki.Nodes.get(i).setValue(0.0);
 			}
 		}
+		System.out.println(game.b.ki.Nodes.size());
 		game.run(j,dis,runs);
 		game.reset();
 		

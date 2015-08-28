@@ -4,22 +4,22 @@ import java.util.Random;
 public  class minmax {
 	public static int step(int[][] grid,boolean player,int rec,boolean xes){
 		int step = 0;
-		int stepvalue[][] = new int[2][8];
+		int stepvalue[][] = new int[2][7];
 		for(int[] a : stepvalue){
-			for(int i = 0;i<8;i++){
+			for(int i = 0;i<7;i++){
 				a[i] = Integer.MIN_VALUE;
 			}
 		}
 		String tst="Step Calculation: ";
 		int result = Integer.MIN_VALUE;
 		int comp = 0;
-		for(int i = 0;i<8;i++){
+		for(int i = 0;i<7;i++){
 			//System.out.println(rec);
 			if(isDoable(i,grid)){
 				if(player){
-					int[][] pgrid = new int[5][8];
-					for(int x=0;x<5;x++){
-						for(int j=0;j<8;j++){
+					int[][] pgrid = new int[6][7];
+					for(int x=0;x<6;x++){
+						for(int j=0;j<7;j++){
 							pgrid[x][j] = grid[x][j];
 						}
 					}
@@ -28,9 +28,9 @@ public  class minmax {
 				}
 				
 				else{
-					int[][] pgrid = new int[5][8];
-					for(int x=0;x<5;x++){
-						for(int j=0;j<8;j++){
+					int[][] pgrid = new int[6][7];
+					for(int x=0;x<6;x++){
+						for(int j=0;j<7;j++){
 							pgrid[x][j] = grid[x][j];
 						}
 					}
@@ -78,7 +78,7 @@ public  class minmax {
 		}
 		int[] wanted = new int[l];
 		l = 0;
-		for(int i=0;i<8;i++){
+		for(int i=0;i<7;i++){
 			if(stepvalue[1][i]== result){
 				if(isDoable(stepvalue[0][i],grid)){
 				wanted[l] = stepvalue[0][i];
@@ -114,14 +114,14 @@ public  class minmax {
 	public static int helper(int[][] grid,boolean player,int rec, int lastx, int lasty,boolean xes){
 		int result =0;
 		
-		for(int i = 0;i<8;i++){
+		for(int i = 0;i<7;i++){
 			//System.out.println(rec);
 			if(isDoable(i,grid)){
 				
 				if(player){
-					int[][] pgrid = new int[5][8];
-					for(int x=0;x<5;x++){
-						for(int j=0;j<8;j++){
+					int[][] pgrid = new int[6][7];
+					for(int x=0;x<6;x++){
+						for(int j=0;j<7;j++){
 							pgrid[x][j] = grid[x][j];
 						}
 					}
@@ -130,9 +130,9 @@ public  class minmax {
 				}
 				
 				else{
-					int[][] pgrid = new int[5][8];
-					for(int x=0;x<5;x++){
-						for(int j=0;j<8;j++){
+					int[][] pgrid = new int[6][7];
+					for(int x=0;x<6;x++){
+						for(int j=0;j<7;j++){
 							pgrid[x][j] = grid[x][j];
 						}
 					}
@@ -248,7 +248,7 @@ public  class minmax {
 	public static boolean check(int player,int laststonex,int laststoney, int[][] grid){
 		//Horizonzal check
 		int times = 0;
-		for(int i =0;i<5;i++){
+		for(int i =0;i<6;i++){
 			if(grid[i][laststonex]==player){
 				times +=1;
 				if(times >= 4){
@@ -262,7 +262,7 @@ public  class minmax {
 		
 		//Vertical Check
 		times = 0;
-		for(int i =0;i<8;i++){
+		for(int i =0;i<7;i++){
 			if(grid[laststoney][i]==player){
 				times +=1;
 				if(times >= 4){
@@ -282,7 +282,7 @@ public  class minmax {
 			x +=1;
 			y +=1;
 		}
-		for(int i =0;i+x<8 &&i+y<5;i++){
+		for(int i =0;i+x<7 &&i+y<6;i++){
 			if(grid[y+i][x+i]==player){
 				times +=1;
 				if(times >= 4){
@@ -297,11 +297,11 @@ public  class minmax {
 		times = 0;
 		y = 0;
 	    x = laststonex +laststoney;
-		while(x > 7){
+		while(x > 6){
 			x -=1;
 			y +=1;
 		}
-		for(int i =0;x-i>0 &&i+y<5;i++){
+		for(int i =0;x-i>0 &&i+y<6;i++){
 			if(grid[y+i][x-i]==player){
 				times +=1;
 				if(times >= 4){
