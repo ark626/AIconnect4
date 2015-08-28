@@ -7,7 +7,7 @@ public class Game {
 	int set;
 	StringBuilder GRID;
 	int iteration;
-	
+
 	public Game(Player a, Player b){
 		grid = new int[5][8];
 		this.a = a;
