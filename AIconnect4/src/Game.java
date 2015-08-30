@@ -90,8 +90,11 @@ public class Game {
 					return 2;
 				}
 			}
+			if(dis != null){
+			dis.drawPanel.updateUI();;
+			}
 			y = fall(set,1);
-		gamedisplay();
+		//gamedisplay();
 			
 			a.setChips(a.getChips()-1);
 			a.setTurns(a.getTurns()+1);
@@ -103,9 +106,6 @@ public class Game {
 			}
 			
 			//Player 2 Turn
-			if(dis != null){
-			dis.drawPanel.updateUI();;
-			}
 			if(b.getChips()>0){
 			//AI THinking
 			AIcheckgrid(b);
@@ -119,8 +119,11 @@ public class Game {
 					return 1;
 				}
 			}
+			if(dis != null){
+			dis.drawPanel.updateUI();;
+			}
 			y=fall(set,-1);
-			gamedisplay();
+		//	gamedisplay();
 			b.setChips(b.getChips()-1);
 			b.setTurns(b.getTurns()+1);
 			}
@@ -149,12 +152,19 @@ public class Game {
 			if(z.ki != null){
 			z.receivefeedback(100+z.ki.fitness+chips);
 			}
+			else{
+				z.receivefeedback(100+chips);
+			}
 		}
 		else{
 			if(z.ki != null){
 			//z.receivefeedback((-chips+z.fitness)*times/2);
 			z.receivefeedback(z.ki.fitness-chips);
-		}}
+		}
+			else{
+				z.receivefeedback(-chips);
+			}
+			}
 		 
 	}
 	

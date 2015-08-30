@@ -11,6 +11,8 @@ import java.awt.Font;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 
+import neat.Pool;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -74,7 +76,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Human", "Algorithm", "KI"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Human", "Algorithm", "KI", "Neat"}));
 		comboBox.setBounds(88, 157, 89, 20);
 		frame.getContentPane().add(comboBox);
 		
@@ -91,7 +93,7 @@ public class GUI {
 		frame.getContentPane().add(lblPlayerB);
 		
 		final JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Human", "Algorithm", "KI"}));
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Human", "Algorithm", "KI" , "Neat"}));
 		comboBox_1.setBounds(235, 157, 73, 20);
 		frame.getContentPane().add(comboBox_1);
 		
@@ -156,7 +158,7 @@ public class GUI {
 					t.interrupt();
 				}
 				
-					String typeb =comboBox_1.getSelectedObjects().toString();
+					String typeb = comboBox_1.getSelectedItem().toString();
 					String typea = comboBox.getSelectedItem().toString();
 					int typeaa = 0;
 					int typebb = 0;
@@ -176,8 +178,17 @@ public class GUI {
 					if(typeb.equals("Algorithm")){
 						typebb = 1;
 					}
+					if(typea.equals("Neat")){
+						typeaa = 3;
+					}
+					if(typeb.equals("Neat")){
+						typebb = 3;
+						
+					}
 					Player a = new Player(typeaa,strengtha);
 					Player b = new Player(typebb,strengthb);
+					System.out.println(a.Playertype+" "+a.Playerstrength);
+					System.out.println(b.Playertype+" "+b.Playerstrength);
 					KICluster test = new KICluster(40,3,8,2);
 					try{
 						test = KICluster.load("/tmp/GLaDoS.ki");
@@ -195,15 +206,33 @@ public class GUI {
 					Game g = new Game(a,b);
 
 					b.ki = test.best();
+					//ADD Load method for Pools
+					Pool p = new Pool();
+					try {
+						p = Pool.load("/tmp/Shodan.ki");
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 					//KI shower = b.ki.copy();
 					//Game2.main(b.ki,new JFrame());
 					gameDisplay dis = null;
-					if(chckbxShowNeurons.isSelected()){
+					if(chckbxShowNeurons.isSelected()&&(a.Playertype != 3&&b.Playertype != 3)){
 					 dis = gameDisplay.main(b.ki);
 					}
+					else{
+						if(a.Playertype == 3){
+							dis = gameDisplay.main(p.Species.get(p.currentSpecies).Genomes.get(p.currentGenome),p.generation);
+						}
+						if(b.Playertype == 3){
+							dis = gameDisplay.main(p.Species.get(p.currentSpecies).Genomes.get(p.currentGenome),p.generation);
+						}
+					}
 					
-					Running r = new Running(g,runden,test,dis);
+					
+					
+					Running r = new Running(g,runden,test,p,dis);
 					GUI.t = new Thread(r);
 					t.start();
 	//				TODO: ADD save routine

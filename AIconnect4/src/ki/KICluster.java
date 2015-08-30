@@ -16,6 +16,8 @@ public class KICluster implements java.io.Serializable{
 	public int out;
 	public int hid;
 	public int hidlayer;
+	public int innovation;
+	
 	
 	public void save(String s,int i){
 		 try

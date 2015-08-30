@@ -1,6 +1,8 @@
 import java.util.Random;
 import java.util.Scanner;
 
+import neat.Genome;
+import neat.Pool;
 import ki.KI;
 
 
@@ -14,6 +16,7 @@ public class Player {
 	public int Playertype;
 	public int Playerstrength;
 	public boolean xes;
+	public Pool pool;
 	
 	public Player(){
 		points = 0;
@@ -59,6 +62,26 @@ public class Player {
 		if(Playertype == 0){
 		return this.ki.step();
 		}
+		if(Playertype == 3){
+			int zähler = 0;
+			double Input[] = new double[grid.length*grid[0].length];
+			for(int j=0;j<7;j++){
+			for(int i=0;i<6;i++){
+				
+					Input[zähler++] = grid[i][j];
+					
+					
+				}
+			}
+			double[] Output = this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).step(Input);
+			int result = 0;
+			int i = 0;
+			for(double d :Output){
+				result += Math.pow((Math.round(d)),i);
+			}
+			return result;
+					
+		}
 		if(Playertype == 1){
 //			if(checkgrid(grid)){
 //			return 4;	
@@ -82,6 +105,12 @@ public class Player {
 	public void receivefeedback(int fitness){
 		if(Playertype ==0){
 		this.ki.fitness = fitness;
+		}
+		if(Playertype == 3){
+			this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).fitness= fitness;
+			if(fitness > pool.maxFitness){
+				pool.maxFitness = fitness;
+			}
 		}
 		}
 	
