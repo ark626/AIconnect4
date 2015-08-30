@@ -66,14 +66,14 @@ public class KICluster implements java.io.Serializable{
 			}
 		}
 	}
-	
+
 	public void reevaluate(){
 		for(KI k: this.ranking){
 			if((k.isTesting == true && k.fitness == -99999) ||k.Links.size() <=0){
 				k.fitness = -99999;
 			}
 			else{
-				k.fitness = k.fitness/10;
+				k.fitness = 0;
 			k.isTesting = false;
 			}
 		}
