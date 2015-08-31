@@ -14,6 +14,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 	public int fitness ;
 	public int adjustedfitness;
 	public transient Network Network;
+	//public transient Pool pool;
 	public int maxneuron ;
 	public int globalRank;
 	public double[] mutationrates;
@@ -46,6 +47,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 	
 	public Genome() {
 		super();
+		//this.pool = p;
 		Genes = new ArrayList<Gene>();
 		this.fitness = 0;
 		this.adjustedfitness = 0;
@@ -66,9 +68,10 @@ public class Genome implements Serializable,Comparable<Genome>{
 
 	public static Genome basicGenome(){
 		Genome g = new Genome();
+
 		g.maxneuron = Inputs+Outputs;
-		g.Innovation = Outputs;
-		g.mutate();
+		g.Innovation = 1;
+		
 		return g;
 	}
 	
@@ -78,6 +81,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 		for(Gene g :this.Genes){
 			temp.Genes.add(g.copyGene());
 		}
+
 		temp.maxneuron = this.maxneuron;
 		temp.mutationrates = new double[7];
 		for(int i=0;i<this.mutationrates.length;i++){
@@ -97,13 +101,15 @@ public class Genome implements Serializable,Comparable<Genome>{
 		for(int i =0;i<Outputs;i++){
 			net.Neurons.add(new Neuron());
 		}
+		
 		if(g.Genes != null && g.Genes.size() > 1){
 		Collections.sort(g.Genes);
 		}
+		
 		for(Gene ge:g.Genes){
 			if(ge.enabled){
 				boolean checker = false;
-				while(net.Neurons.size()<=ge.out||net.Neurons.get(ge.out)== null){
+				while(net.Neurons.size()<=ge.out){
 					checker = true;
 					net.Neurons.add(new Neuron()) ;
 					net.Neurons.get(net.Neurons.size()-1).active = false;
@@ -111,7 +117,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 				net.Neurons.get(net.Neurons.size()-1).active = true;
 				net.Neurons.get(ge.out).incoming.add(ge);
 				checker = false;
-				while(net.Neurons.size()<=ge.into||net.Neurons.get(ge.into)== null){
+				while(net.Neurons.size()<=ge.into){
 					checker = true;
 					net.Neurons.add(new Neuron()) ;
 					net.Neurons.get(net.Neurons.size()-1).active = false;
@@ -142,6 +148,8 @@ public class Genome implements Serializable,Comparable<Genome>{
 		for(int i=0;i<this.Genes.size();i++){
 			if(!nonInput||this.Genes.get(i).into > Inputs){
 				Neurons.add(this.Genes.get(i).into);
+				
+				
 			}
 			if(!nonInput||this.Genes.get(i).out > Inputs){
 				Neurons.add(this.Genes.get(i).out);
@@ -176,7 +184,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 		}
 	}
 	
-	public void linkMutate(boolean forceBias){
+	public int linkMutate(boolean forceBias,int inovation){
 		
 		int neuron1 = this.randomNeuron(false);
 		int neuron2 = this.randomNeuron(true);
@@ -184,7 +192,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 		Gene newLink = new Gene();
 		
 		if(neuron1<=Inputs && neuron2 <= Inputs){
-			return;
+			return 0;
 		}
 		if(neuron2 <= Inputs ){
 			int temp = neuron1;
@@ -198,17 +206,18 @@ public class Genome implements Serializable,Comparable<Genome>{
 		}
 		
 		if(this.containsLink(newLink)){
-			return;
+			return 0;
 		}
-		newLink.innovation = ++this.Innovation;
+		newLink.innovation = inovation++;
 		newLink.weigth = Math.random()*4-2;
 //		System.out.println("From: "+newLink.out+" TO: "+newLink.into);
 		this.Genes.add(newLink);
+		return inovation;
 	}
 	
-	public void nodeMutate(){
+	public int nodeMutate(int inovation){
 		if(this.Genes.size() == 0){
-			return;
+			return 0;
 		}
 		this.maxneuron +=1;
 		Random r = new Random();
@@ -216,26 +225,27 @@ public class Genome implements Serializable,Comparable<Genome>{
 		Gene gene = this.Genes.get(rand);
 		
 		if(!gene.enabled){
-			return;
+			return 0;
 		}
 		gene.enabled = false;
 		
 		Gene gene1 = gene.copyGene();
 		gene1.out = this.maxneuron;
 		gene1.weigth = 1.0;
-		gene1.innovation = ++this.Innovation;
+		gene1.innovation = inovation++;
+		
 		gene1.enabled = true;
 		this.Genes.add(gene1);
 		
 		Gene gene2 = gene.copyGene();
 		gene2.into = this.maxneuron;
-		gene2.innovation = ++this.Innovation;
+		gene2.innovation = inovation++;
 		gene2.enabled = true;
 		this.Genes.add(gene2);
-		
+		return inovation;
 	}
 	
-	public void enableDisableMutate(boolean enable){
+	public int enableDisableMutate(boolean enable){
 		ArrayList<Gene> Auswahl = new ArrayList<Gene>();
 		for(Gene gene:this.Genes){
 			if(gene.enabled == !enable){
@@ -244,15 +254,17 @@ public class Genome implements Serializable,Comparable<Genome>{
 		}
 		
 		if(Auswahl.size() <= 0){
-			return;
+			return 0;
 		}
 		Random r = new Random();
 		int rand = r.nextInt(Auswahl.size());
 		Gene gene = Auswahl.get(rand);
 		gene.enabled = !gene.enabled;
+		return 0;
 	}
 	
-	public void mutate(){
+	public int mutate(int inovation){
+
 		Random r = new Random();
 		for(int i =0;i<this.mutationrates.length;i++){
 			if(Math.round(Math.random())==1){
@@ -264,13 +276,13 @@ public class Genome implements Serializable,Comparable<Genome>{
 		}
 		
 		if(Math.random() < this.mutationrates[0]){
-			this.pointMutate();
+			 this.pointMutate();
 		}
 		
 		double p = this.mutationrates[1];
 		while(p>0){
 			if(Math.random() < p){
-				this.linkMutate(false);
+				inovation =this.linkMutate(false,inovation);
 			}
 			p-=1;
 		}
@@ -278,14 +290,14 @@ public class Genome implements Serializable,Comparable<Genome>{
 		p = this.mutationrates[2];
 		while(p>0){
 			if(Math.random() < p){
-				this.linkMutate(true);
+				inovation=this.linkMutate(true,inovation);
 			}
 			p-=1;
 		}
 		p = this.mutationrates[3];
 		while(p>0){
 			if(Math.random() < p){
-				this.nodeMutate();
+				inovation=this.nodeMutate(inovation);
 			}
 			p-=1;
 		}
@@ -305,6 +317,8 @@ public class Genome implements Serializable,Comparable<Genome>{
 			}
 			p-=1;
 		}
+		this.Innovation = inovation;
+		return inovation;
 	}
 	
 public double[] step(double[] Inputs){
@@ -319,7 +333,9 @@ public double[] step(double[] Inputs){
 	for(Neuron n:this.Network.Neurons){
 		double sum =0;
 		for(Gene g:n.incoming){
+			
 			sum += g.weigth * this.Network.Neurons.get(g.into).value;
+			
 		}
 		if(n.incoming.size() >1){
 			n.value = (2/(1+Math.exp(-4.9*sum))-1);

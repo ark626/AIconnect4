@@ -94,7 +94,7 @@ public class Game {
 			dis.drawPanel.updateUI();;
 			}
 			y = fall(set,1);
-		//gamedisplay();
+		gamedisplay();
 			
 			a.setChips(a.getChips()-1);
 			a.setTurns(a.getTurns()+1);
@@ -123,7 +123,7 @@ public class Game {
 			dis.drawPanel.updateUI();;
 			}
 			y=fall(set,-1);
-		//	gamedisplay();
+			gamedisplay();
 			b.setChips(b.getChips()-1);
 			b.setTurns(b.getTurns()+1);
 			}
@@ -153,16 +153,29 @@ public class Game {
 			z.receivefeedback(100+z.ki.fitness+chips);
 			}
 			else{
-				z.receivefeedback(100+chips);
+				if(times == 0){
+					z.receivefeedback(100+chips);
+
+				}
+				else{
+				z.receivefeedback((100+chips+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));
+				}
 			}
 		}
 		else{
 			if(z.ki != null){
 			//z.receivefeedback((-chips+z.fitness)*times/2);
 			z.receivefeedback(z.ki.fitness-chips);
+			
 		}
 			else{
-				z.receivefeedback(-chips);
+				if(times == 0){
+					z.receivefeedback(-chips);
+
+				}
+				else{
+				z.receivefeedback((-chips+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));
+				}
 			}
 			}
 		 

@@ -128,9 +128,7 @@ final public class gameDisplay
         public void paintComponent(Graphics g)
         {
      //   	KI ki = this.k;
-        	while(this.update){
 
-        	}
         	if(!this.update){
         	g.clearRect(0, 0, getWidth(), getHeight() );
         	int width = 640, height = 480;
@@ -242,6 +240,8 @@ final public class gameDisplay
     		      
     		      if(this.g!= null){
     		    	  
+    		    	  assert(!this.update);{
+    		    	  
     		   //       this.g.generateNetwork();
     		    //List Neurons
     		          ArrayList<Double> Nodes = new ArrayList<Double>();
@@ -292,10 +292,10 @@ final public class gameDisplay
     		          int x2=0;
     		          int y1=0;
     		          int y2=0;
-    		          for(int j =1;j<100;j++){
+    		          for(int j =1;j<4;j++){
     		          for(int i=0;i<this.g.Genes.size();i++){
     		        	 Gene that = this.g.Genes.get(i);
-    		        	  if(that != null&&that.enabled){
+    		        	  if(that != null&&that.enabled&&that.weigth != 0.0){
 
     		        		  //Init
     		        		  x1 = Nodes.get(that.into*3).intValue();
@@ -395,7 +395,7 @@ final public class gameDisplay
     		    	  
     		    	  
     		      }
-    			
+    		      }
 
     		  
     		} catch (Exception e) {

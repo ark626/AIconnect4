@@ -56,6 +56,7 @@ public class Species {
 		for(double z :g1.mutationrates){
 			temp[i++] = z;
 		}
+		
 		Genome child = new Genome();
 		ArrayList<Gene> Innovation = new ArrayList<Gene>();
 		for(Gene gene:g2.Genes){
@@ -84,11 +85,12 @@ public class Species {
 	} 
 	
 	public Genome breedChild(){
-		Genome child = new Genome();
+		Genome child = null;
 		Random r = new Random();
 		if(Math.random() <CrossoverChance){
 			int rand = r.nextInt(this.Genomes.size());
 			Genome g1 = this.Genomes.get(rand);
+			 child = new Genome();
 			rand = r.nextInt(this.Genomes.size());
 			Genome g2 = this.Genomes.get(rand);
 			child = this.crossover(g1,g2);
@@ -98,7 +100,7 @@ public class Species {
 			child = (this.Genomes.get(rand)).copyGenome();
 			
 		}
-		child.mutate();
+		//child.mutate();
 		return child;
 	}
 	

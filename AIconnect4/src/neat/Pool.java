@@ -56,6 +56,7 @@ public class Pool implements Serializable {
 		this.maxFitness = 0;
 		for(int i=0;i<Population;i++){
 			Genome basic = Genome.basicGenome();
+			this.Innovation = basic.mutate(this.Innovation);
 			this.addToSpecies(basic);
 		}
 		
@@ -266,15 +267,27 @@ public class Pool implements Serializable {
 		for(Species s:this.Species){
 			int breed = (int)Math.floor((double)s.averageFitness/(double)sum*Population)-1;
 			for(int i = 0;i<breed;i++){
-				children.add(s.breedChild());
+				Genome ge = s.breedChild();
+				this.Innovation = ge.mutate(this.Innovation);
+				children.add(ge);
 			}
 		}
 		this.cullSpecies(true);
 		Random r = new Random();
+		this.removeEmptySpecies();
+		if(this.Species.size()<=0){
+			for(int i=0;i<Population;i++){
+				Genome basic = Genome.basicGenome();
+				this.Innovation = basic.mutate(this.Innovation);
+				this.addToSpecies(basic);
+			};
+		}
 		while(children.size()+this.Species.size()<Population){
 			
 			Species s = this.Species.get(r.nextInt(this.Species.size()));
-			children.add(s.breedChild());
+			Genome ge = s.breedChild();
+			this.Innovation = ge.mutate(this.Innovation);
+			children.add(ge);
 		}
 		for(Genome g:children){
 			this.addToSpecies(g);
@@ -359,6 +372,8 @@ public class Pool implements Serializable {
 	         p.generation = in.readInt();
 	         p.Innovation = in.readInt();
 	         p.maxFitness = in.readInt();
+	         p.currentGenome = 1;
+	         p.currentSpecies = 1;
 	         int Speciessize = in.readInt();
 	         for(int i=0;i<Speciessize;i++){
 	        	 int Genomesize = in.readInt();
@@ -367,6 +382,7 @@ public class Pool implements Serializable {
 	        	 spe.averageFitness = in.readInt();
 	        	 for(int j=0;j<Genomesize;j++){
 	        		 Genome g = (Genome)in.readObject();
+
 	        		spe.Genomes.add(g);
 	        	 }
 	        	 p.Species.add(spe);
@@ -377,7 +393,9 @@ public class Pool implements Serializable {
 	         return p;
 	      }catch(IOException i)
 	      {
-	    	  return new Pool();
+	    	  i.getMessage();
+	    	  return null;
+	    	  //return new Pool();
 
 	      }
 

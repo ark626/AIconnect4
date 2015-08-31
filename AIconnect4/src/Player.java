@@ -76,9 +76,24 @@ public class Player {
 			double[] Output = this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).step(Input);
 			int result = 0;
 			int i = 0;
+	
+			int cur = 0;
 			for(double d :Output){
-				result += Math.pow((Math.round(d)),i);
-			}
+
+				 cur =(int) Math.round(d);
+					if(cur > 1){
+						cur = 1;
+					}
+					if(cur< -1){
+						cur = -1;
+					}
+				result  = (int)(result + Math.round(cur)*Math.pow((double)2, (double)i++));
+			
+				}
+				if(result >= 7||result <0){
+					result = 0;
+				}
+
 			return result;
 					
 		}
@@ -110,6 +125,9 @@ public class Player {
 			this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).fitness= fitness;
 			if(fitness > pool.maxFitness){
 				pool.maxFitness = fitness;
+			}
+			if(fitness == 0){
+				this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).fitness= -1;
 			}
 		}
 		}

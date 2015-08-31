@@ -209,7 +209,7 @@ public class GUI {
 					//ADD Load method for Pools
 					Pool p = new Pool();
 					try {
-						p = Pool.load("/tmp/Shodan.ki");
+						p = Pool.load("/tmp/Neat/Shodan.ki");
 					} catch (ClassNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -223,10 +223,10 @@ public class GUI {
 					}
 					else{
 						if(a.Playertype == 3){
-							dis = gameDisplay.main(p.Species.get(p.currentSpecies).Genomes.get(p.currentGenome),p.generation);
+							dis = gameDisplay.main(p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1),p.generation);
 						}
 						if(b.Playertype == 3){
-							dis = gameDisplay.main(p.Species.get(p.currentSpecies).Genomes.get(p.currentGenome),p.generation);
+							dis = gameDisplay.main(p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1),p.generation);
 						}
 					}
 					

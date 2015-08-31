@@ -55,22 +55,61 @@ Pool p;
 			
 			}
 			
+//			if(game.a.Playertype == 3){
+//				game.a.ki = null;
+//				game.a.pool = p;
+//				while(p.alreadyMeasured()){
+//					p.nextGenome();
+//				}
+//				game.a.pool.Species.get(game.a.pool.currentSpecies-1).Genomes.get(game.a.pool.currentGenome-1).generateNetwork();
+//			}
+//	
+//			if(game.b.Playertype == 3){
+//				game.b.ki = null;
+//				game.b.pool = p;
+//				while(p.alreadyMeasured()){
+//					p.nextGenome();
+//				}
+//				game.b.pool.Species.get(game.b.pool.currentSpecies-1).Genomes.get(game.b.pool.currentGenome-1).generateNetwork();
+//				
+//			}
 			if(game.a.Playertype == 3){
 				game.a.ki = null;
 				game.a.pool = p;
-				while(p.alreadyMeasured()){
-					p.nextGenome();
+				game.a.pool.currentSpecies = 1;
+				game.a.pool.currentGenome = 1;
+			//	System.out.println("MES"+game.a.pool.alreadyMeasured()+game.a.pool.Species.get(game.a.pool.currentSpecies-1).Genomes.get(game.a.pool.currentGenome-1).fitness);
+				while(game.a.pool.alreadyMeasured()){
+				//	System.out.println("MES");
+					game.a.pool.nextGenome();
 				}
+				dis.drawPanel.ki = null;
+				dis.drawPanel.update = true;
 				game.a.pool.Species.get(game.a.pool.currentSpecies-1).Genomes.get(game.a.pool.currentGenome-1).generateNetwork();
+				dis.drawPanel.g = game.a.pool.Species.get(game.a.pool.currentSpecies-1).Genomes.get(game.a.pool.currentGenome-1);
+				dis.drawPanel.generation = game.a.pool.generation;
+				dis.drawPanel.update = false;
+				
 			}
-	
 			if(game.b.Playertype == 3){
 				game.b.ki = null;
 				game.b.pool = p;
-				while(p.alreadyMeasured()){
-					p.nextGenome();
+				game.b.pool.currentSpecies = 1;
+				game.b.pool.currentGenome = 1;
+				while(game.b.pool.alreadyMeasured()){
+					
+					game.b.pool.nextGenome();
 				}
+				dis.drawPanel.ki = null;
 				game.b.pool.Species.get(game.b.pool.currentSpecies-1).Genomes.get(game.b.pool.currentGenome-1).generateNetwork();
+				dis.drawPanel.update = true;
+
+
+				dis.drawPanel.g = game.b.pool.Species.get(game.b.pool.currentSpecies-1).Genomes.get(game.b.pool.currentGenome-1);
+				dis.drawPanel.generation = game.b.pool.generation;
+				dis.drawPanel.update = false;
+
+				
 				
 			}
 			
@@ -95,44 +134,13 @@ Pool p;
 			}
 		}
 			
-		if(game.a.Playertype == 3){
-			game.a.pool.currentSpecies = 1;
-			game.a.pool.currentGenome = 1;
-		//	System.out.println("MES"+game.a.pool.alreadyMeasured()+game.a.pool.Species.get(game.a.pool.currentSpecies-1).Genomes.get(game.a.pool.currentGenome-1).fitness);
-			while(game.a.pool.alreadyMeasured()){
-			//	System.out.println("MES");
-				game.a.pool.nextGenome();
-			}
-			dis.drawPanel.ki = null;
-			game.a.pool.Species.get(game.a.pool.currentSpecies-1).Genomes.get(game.a.pool.currentGenome-1).generateNetwork();
-			dis.drawPanel.g = game.a.pool.Species.get(game.a.pool.currentSpecies-1).Genomes.get(game.a.pool.currentGenome-1);
-			dis.drawPanel.generation = game.a.pool.generation;
-			
-		}
-		if(game.b.Playertype == 3){
-			game.b.pool.currentSpecies = 1;
-			game.b.pool.currentGenome = 1;
-			while(game.b.pool.alreadyMeasured()){
-				
-				game.b.pool.nextGenome();
-			}
-			dis.drawPanel.ki = null;
-			game.b.pool.Species.get(game.b.pool.currentSpecies-1).Genomes.get(game.b.pool.currentGenome-1).generateNetwork();
-			dis.drawPanel.update = true;
-
-
-			dis.drawPanel.g = game.b.pool.Species.get(game.b.pool.currentSpecies-1).Genomes.get(game.b.pool.currentGenome-1);
-			dis.drawPanel.generation = game.b.pool.generation;
-			dis.drawPanel.update = false;
-
-			
-			
-		}
+	
 		game.run(j,dis,runs);
 		game.reset();
 		
 		}
 		}
+		System.out.println("Started saving");
 		for(Species s :p.Species){
 			for(Genome g:s.Genomes){
 				g.generateNetwork();
