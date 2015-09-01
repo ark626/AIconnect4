@@ -95,6 +95,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 		Network net = new Network();
 	//Harte Knoten einfügen
 		for(int i =0;i<Inputs;i++){
+		
 			net.Neurons.add(new Neuron());
 		}
 
@@ -123,6 +124,9 @@ public class Genome implements Serializable,Comparable<Genome>{
 					net.Neurons.get(net.Neurons.size()-1).active = false;
 				}
 				net.Neurons.get(net.Neurons.size()-1).active = true;
+//				if(ge.out == Inputs+Outputs){
+//					net.Neurons.get(Inputs+Outputs).value = 1.0;
+//				}
 			}
 		}
 		g.Network = net;
@@ -141,17 +145,17 @@ public class Genome implements Serializable,Comparable<Genome>{
 			}
 		}
 		
-		for(int i=Inputs;i<Inputs+Outputs;i++){
+		for(int i=Inputs;i<Inputs+Outputs+1;i++){
 			Neurons.add(i);
 		}
 		
 		for(int i=0;i<this.Genes.size();i++){
-			if(!nonInput||this.Genes.get(i).into > Inputs){
+			if(!nonInput||this.Genes.get(i).into > Inputs&&this.Genes.get(i).out != Inputs+Outputs){
 				Neurons.add(this.Genes.get(i).into);
 				
 				
 			}
-			if(!nonInput||this.Genes.get(i).out > Inputs){
+			if(!nonInput||this.Genes.get(i).out >= Inputs&&this.Genes.get(i).out != Inputs+Outputs){
 				Neurons.add(this.Genes.get(i).out);
 			}
 		}
@@ -191,10 +195,10 @@ public class Genome implements Serializable,Comparable<Genome>{
 		
 		Gene newLink = new Gene();
 		
-		if(neuron1<=Inputs && neuron2 <= Inputs){
+		if((neuron1<Inputs||neuron1==Inputs+Outputs) && (neuron2 < Inputs||neuron2==Inputs+Outputs )){
 			return 0;
 		}
-		if(neuron2 <= Inputs ){
+		if(neuron2 < Inputs||neuron2==Inputs+Outputs  ){
 			int temp = neuron1;
 			neuron1 = neuron2;
 			neuron2 = temp;
@@ -202,7 +206,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 		newLink.into = neuron1;
 		newLink.out = neuron2;
 		if(forceBias){
-			newLink.into = Inputs;
+			newLink.into = Inputs+Outputs;
 		}
 		
 		if(this.containsLink(newLink)){
@@ -282,7 +286,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 		double p = this.mutationrates[1];
 		while(p>0){
 			if(Math.random() < p){
-				inovation =this.linkMutate(false,inovation);
+				inovation = this.linkMutate(false,inovation);
 			}
 			p-=1;
 		}
@@ -328,6 +332,9 @@ public double[] step(double[] Inputs){
 	for(double i:Inputs){
 		this.Network.Neurons.get(z).value = i;
 		z++;
+	}
+	if(this.Network.Neurons.size() > Outputs+this.Inputs){
+		this.Network.Neurons.get(this.Inputs+Outputs).value = 1.0;
 	}
 	
 	for(Neuron n:this.Network.Neurons){

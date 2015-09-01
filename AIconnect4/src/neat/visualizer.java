@@ -18,7 +18,9 @@ public class visualizer {
   static public void visualize(Genome g,int generation,String s) throws Exception {
     try {
       int width = 640, height = 480;
+      if(g.Network == null||g.Network.Neurons.size() ==0){
       g.generateNetwork();
+      }
 
       // TYPE_INT_ARGB specifies the image format: 8-bit RGBA packed
       // into integer pixels
@@ -29,45 +31,47 @@ public class visualizer {
       ig2.setFont(font);
       
       
-//List Neurons
       ArrayList<Double> Nodes = new ArrayList<Double>();
       int z = 0;
+      int zähler = 0;
       for(int i = 0;i<g.Network.Neurons.size();i++){
-    	  if(i<Genome.Inputs/7){
-    	  for(z = 0;z<7;z++){
-		  Nodes.add(20.0+25*z);
-		  Nodes.add(100.0+25*((i*7+z)%6));
-
-		  Nodes.add(g.Network.Neurons.get(i*7+z).value);
+    	  if(i<Genome.Inputs/6){
+    		  for(z = 0;z<6;z++){
+    			  Nodes.add(20.0+25*i);
+		          Nodes.add(100.0+25*z);
+		          Nodes.add(g.Network.Neurons.get(zähler++).value);
     	  }
     	  }
       }
-      
+   //   System.out.println(g.Network.Neurons.size());
       for(int i =0;i<g.Network.Neurons.size();i++){
     	  Neuron n = g.Network.Neurons.get(i);
     	  if(i<Genome.Inputs){
 
     	  }
     	  else{
-    		  if(i==Genome.Inputs){
-    			//Bias Cell
-    			  Nodes.add(80.0);
-    			  Nodes.add(450.0);
-    			  Nodes.add(1.0);
-    		  }
     		  if(i<Genome.Inputs+Genome.Outputs){
     			  Nodes.add(600.0);
     			  Nodes.add(30.0+25*(i-Genome.Inputs));
     			  Nodes.add(n.value);
     		  }
     		  else{
+        		  if(i==Genome.Inputs+Genome.Outputs){
+          			//Bias Cell
+          			  Nodes.add(80.0);
+          			  Nodes.add(450.0);
+          			  Nodes.add(n.value);
+          		  }
+        		  else{
     			  Nodes.add(440.0);
     			  Nodes.add(40.0);
     			  Nodes.add(n.value);
+        		  }
     		  }
     	  
     	  }
       }
+
 
       
 
@@ -78,7 +82,7 @@ public class visualizer {
       int x2=0;
       int y1=0;
       int y2=0;
-      for(int j =1;j<100;j++){
+      for(int j =1;j<4;j++){
       for(int i=0;i<g.Genes.size();i++){
     	 Gene that = g.Genes.get(i);
     	  if(that != null&&that.enabled){
@@ -96,8 +100,8 @@ public class visualizer {
     			 if(x1 <220){
     				 x1 = 220;
     			 }
-    			 if(x1>420){
-    				 x1 = 420;
+    			 if(x1>550){
+    				 x1 = 550;
     			 }
     			 y1 = (int)Math.round(0.75*y1+0.25*y2);
     			 
@@ -111,8 +115,8 @@ public class visualizer {
     			 if(x2 <220){
     				 x2 = 220;
     			 }
-    			 if(x2>420){
-    				 x2 = 420;
+    			 if(x2>550){
+    				 x2 = 550;
     			 }
     			 y2 = (int)Math.round(0.75*y2+0.25*y1);
     		 
@@ -134,15 +138,20 @@ public class visualizer {
     	  int x = Nodes.get(i).intValue();
     	  int y = Nodes.get(i+1).intValue();
     	  float value = Nodes.get(i+2).floatValue();
-     	  ig2.setColor(Color.getHSBColor(value*560,value*500,value*60));
+     	  ig2.setColor(Color.getHSBColor(1, 2, value));
+     	  if(x==440&&y==40){
+     		  //Ignore not used nodes;
+         	  }
+         	  else{
           ig2.fillRect(x-10, y-10, 20, 20);
+         	  }
     	  
     	  
       }
       for(int i=0;i<g.Genes.size();i++){
     	  Gene that = g.Genes.get(i);
     	  if(that.enabled){
-    		  if(that.weigth < 0){
+    		  if(that.enabled&&that.weigth != 0.0){
     		  ig2.setPaint(Color.red);
     		  }
     		  if(that.weigth > 0){

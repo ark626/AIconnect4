@@ -79,7 +79,7 @@ public class Pool implements Serializable {
 		for(Species s:this.Species){
 			Collections.sort(s.Genomes);
 			
-			if(s.Genomes.get(0).fitness > s.topFitness){
+			if(s.Genomes.get(0).fitness >= s.topFitness){
 				s.topFitness = s.Genomes.get(0).fitness;
 				s.staleness = 0;
 			}
@@ -98,7 +98,7 @@ public class Pool implements Serializable {
 		ArrayList<Species> survivors = new ArrayList<Species>();
 		for(Species s:this.Species){
 		s.calculateAverageFitness();
-			int breed = (int)((double)s.averageFitness/(double)sum*Population) ;
+			int breed = (int)Math.ceil(((double)s.averageFitness/(double)sum*Population)) ;
 
 			if(breed >= 1){
 				survivors.add(s);
@@ -265,7 +265,7 @@ public class Pool implements Serializable {
 		int sum = totalAverageFitness();
 		ArrayList<Genome> children = new ArrayList<Genome>();
 		for(Species s:this.Species){
-			int breed = (int)Math.floor((double)s.averageFitness/(double)sum*Population)-1;
+			int breed = (int)Math.ceil(Math.floor((double)s.averageFitness/(double)sum*Population)-1);
 			for(int i = 0;i<breed;i++){
 				Genome ge = s.breedChild();
 				this.Innovation = ge.mutate(this.Innovation);
@@ -274,14 +274,14 @@ public class Pool implements Serializable {
 		}
 		this.cullSpecies(true);
 		Random r = new Random();
-		this.removeEmptySpecies();
-		if(this.Species.size()<=0){
-			for(int i=0;i<Population;i++){
-				Genome basic = Genome.basicGenome();
-				this.Innovation = basic.mutate(this.Innovation);
-				this.addToSpecies(basic);
-			};
-		}
+//		this.removeEmptySpecies();
+//		if(this.Species.size()<=0){
+//			for(int i=0;i<Population;i++){
+//				Genome basic = Genome.basicGenome();
+//				this.Innovation = basic.mutate(this.Innovation);
+//				this.addToSpecies(basic);
+//			};
+//		}
 		while(children.size()+this.Species.size()<Population){
 			
 			Species s = this.Species.get(r.nextInt(this.Species.size()));
@@ -394,7 +394,7 @@ public class Pool implements Serializable {
 	      }catch(IOException i)
 	      {
 	    	  i.getMessage();
-	    	  return null;
+	    	  return new Pool();
 	    	  //return new Pool();
 
 	      }

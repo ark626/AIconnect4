@@ -143,7 +143,7 @@ Pool p;
 		System.out.println("Started saving");
 		for(Species s :p.Species){
 			for(Genome g:s.Genomes){
-				g.generateNetwork();
+				//g.generateNetwork();
 				neat.visualizer.visualize(g, p.generation, "Neat/Neat Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
 			}
 		}

@@ -263,21 +263,23 @@ final public class gameDisplay
 
     		        	  }
     		        	  else{
-    		        		  if(i==Genome.Inputs){
-    		        			//Bias Cell
-    		        			  Nodes.add(80.0);
-    		        			  Nodes.add(450.0);
-    		        			  Nodes.add(1.0);
-    		        		  }
-    		        		  if(i<Genome.Inputs+Genome.Outputs){
+    		        		  if(i<Genome.Inputs+Genome.Outputs&&i!= Genome.Inputs+Genome.Outputs){
     		        			  Nodes.add(600.0);
     		        			  Nodes.add(30.0+25*(i-Genome.Inputs));
     		        			  Nodes.add(n.value);
     		        		  }
     		        		  else{
+    		            		  if(i==Genome.Inputs+Genome.Outputs){
+    		              			//Bias Cell
+    		              			  Nodes.add(80.0);
+    		              			  Nodes.add(450.0);
+    		              			  Nodes.add(n.value);
+    		              		  }
+    		            		  else{
     		        			  Nodes.add(440.0);
     		        			  Nodes.add(40.0);
     		        			  Nodes.add(n.value);
+    		            		  }
     		        		  }
     		        	  
     		        	  }
@@ -310,8 +312,8 @@ final public class gameDisplay
     		        			 if(x1 <220){
     		        				 x1 = 220;
     		        			 }
-    		        			 if(x1>420){
-    		        				 x1 = 420;
+    		        			 if(x1>550){
+    		        				 x1 = 550;
     		        			 }
     		        			 y1 = (int)Math.round(0.75*y1+0.25*y2);
     		        			 
@@ -325,8 +327,8 @@ final public class gameDisplay
     		        			 if(x2 <220){
     		        				 x2 = 220;
     		        			 }
-    		        			 if(x2>420){
-    		        				 x2 = 420;
+    		        			 if(x2>550){
+    		        				 x2 = 550;
     		        			 }
     		        			 y2 = (int)Math.round(0.75*y2+0.25*y1);
     		        		 
@@ -338,6 +340,7 @@ final public class gameDisplay
     		       		  Nodes.set(that.out*3+1,(double)y2);
     		        		 
     		        		 }
+  
     		        	  
     		        	  }
     		          }
@@ -347,14 +350,19 @@ final public class gameDisplay
     		        	  int x = Nodes.get(i).intValue();
     		        	  int y = Nodes.get(i+1).intValue();
     		        	  float value = Nodes.get(i+2).floatValue();
-    		         	  g.setColor(Color.getHSBColor(value*560,value*500,value*60));
+    		         	  g.setColor(Color.getHSBColor(1, 2, value));//Color.getHSBColor(value*560,value*500,value*60));
+    		         	  if(x==440&&y==40){
+    		         		  //Ignore not used nodes;
+        		         	  }
+        		         	  else{
     		              g.fillRect(x-10, y-10, 20, 20);
+        		         	  }
     		        	  
     		        	  
     		          }
     		          for(int i=0;i<this.g.Genes.size();i++){
     		        	  Gene that = this.g.Genes.get(i);
-    		        	  if(that.enabled){
+    		        	  if(that.enabled&&that.weigth != 0.0){
     		        		  if(that.weigth < 0){
     		        		  g.setColor(Color.red);
     		        		  }
