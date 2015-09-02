@@ -62,6 +62,20 @@ public class Pool implements Serializable {
 		
 	}
 	
+	public Genome getbest(){
+		Genome temp = null;
+		int maxfit = Integer.MIN_VALUE;
+		for(Species s:this.Species){
+			for(Genome g:s.Genomes){
+				if(g != null && g.fitness > maxfit && g.fitness != 0){
+					temp = g;
+					maxfit = g.fitness;
+				}
+			}
+		}
+		return temp;
+	}
+	
 	public Pool(int i){
 		super();
 		Species = new ArrayList<Species>();

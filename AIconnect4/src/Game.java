@@ -158,7 +158,9 @@ public class Game {
 
 				}
 				else{
+					if(z.pool != null){
 				z.receivefeedback((100+chips+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));
+					}
 				}
 			}
 		}
@@ -170,11 +172,14 @@ public class Game {
 		}
 			else{
 				if(times == 0){
+					if(z.pool != null){
 					z.receivefeedback(-chips);
-
+					}
 				}
 				else{
+					if(z.pool != null){
 				z.receivefeedback((-chips+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));
+					}
 				}
 			}
 			}

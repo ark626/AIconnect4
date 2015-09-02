@@ -1,5 +1,6 @@
 import java.awt.EventQueue;
 
+import javax.imageio.IIOException;
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
@@ -15,6 +16,7 @@ import neat.Pool;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 import ki.KI;
 import ki.KICluster;
@@ -27,6 +29,9 @@ public class GUI {
 	private JTextField textField_1;
 	private JTextField textField_2;
 	static 	public Thread t;
+	private JTextField textField_3;
+	private JTextField txtCtmp;
+	private JTextField txtCtmp_1;
 
 	
 
@@ -81,7 +86,7 @@ public class GUI {
 		frame.getContentPane().add(comboBox);
 		
 		JLabel lblType = new JLabel("Type");
-		lblType.setBounds(10, 163, 46, 14);
+		lblType.setBounds(20, 160, 46, 14);
 		frame.getContentPane().add(lblType);
 		
 		JLabel lblPlayerA = new JLabel("Player a");
@@ -98,21 +103,22 @@ public class GUI {
 		frame.getContentPane().add(comboBox_1);
 		
 		JLabel lblStrength = new JLabel("Strength");
-		lblStrength.setBounds(10, 200, 60, 14);
+		lblStrength.setBounds(20, 188, 60, 14);
 		frame.getContentPane().add(lblStrength);
 		
 	
 		
 		JLabel lblGamesettings = new JLabel("Gamesettings");
-		lblGamesettings.setBounds(170, 54, 73, 14);
+		lblGamesettings.setBounds(170, 39, 73, 14);
 		frame.getContentPane().add(lblGamesettings);
 		
-		JLabel lblRunden = new JLabel("Runden");
-		lblRunden.setBounds(10, 79, 46, 14);
+		JLabel lblRunden = new JLabel("min. Fitness");
+		lblRunden.setBounds(154, 64, 104, 14);
 		frame.getContentPane().add(lblRunden);
 		
 		textField = new JTextField();
-		textField.setBounds(154, 79, 86, 20);
+		textField.setText("0");
+		textField.setBounds(35, 89, 86, 20);
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
 		
@@ -123,27 +129,27 @@ public class GUI {
 			
 			}
 		});
-		chckbxShowNeurons.setBounds(259, 78, 115, 23);
+		chckbxShowNeurons.setBounds(294, 50, 115, 23);
 		frame.getContentPane().add(chckbxShowNeurons);
 		
 		JCheckBox chckbxOnlyTakeBest = new JCheckBox("Only take best KI");
-		chckbxOnlyTakeBest.setBounds(235, 227, 121, 23);
+		chckbxOnlyTakeBest.setBounds(235, 236, 121, 23);
 		frame.getContentPane().add(chckbxOnlyTakeBest);
 		
 		textField_1 = new JTextField();
 		textField_1.setText("0");
-		textField_1.setBounds(91, 197, 86, 20);
+		textField_1.setBounds(88, 188, 86, 20);
 		frame.getContentPane().add(textField_1);
 		textField_1.setColumns(10);
 		
 		textField_2 = new JTextField();
 		textField_2.setText("0");
-		textField_2.setBounds(235, 197, 86, 20);
+		textField_2.setBounds(232, 188, 86, 20);
 		frame.getContentPane().add(textField_2);
 		textField_2.setColumns(10);
 		
 		JCheckBox chckbxOnlyTakeBest_1 = new JCheckBox("Only take best KI");
-		chckbxOnlyTakeBest_1.setBounds(10, 227, 138, 23);
+		chckbxOnlyTakeBest_1.setBounds(10, 236, 138, 23);
 		frame.getContentPane().add(chckbxOnlyTakeBest_1);
 		
 		
@@ -189,13 +195,8 @@ public class GUI {
 					Player b = new Player(typebb,strengthb);
 					System.out.println(a.Playertype+" "+a.Playerstrength);
 					System.out.println(b.Playertype+" "+b.Playerstrength);
-					KICluster test = new KICluster(40,3,8,2);
-					try{
-						test = KICluster.load("/tmp/GLaDoS.ki");
-						}
-						catch (Exception e){
-							
-						}
+					
+
 					if(typeaa == 0){
 						a = new Player();
 					}
@@ -205,34 +206,74 @@ public class GUI {
 					}
 					Game g = new Game(a,b);
 
-					b.ki = test.best();
-					//ADD Load method for Pools
+					
+					// Initialize KIs and Pools
 					Pool p = new Pool();
+					Pool p2 = new Pool();
+					KICluster test = new KICluster(40,3,8,2);
+					
+					
+					
+					//Loading saved data
+					int load1 = 0;
+					int load2 = 0;
+					
+					if(a.Playertype == 3 && !txtCtmp.getText().equals("")){
 					try {
-						p = Pool.load("/tmp/Neat/Shodan.ki");
+						p = Pool.load("/tmp/Neat/Shodan1.ki");
+						load1=3;
 					} catch (ClassNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+					}
+					}
+					
+								
+					if(b.Playertype == 3 && !txtCtmp_1.getText().equals("")){
+					try {
+						p2 = Pool.load("/tmp/Neat/Shodan2.ki");
+						load2 = 3;
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					}
+					if(a.Playertype == 0 && !txtCtmp.getText().equals("")){
+					test = KICluster.load("/tmp/Normal/GLaDoS.ki");
+					load1 = 1;
+					}
+					
+		
+					if(b.Playertype == 0 && !txtCtmp_1.getText().equals("")){
+					test = KICluster.load("/tmp/Normal/GLaDoS.ki");
+					load2 = 1;
 					}
 					
 					//KI shower = b.ki.copy();
 					//Game2.main(b.ki,new JFrame());
 					gameDisplay dis = null;
-					if(chckbxShowNeurons.isSelected()&&(a.Playertype != 3&&b.Playertype != 3)){
+					if(chckbxShowNeurons.isSelected()&&(b.Playertype == 0)){
 					 dis = gameDisplay.main(b.ki);
 					}
-					else{
+					if(chckbxShowNeurons.isSelected()&&(a.Playertype ==0)){
+						 dis = gameDisplay.main(a.ki);
+						}
+
 						if(a.Playertype == 3){
 							dis = gameDisplay.main(p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1),p.generation);
+							a.ki = null;
+							a.pool = p;
 						}
 						if(b.Playertype == 3){
-							dis = gameDisplay.main(p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1),p.generation);
+							dis = gameDisplay.main(p2.Species.get(p2.currentSpecies-1).Genomes.get(p2.currentGenome-1),p2.generation);
+							b.ki = null;
+							b.pool = p2;
 						}
-					}
 					
 					
+					int minfit = Integer.parseInt(textField_3.getText());
 					
-					Running r = new Running(g,runden,test,p,dis);
+					Running r = new Running(g,runden,test,p,p2,load1,load2,dis,minfit);
 					GUI.t = new Thread(r);
 					t.start();
 	//				TODO: ADD save routine
@@ -241,5 +282,31 @@ public class GUI {
 		});
 		btnStart.setBounds(154, 236, 73, 23);
 		frame.getContentPane().add(btnStart);
+		
+		JLabel label_1 = new JLabel("Runden");
+		label_1.setBounds(35, 64, 46, 14);
+		frame.getContentPane().add(label_1);
+		
+		textField_3 = new JTextField();
+		textField_3.setText("0");
+		textField_3.setBounds(157, 89, 86, 20);
+		frame.getContentPane().add(textField_3);
+		textField_3.setColumns(10);
+		
+		JLabel lblLoadpath = new JLabel("Loadpath");
+		lblLoadpath.setBounds(20, 215, 60, 14);
+		frame.getContentPane().add(lblLoadpath);
+		
+		txtCtmp = new JTextField();
+		txtCtmp.setText("C:\\tmp\\");
+		txtCtmp.setBounds(88, 213, 86, 20);
+		frame.getContentPane().add(txtCtmp);
+		txtCtmp.setColumns(10);
+		
+		txtCtmp_1 = new JTextField();
+		txtCtmp_1.setText("C:\\tmp\\");
+		txtCtmp_1.setBounds(232, 212, 86, 20);
+		frame.getContentPane().add(txtCtmp_1);
+		txtCtmp_1.setColumns(10);
 	}
 }
