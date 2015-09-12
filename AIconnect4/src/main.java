@@ -1,3 +1,7 @@
+import hyperneat.HyperNeat;
+import neat.Genome;
+import neat.Pool;
+import neat.Species;
 import ki.KI;
 import ki.KICluster;
 import ki.Link;
@@ -7,90 +11,86 @@ import ki.visualizer;
 
 public class main {
 	public static void main(String[] args){
-		String start = "Started with: ";
-		for(String s :args){
-			start += " "+s;
-		}
-		System.out.println(start);
-		KICluster test = new KICluster(40,4,4,2);
-
-		Player a = new Player(1,1);
-		Player b= new Player();
-		a.ki = null;
-		//a.ki.isTesting = true;
-		//a.initialize();
-		b.ki = test.ranking.get(test.next());
-		b.ki.isTesting = true;
-	//	Game g = new Game(a,b);
-		try{
-		test = KICluster.load("/tmp/GLaDoS.ki");
-		}
-		catch (Exception e){
-			
-		}
-		for(int i = 9000;i>0;i--){
-			test.ranking.get(0).mutate(10);
-		}
-		try {
-			for(int i=0;i<test.ranking.size();i++){
-			ki.visualizer.visualize(test.ranking.get(i),"GLaDoS"+i);
-			}
-			System.out.println("DONE");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-//		for(int i = 0;i<999999;i++){
-//		b.ki.mutate();
-//		}
-		try {
-			
-			ki.visualizer.visualize(b.ki,"Test");
-			
-			System.out.println("DONE");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for(KI k : test.ranking){
-			k.gen = 0;
-		}
-		test.save("/tmp/GLaDoS.ki", 0);
-		
+	Pool p = new Pool(4,1);
+	try {
+		p = Pool.load("/tmp/Hyper/generator.ki");
+	} catch (ClassNotFoundException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
 	}
-}
-//		int round = 0;
-//		for(int j = 0;j<300000;j++){
-//		for(int i = 0;i<5000;i++){
-//		//gameDisplay.main(b.ki);
-//		g.run(round++);
-//		g.reset();
-//		int id = test.next();
-//	//	System.out.println("ID: "+id);
-//		b.ki = test.ranking.get(id);
-//		b.ki.isTesting = true;
-//		
-//		}
-//		g.run(round++);
-//	g.reset();
-////		for(int i=0;i<999;i++){
-////		b.ki.mutate();
-////		}
-//		//b.ki.Links.add(new Link(b.ki.Nodes.get(2),b.ki.Nodes.get(40),1.0));
-//	    test.rank();
-//		test.save("/tmp/GLaDoS.ki", 0);
-//
-//		try {
-//			for(int i=0;i<test.ranking.size();i++){
-//			ki.visualizer.visualize(test.ranking.get(i),"GLaDoS"+i);
-//			}
-//			System.out.println("DONE");
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		}
-//	}
-//
-//}
+	if(p == null){
+		p = new Pool(4,1);
+	}
+	HyperNeat test = new HyperNeat(42,3,0,7,6,p);
+	Player a = new Player(4,4);
+	Player b = new Player(1,1);
+	a.pool = p;
+    Genome  current = p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1);
+	a.h = test;
+	gameDisplay dis = null;//gameDisplay.main(current, 0);
+	Game g = new Game(a,b);
+	
+	
+	for(int i = 0;i<60000;i++){
+		p.currentGenome = 1;
+		p.currentSpecies = 1;
+	while(p.alreadyMeasured()){
+		p.nextGenome();
+	}
+	current = p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1);
+	current.generateNetwork();
+	test.generateweigths(current);
+	
+	if(p.alreadyMeasured()){
+	while(p.alreadyMeasured()){
+		p.nextGenome();
+		current = p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1);
+		current.generateNetwork();
+		test.generateweigths(current);
+	}
+	}
+	
+	
+	//dis.drawPanel.g = current;
+	
+	//dis.drawPanel.g = p.Species.get(p.currentSpecies).Genomes.get(p.currentGenome);
+	for(int j = 0;j<10;j++){
+		g.reset();
+		g.run(i, dis, j);
+	}
+	}
+	
+	
+	System.out.println("Started saving");
+
+	
+
+		p.save("/tmp/Hyper/generator.ki", 0);
+		for(Species s :p.Species){
+			for(Genome ge:s.Genomes){
+				//g.generateNetwork();
+				try {
+					neat.visualizer.visualize(ge, "Hyper/Generator Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(ge));
+					test.generateweigths(ge);
+					hyperneat.visualizer.visualize(test, "Hyper/HN Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(ge),p.Species.indexOf(s),s.Genomes.indexOf(ge));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	try {
+		
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	System.out.println("DONE");
+	
+	
+	
+	
+}}
+	

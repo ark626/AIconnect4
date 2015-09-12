@@ -248,7 +248,7 @@ final public class gameDisplay
     		          int z = 0;
     		          int zähler = 0;
     		          for(int i = 0;i<this.g.Network.Neurons.size();i++){
-    		        	  if(i<Genome.Inputs/6){
+    		        	  if(i<this.g.Inputs/6){
     		        		  for(z = 0;z<6;z++){
     		        			  Nodes.add(20.0+25*i);
     		    		          Nodes.add(100.0+25*z);
@@ -259,17 +259,17 @@ final public class gameDisplay
     		          
     		          for(int i =0;i<this.g.Network.Neurons.size();i++){
     		        	  Neuron n = this.g.Network.Neurons.get(i);
-    		        	  if(i<Genome.Inputs){
+    		        	  if(i<this.g.Inputs){
 
     		        	  }
     		        	  else{
-    		        		  if(i<Genome.Inputs+Genome.Outputs&&i!= Genome.Inputs+Genome.Outputs){
+    		        		  if(i<this.g.Inputs+this.g.Outputs&&i!= this.g.Inputs+this.g.Outputs){
     		        			  Nodes.add(600.0);
-    		        			  Nodes.add(30.0+25*(i-Genome.Inputs));
+    		        			  Nodes.add(30.0+25*(i-this.g.Inputs));
     		        			  Nodes.add(n.value);
     		        		  }
     		        		  else{
-    		            		  if(i==Genome.Inputs+Genome.Outputs){
+    		            		  if(i==this.g.Inputs+this.g.Outputs){
     		              			//Bias Cell
     		              			  Nodes.add(80.0);
     		              			  Nodes.add(450.0);
@@ -304,7 +304,7 @@ final public class gameDisplay
     		        		  x2 = Nodes.get(that.out*3).intValue();
     		        		  y1 = Nodes.get(that.into*3+1).intValue();
     		        		  y2 = Nodes.get(that.out*3+1).intValue();
-    		        		 if(that.into > Genome.Inputs+Genome.Outputs){
+    		        		 if(that.into > this.g.Inputs+this.g.Outputs){
     		        			 x1 = (int)Math.round(0.75*x1+0.25*x2);
     		        			 if(x1 >= x2){
     		        				 x1 -= 60;
@@ -319,7 +319,7 @@ final public class gameDisplay
     		        			 
     		        		 }
     		        		 
-    		        		 if(that.out > Genome.Inputs+Genome.Outputs){
+    		        		 if(that.out > this.g.Inputs+this.g.Outputs){
     		        			 x2 = (int)Math.round(0.75*x2+0.25*x1);
     		        			 if(x1 >= x2){
     		        				 x2 += 60;
@@ -376,6 +376,7 @@ final public class gameDisplay
     		    		  x2 = Nodes.get(that.out*3).intValue();
     		    		  y1 = Nodes.get(that.into*3+1).intValue();
     		    		  y2 = Nodes.get(that.out*3+1).intValue();
+    		    		  
     		        	  g.drawLine(x1, y1, x2, y2);
     		        	  }
     		          }

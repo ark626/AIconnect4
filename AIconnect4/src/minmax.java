@@ -87,10 +87,10 @@ public  class minmax {
 				l++;
 			}
 		}
-		System.out.println(tst);
+	//	System.out.println(tst);
 		Random rand = new Random();
 		step = wanted[rand.nextInt(wanted.length)];
-		System.out.println("Step: "+step);
+		System.out.println(tst+ " Step: "+step);
 		return step;
 		
 //		if(step == 0){

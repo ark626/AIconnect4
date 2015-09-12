@@ -22,11 +22,13 @@ public class Species {
 	public static final double StepSize = 0.1;
 	public static final double DisableMutationChance = 0.4;
 	public static final double EnableMutationChance = 0.2;
-	public static final int Inputs = 42;
-	public static final int Outputs = 3;
+	public int Inputs = 42;
+	public int Outputs = 3;
 	public static final int MaxNodes = 1000000;
 	
-	public Species(){
+	public Species(int in,int out){
+		this.Inputs = in;
+		this.Outputs = out;
 		this.topFitness = 0;
 		this.staleness = 0;
 		this.Genomes = new ArrayList<Genome>();
@@ -52,12 +54,19 @@ public class Species {
 			g2 = temp;
 		}
 		int i =0;
-		double[] temp = new double[7];
+		int gen=0;
+		double[] temp = new double[8];
 		for(double z :g1.mutationrates){
 			temp[i++] = z;
 		}
+		if(g1.Generation > g2.Generation){
+			gen = g1.Generation+1;
+		}
+		else{
+			gen = g2.Generation+1;
+		}
 		
-		Genome child = new Genome();
+		Genome child = new Genome(this.Inputs,this.Outputs,gen);
 		ArrayList<Gene> Innovation = new ArrayList<Gene>();
 		for(Gene gene:g2.Genes){
 			Innovation.add(gene);
@@ -90,7 +99,7 @@ public class Species {
 		if(Math.random() <CrossoverChance){
 			int rand = r.nextInt(this.Genomes.size());
 			Genome g1 = this.Genomes.get(rand);
-			 child = new Genome();
+			 child = new Genome(this.Inputs,this.Outputs,1);
 			rand = r.nextInt(this.Genomes.size());
 			Genome g2 = this.Genomes.get(rand);
 			child = this.crossover(g1,g2);

@@ -1,3 +1,8 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import neat.Genome;
 import neat.Pool;
 import neat.Species;
@@ -28,7 +33,7 @@ int loadedtype2;
 		this.loadedtype1 = a;
 		this.loadedtype2 = b;
 	}
-	public boolean dowhile(int j){
+	public boolean dowhile(int currentround,int i){
 		int tempfit =Integer.MIN_VALUE;
 		if(game.a.Playertype==0&&(game.a.ki.fitness > tempfit)){
 			tempfit = game.a.ki.fitness;
@@ -42,8 +47,8 @@ int loadedtype2;
 		if(game.b.Playertype == 3&&game.b.pool.Species.get(game.b.pool.currentSpecies-1).Genomes.get(game.b.pool.currentGenome-1).fitness>tempfit){
 			tempfit = game.b.pool.Species.get(game.b.pool.currentSpecies-1).Genomes.get(game.b.pool.currentGenome-1).fitness;
 		}
-		
-		if((j<this.i&&i !=0)||(minfit!=0&&tempfit<= minfit)){
+
+		if((((currentround<(i))&&i !=0))&&(minfit!=0&&tempfit<= minfit)){
 			return true;
 		}
 		else{
@@ -53,6 +58,51 @@ int loadedtype2;
 	
 	public void run() {
 		test.retest();
+		//Write initvalues to text
+		try {
+			String path = "/tmp/";
+			String path2= "/tmp/";
+			long time2 = System.currentTimeMillis();
+			String content = "";
+			File file = null;
+			if(game.a.Playertype == 3){
+			content = "Playera: "+"NEAT "+" Playerb Strength: "+game.b.Playerstrength+" Playerb Type: "+game.b.Playertype+" Started at: "+time2+ " ms"+" for "+this.i+" Rounds "+" minfit: "+this.minfit+ "\n";
+			path += "Neat/Playera.txt";
+			file = new File(path);
+			//System.out.println("Done");
+			}
+			if(game.b.Playertype == 3){
+				content = "Playerb: "+"NEAT "+" Playera Strength: "+game.a.Playerstrength+" Playera Type: "+game.a.Playertype+" Started at: "+time2+ " ms"+" for "+this.i+" Rounds "+" minfit: "+this.minfit+ "\n";
+			path2 += "Neat/Playerb.txt";
+			file = new File(path2);
+			}
+			
+			if(game.a.Playertype == 0){
+				content = "Playera: "+"KI Cluster "+" Playerb Strength: "+game.b.Playerstrength+" Playerb Type: "+game.b.Playertype+" Started at: "+time2+ " ms"+" for "+this.i+" Rounds "+" minfit: "+this.minfit+ "\n";
+			path += "Normal/Playera.txt";
+			file = new File(path);
+			}
+			
+			if(game.b.Playertype == 0){
+				content = "Playerb: "+"KI Cluster "+" Playera Strength: "+game.a.Playerstrength+" Playera Type: "+game.a.Playertype+" Started at: "+time2+ " ms"+" for "+this.i+" Rounds "+" minfit: "+this.minfit+ "\n";
+				path2 += "Normal/Playerb.txt";
+				file = new File(path2);
+				}
+			
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.newLine();
+			bw.write(content);
+			bw.newLine();
+			bw.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		this.time = System.currentTimeMillis();
 		try{
 			int currentki=0;
@@ -110,7 +160,7 @@ int loadedtype2;
 			}
 			if(game.b.Playertype == 3){
 				game.b.ki = null;
-				game.b.pool = p;
+				game.b.pool = p2;
 				game.b.pool.currentSpecies = 1;
 				game.b.pool.currentGenome = 1;
 				while(game.b.pool.alreadyMeasured()){
@@ -154,15 +204,61 @@ int loadedtype2;
 		game.reset();
 		
 		}
+		
 		j++;
-		}while(this.dowhile(j));
+		
+		//Write result to text
+		try {
+			String path = "/tmp/";
+			String path2= "/tmp/";
+			long time2 = System.currentTimeMillis()-time;
+			String content = "";
+			File file = null;
+			if(game.a.Playertype == 3){
+			content = "maxFitness: "+p.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
+			path += "Neat/Playera.txt";
+			file = new File(path);
+			//System.out.println("Done");
+			}
+			if(game.b.Playertype == 3){
+			content = "maxFitness: "+p2.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
+			path2 += "Neat/Playerb.txt";
+			file = new File(path2);
+			}
+			
+			if(game.a.Playertype == 0){
+			content = "maxFitness: "+test.best().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
+			path += "Normal/Playera.txt";
+			file = new File(path);
+			}
+			
+			if(game.b.Playertype == 0){
+				content = "maxFitness: "+test.best().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
+				path2 += "Normal/Playerb.txt";
+				file = new File(path2);
+				}
+			
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(content);
+			bw.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		}while(this.dowhile(j,this.i));
 		
 		//Output
-		this.time = System.currentTimeMillis()-time;
-		System.out.println("Rounds: "+j+" Time in ms: "+this.time);
+		time = System.currentTimeMillis()-time;
+	
 		int Gen = 0;
 		int Spec = 0;
-		System.out.println(game.a.Playertype+" "+game.b.Playertype+" "+game.a.Playerstrength+" "+game.b.Playerstrength);
+		//System.out.println(game.a.Playertype+" "+game.b.Playertype+" "+game.a.Playerstrength+" "+game.b.Playerstrength);
 		if(game.a.Playertype ==3){
 		for(Species s:p.Species){
 			if(s.Genomes.contains(p.getbest())){
@@ -170,9 +266,9 @@ int loadedtype2;
 				Spec = p.Species.indexOf(s);
 			}
 		}
-	//	if(Spec != 0){
-		System.out.println("Best Genome in Player a is in Species :"+Spec+" Genome: "+p.Species.get(Gen).Genomes.indexOf(p.getbest())+" with Fitness of: "+p.getbest().fitness);
-	//	}
+	
+		System.out.println("Best Genome in Player a is in Species :"+Spec+" Genome: "+Gen+" with Fitness of: "+p.getbest().fitness);
+		
 		}
 		if(game.b.Playertype ==3){
 			Gen = 0;
@@ -180,12 +276,12 @@ int loadedtype2;
 		for(Species s:p2.Species){
 			if(s.Genomes.contains(p2.getbest())){
 				Gen= s.Genomes.indexOf(p2.getbest());
-				Spec = p.Species.indexOf(s);
+				Spec = p2.Species.indexOf(s);
 			}
 		}
-	//	if(Spec != 0){
-		System.out.println("Best Genome in Player b is in Species :"+Spec+" Genome: "+p2.Species.get(Gen).Genomes.indexOf(p2.getbest())+" with Fitness of: "+p2.getbest().fitness);
-	//	}
+
+		System.out.println("Best Genome in Player b is in Species :"+Spec+" Genome: "+Gen+" with Fitness of: "+p2.getbest().fitness);
+		
 		}
 		
 		System.out.println("Started saving");
@@ -208,7 +304,7 @@ int loadedtype2;
 			for(Species s :p.Species){
 				for(Genome g:s.Genomes){
 					//g.generateNetwork();
-					neat.visualizer.visualize(g, p.generation, "Neat/Shodan1 Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
+					neat.visualizer.visualize(g, "Neat/Shodan1 Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
 				}
 			}
 			
@@ -218,7 +314,7 @@ int loadedtype2;
 			for(Species s :p.Species){
 				for(Genome g:s.Genomes){
 					//g.generateNetwork();
-					neat.visualizer.visualize(g, p.generation, "Neat/Shodan2 Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
+					neat.visualizer.visualize(g, "Neat/Shodan2 Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
 				}
 			}
 			

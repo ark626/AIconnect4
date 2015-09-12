@@ -8,6 +8,7 @@ public class Gene implements Serializable,Comparable<Gene>{
 	public double weigth;
 	public boolean enabled;
 	public int innovation;
+	public int activition;
 	
 	public Gene() {
 		super();
@@ -16,6 +17,7 @@ public class Gene implements Serializable,Comparable<Gene>{
 		this.weigth = 0.0;
 		this.enabled = true;
 		this.innovation = 0;
+		this.activition = 0;
 	}
 	
 	public Gene copyGene(){

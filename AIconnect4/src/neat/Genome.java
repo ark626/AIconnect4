@@ -11,14 +11,15 @@ public class Genome implements Serializable,Comparable<Genome>{
 	 */
 	private static final long serialVersionUID = -4198647103860678421L;
 	public ArrayList<Gene> Genes;
-	public int fitness ;
+	public int fitness;
 	public int adjustedfitness;
 	public transient Network Network;
 	//public transient Pool pool;
-	public int maxneuron ;
+	public int maxneuron;
 	public int globalRank;
 	public double[] mutationrates;
 	public int Innovation =0;
+	public int Generation ;
 //	genome.mutationRates["connections"] = MutateConnectionsChance
 //	genome.mutationRates["link"] = LinkMutationChance
 //	genome.mutationRates["bias"] = BiasMutationChance
@@ -37,24 +38,28 @@ public class Genome implements Serializable,Comparable<Genome>{
 	public static final double LinkMutationChance = 2.0;
 	public static final double NodeMutationChance = 0.50;
 	public static final double BiasMutationChance = 0.40;
+	public static final double ActivitionMutationChance = 0.5;
 	public static final double StepSize = 0.1;
 	public static final double DisableMutationChance = 0.4;
 	public static final double EnableMutationChance = 0.2;
-	public static final int Inputs = 42;
-	public static final int Outputs = 3;
+	public int Inputs = 42;
+	public int Outputs = 3;
 	public static final int MaxNodes = 10000;
 	
 	
-	public Genome() {
+	public Genome(int in,int out,int gen) {
 		super();
+		this.Generation = gen;
 		//this.pool = p;
+		this.Inputs = in;
+		this.Outputs = out;
 		Genes = new ArrayList<Gene>();
 		this.fitness = 0;
 		this.adjustedfitness = 0;
 		Network = new Network();
 		this.maxneuron = 0;
 		this.globalRank = 0;
-		this.mutationrates = new double[7];
+		this.mutationrates = new double[8];
 		this.mutationrates[0] = Genome.MutateConnectionsChance;
 		this.mutationrates[1] = Genome.LinkMutationChance;
 		this.mutationrates[2] = Genome.BiasMutationChance;
@@ -62,28 +67,29 @@ public class Genome implements Serializable,Comparable<Genome>{
 		this.mutationrates[4] = Genome.EnableMutationChance;
 		this.mutationrates[5] = Genome.DisableMutationChance;
 		this.mutationrates[6] = Genome.StepSize;
+		this.mutationrates[7] = Genome.ActivitionMutationChance;
 	}
 
 
 
-	public static Genome basicGenome(){
-		Genome g = new Genome();
+	public static Genome basicGenome(int in, int out){
+		Genome g = new Genome(in,out,1);
 
-		g.maxneuron = Inputs+Outputs;
+		g.maxneuron = in+out;
 		g.Innovation = 1;
-		
+		g.Generation = 1;
 		return g;
 	}
 	
 	public Genome copyGenome(){
-		Genome temp = new Genome();
+		Genome temp = new Genome(this.Inputs,this.Outputs,this.Generation);
 		temp.Genes = new ArrayList<Gene>();
 		for(Gene g :this.Genes){
 			temp.Genes.add(g.copyGene());
 		}
-
+		temp.Generation = this.Generation;
 		temp.maxneuron = this.maxneuron;
-		temp.mutationrates = new double[7];
+		temp.mutationrates = new double[8];
 		for(int i=0;i<this.mutationrates.length;i++){
 		temp.mutationrates [i] = this.mutationrates[i];
 		}
@@ -106,7 +112,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 		if(g.Genes != null && g.Genes.size() > 1){
 		Collections.sort(g.Genes);
 		}
-		
+		boolean Check = true;
 		for(Gene ge:g.Genes){
 			if(ge.enabled){
 				boolean checker = false;
@@ -114,6 +120,9 @@ public class Genome implements Serializable,Comparable<Genome>{
 					checker = true;
 					net.Neurons.add(new Neuron()) ;
 					net.Neurons.get(net.Neurons.size()-1).active = false;
+					if(ge.activition != 0){
+					net.Neurons.get(net.Neurons.size()-1).activition = ge.activition;
+					}
 				}
 				net.Neurons.get(net.Neurons.size()-1).active = true;
 				net.Neurons.get(ge.out).incoming.add(ge);
@@ -127,7 +136,13 @@ public class Genome implements Serializable,Comparable<Genome>{
 //				if(ge.out == Inputs+Outputs){
 //					net.Neurons.get(Inputs+Outputs).value = 1.0;
 //				}
+				if(ge.weigth != 0.0){
+					Check = false;
+				}
 			}
+		}
+		if(Check){
+			this.fitness = -9999;
 		}
 		g.Network = net;
 	
@@ -219,6 +234,16 @@ public class Genome implements Serializable,Comparable<Genome>{
 		return inovation;
 	}
 	
+	public int activitionMutate(int inovation){
+		if(this.Genes.size() >0){
+		Random rand = new Random();
+		int i = rand.nextInt(this.Genes.size());
+		this.Genes.get(i).activition = rand.nextInt(10);
+		return inovation +1;
+		}
+		return inovation;
+	}
+	
 	public int nodeMutate(int inovation){
 		if(this.Genes.size() == 0){
 			return 0;
@@ -266,6 +291,8 @@ public class Genome implements Serializable,Comparable<Genome>{
 		gene.enabled = !gene.enabled;
 		return 0;
 	}
+	
+
 	
 	public int mutate(int inovation){
 
@@ -321,6 +348,14 @@ public class Genome implements Serializable,Comparable<Genome>{
 			}
 			p-=1;
 		}
+		
+		p = this.mutationrates[7];
+		while(p>0){
+			if(Math.random() < p){
+				inovation = this.activitionMutate(inovation);
+			}
+			p-=1;
+		}
 		this.Innovation = inovation;
 		return inovation;
 	}
@@ -333,30 +368,84 @@ public double[] step(double[] Inputs){
 		this.Network.Neurons.get(z).value = i;
 		z++;
 	}
+	//Biased Cell
 	if(this.Network.Neurons.size() > Outputs+this.Inputs){
 		this.Network.Neurons.get(this.Inputs+Outputs).value = 1.0;
 	}
 	
 	for(Neuron n:this.Network.Neurons){
 		double sum =0;
+		int act[] =new int[n.incoming.size()];
+		int ct = 0;
 		for(Gene g:n.incoming){
-			
+			act[ct++] = g.activition;
 			sum += g.weigth * this.Network.Neurons.get(g.into).value;
 			
 		}
 		if(n.incoming.size() >1){
-			n.value = (2/(1+Math.exp(-4.9*sum))-1);
+			int currentbest = 0;
+			int currenccount= 0;
+			int temp = 0;
+			for(int actid=0;actid<10;actid++){
+				temp = 0;
+				for(int a:act){
+					if(actid == a){
+						temp++;
+					}
+				}
+				if(temp > currenccount){
+					currenccount = temp;
+					currentbest = actid;
+				}
+				}
+			n.value = activition(currentbest,sum);
 		}
 	}
 	
-	double[] Output = new double[Genome.Outputs];
-	for(int i=0;i<Genome.Outputs;i++){
-		Output[i] = this.Network.Neurons.get(Genome.Inputs+i).value;
+	double[] Output = new double[this.Outputs];
+	for(int i=0;i<this.Outputs;i++){
+		Output[i] = this.Network.Neurons.get(this.Inputs+i).value;
 	}
 	return Output;
 
 	
 	
+}
+
+public double activition(int n,double value){
+	switch(n){
+	case 0: return Math.sin(value);
+	case 1: return Math.cos(value);
+	case 2: double x = Math.tan(value);
+	if(x<10000.0&&x>-10000.0) return x;
+	if(x>10000.0) return 10000.0;
+	if(x<-10000.0)return -10000.0;
+	return 0.0;
+	case 3:return Math.tanh(value);
+	case 4:return (1.0-Math.exp(-value))/(1.0+Math.exp(-value));
+	case 5:return Math.exp(-1.0*(value*value));
+	case 6:return 1.0-2.0*(value-Math.floor(value));
+	case 7:if((int)Math.floor(value)%2==0)return 1.0;
+	return -1.0;
+	case 8:if((int)Math.floor(value)%2==0)return 1.0-2.0*(value-Math.floor(value));
+	return -1-2*(value-Math.floor(value));
+	case 9: return -value;
+//	case 0: return (2/(1+Math.exp(-4.9*value))-1);//Sigmoid
+//	case 1: return value; //Linear
+//	case 2: return Math.round(value); //Binary
+//	case 3: return Math.exp(-(value*value )); //Gaussian
+//	case 4: return 2.0 / (1.0 + Math.exp(-(value * 2))) - 1.0; //Sigmoid Bipolar
+//	case 5: if (value <= 0)return 0;
+//	else if (value >= 1)return 1;
+//	else return value;
+//	case 6:if (value <= 0)value = 0;
+//	else if (value >= 1)value = 1;
+//	return (value * 2) - 1;
+//	case 7: return Math.cos(value);
+//	case 8: return Math.sin(value);
+	
+	}
+	return value;
 }
 
 

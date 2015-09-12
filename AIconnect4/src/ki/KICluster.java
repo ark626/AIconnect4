@@ -123,11 +123,11 @@ public class KICluster implements java.io.Serializable{
 	         return e;
 	      }catch(IOException i)
 	      {
-	    	  return new KICluster(42,3,8,1);
+	    	  return new KICluster(42,3,4,1);
 
 	      }catch(ClassNotFoundException c)
 	      {
-	    	  return new KICluster(42,3,8,1);
+	    	  return new KICluster(42,3,4,1);
 	      }
 		
 	}
@@ -140,7 +140,7 @@ public class KICluster implements java.io.Serializable{
 		this.out = out;
 		this.hid = hid;
 		this.hidlayer = hidlayer;
-		for(int i = 0;i<50;i++){
+		for(int i = 0;i<500;i++){
 		ranking.add(new KI(in, out, hid,hidlayer));
 		}
 	}
@@ -150,9 +150,9 @@ public class KICluster implements java.io.Serializable{
 	
 	public KI best(){
 		int i = Integer.MIN_VALUE;
-		KI ki = null;
+		KI ki = this.ranking.get(0);
 		for(KI k :this.ranking){
-			if(i < k.fitness){
+			if(i < k.fitness&&k.isTesting){
 			i = k.fitness;
 			ki = k;
 			}
@@ -189,7 +189,7 @@ public class KICluster implements java.io.Serializable{
 				}
 				else{
 					i.isTesting = true;
-					i.fitness = -99999;
+					i.fitness = -9999;
 					//this.rank();
 				}
 			}
@@ -197,6 +197,7 @@ public class KICluster implements java.io.Serializable{
 		this.rank();
 		//Selection
 		this.selection();
+		this.rank();
 		
 		//Breeding
 		int max = (this.ranking.size()-1)/2;
@@ -204,7 +205,7 @@ public class KICluster implements java.io.Serializable{
 		Random random = new Random();
 		int old = this.ranking.size();
 		//return  
-		for(int i = 50-this.ranking.size();i>0;i--){
+		for(int i = 500-this.ranking.size();i>0;i--){
 			int v = random.nextInt(max - min + 1) + min;
 			int m = random.nextInt(max - min + 1) + min;
 			while(m == v){
@@ -228,7 +229,7 @@ public class KICluster implements java.io.Serializable{
 			temp.gen = temp.mother.gen;
 			temp.generation = temp.mother.generation+1;
 		}
-		if(temp.generation > 9999){
+		if(temp.generation > 999){
 			temp.generation = 0;
 			temp.gen = temp.gen +1;
 		}
@@ -247,8 +248,8 @@ public class KICluster implements java.io.Serializable{
 		size = size /3;
 		
 		
-		for(int i = this.ranking.size()-1;i>size;i--){
-			this.ranking.remove(i);
+		for(int i = 0;i<size;i++){
+			this.ranking.remove(this.ranking.size()-1-i);
 		//	this.ranking.trimToSize();
 		}
 		System.out.println("Size trimmed from: " + old +" to: "+size);

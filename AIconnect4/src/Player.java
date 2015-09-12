@@ -1,3 +1,5 @@
+import hyperneat.HyperNeat;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -17,6 +19,7 @@ public class Player {
 	public int Playerstrength;
 	public boolean xes;
 	public Pool pool;
+	public HyperNeat h;
 	
 	public Player(){
 		points = 0;
@@ -62,7 +65,7 @@ public class Player {
 		if(Playertype == 0){
 		return this.ki.step();
 		}
-		if(Playertype == 3){
+		if(Playertype == 3||Playertype == 4){
 			int zähler = 0;
 			double Input[] = new double[grid.length*grid[0].length];
 			for(int j=0;j<7;j++){
@@ -73,7 +76,13 @@ public class Player {
 					
 				}
 			}
-			double[] Output = this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).step(Input);
+			double[] Output = null;
+			if(Playertype == 3){
+			Output = this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).step(Input);
+			}
+			if(Playertype == 4){
+			Output = this.h.step(Input);
+			}
 			int result = 0;
 			int i = 0;
 	
@@ -90,6 +99,7 @@ public class Player {
 				result  = (int)(result + Math.round(cur)*Math.pow((double)2, (double)i++));
 			
 				}
+	//		System.out.println("Result: "+result);
 				if(result >= 7||result <0){
 					result = 0;
 				}
@@ -121,7 +131,7 @@ public class Player {
 		if(Playertype ==0){
 		this.ki.fitness = fitness;
 		}
-		if(Playertype == 3){
+		if(Playertype == 3||Playertype == 4){
 			this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).fitness= fitness;
 			if(fitness > pool.maxFitness){
 				pool.maxFitness = fitness;

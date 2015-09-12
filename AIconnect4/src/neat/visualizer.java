@@ -1,6 +1,8 @@
 package neat;
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
@@ -15,7 +17,7 @@ import javax.imageio.ImageIO;
 
 
 public class visualizer {
-  static public void visualize(Genome g,int generation,String s) throws Exception {
+  static public void visualize(Genome g,String s) throws Exception {
     try {
       int width = 640, height = 480;
       if(g.Network == null||g.Network.Neurons.size() ==0){
@@ -34,29 +36,42 @@ public class visualizer {
       ArrayList<Double> Nodes = new ArrayList<Double>();
       int z = 0;
       int zähler = 0;
+      int ct = 0;
       for(int i = 0;i<g.Network.Neurons.size();i++){
-    	  if(i<Genome.Inputs/6){
+    	  if(i<g.Inputs/6||g.Inputs == 4&&i<g.Inputs){
+    		  
     		  for(z = 0;z<6;z++){
+    			  if(ct == 4&&g.Inputs == 4){
+		        	  break;
+		          }
     			  Nodes.add(20.0+25*i);
 		          Nodes.add(100.0+25*z);
 		          Nodes.add(g.Network.Neurons.get(zähler++).value);
+		          ct++;
+		          
     	  }
     	  }
       }
    //   System.out.println(g.Network.Neurons.size());
       for(int i =0;i<g.Network.Neurons.size();i++){
     	  Neuron n = g.Network.Neurons.get(i);
-    	  if(i<Genome.Inputs){
+    	  if(i<g.Inputs){
+//    		  if(g.Inputs <6){
+//    			  Nodes.add(20.0+25*i);
+//		          Nodes.add(100.0+25*1);
+//		          Nodes.add(g.Network.Neurons.get(i).value);
+//    			  
+//    		  }
 
     	  }
     	  else{
-    		  if(i<Genome.Inputs+Genome.Outputs){
+    		  if(i<g.Inputs+g.Outputs){
     			  Nodes.add(600.0);
-    			  Nodes.add(30.0+25*(i-Genome.Inputs));
+    			  Nodes.add(30.0+25*(i-g.Inputs));
     			  Nodes.add(n.value);
     		  }
     		  else{
-        		  if(i==Genome.Inputs+Genome.Outputs){
+        		  if(i==g.Inputs+g.Outputs){
           			//Bias Cell
           			  Nodes.add(80.0);
           			  Nodes.add(450.0);
@@ -88,11 +103,12 @@ public class visualizer {
     	  if(that != null&&that.enabled){
 
     		  //Init
+    //		  System.out.println(that.into+" "+g.Genes.size()+" "+g.Network.Neurons.size());
     		  x1 = Nodes.get(that.into*3).intValue();
     		  x2 = Nodes.get(that.out*3).intValue();
     		  y1 = Nodes.get(that.into*3+1).intValue();
     		  y2 = Nodes.get(that.out*3+1).intValue();
-    		 if(that.into > Genome.Inputs+Genome.Outputs){
+    		 if(that.into > g.Inputs+g.Outputs){
     			 x1 = (int)Math.round(0.75*x1+0.25*x2);
     			 if(x1 >= x2){
     				 x1 -= 60;
@@ -107,7 +123,7 @@ public class visualizer {
     			 
     		 }
     		 
-    		 if(that.out > Genome.Inputs+Genome.Outputs){
+    		 if(that.out > g.Inputs+g.Outputs){
     			 x2 = (int)Math.round(0.75*x2+0.25*x1);
     			 if(x1 >= x2){
     				 x2 += 60;
@@ -164,7 +180,18 @@ public class visualizer {
 		  x2 = Nodes.get(that.out*3).intValue();
 		  y1 = Nodes.get(that.into*3+1).intValue();
 		  y2 = Nodes.get(that.out*3+1).intValue();
+		  Composite temp = ig2.getComposite();
+		  
+		  if(that.weigth < 0 && that.weigth >= -1){
+			  ig2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, -(float)that.weigth));
+		  }
+		  if(that.weigth > 0&& that.weigth <= 1){
+			  ig2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)that.weigth)); 
+		  }
+		  if(that.weigth != 0.0){
     	  ig2.drawLine(x1, y1, x2, y2);
+		  }
+    	  ig2.setComposite(temp);
     	  }
       }
     	  
@@ -186,7 +213,7 @@ public class visualizer {
       int stringWidth = fontMetrics.stringWidth(message);
       int stringHeight = fontMetrics.getAscent();
       ig2.drawString(message, (width - stringWidth-40) / 2, (height / 2)+150 + stringHeight / 4);
-      message =  " Generation: "+generation+" Fitness: "+g.fitness;
+      message =  " Generation: "+g.Generation+" Fitness: "+g.fitness;
       ig2.drawString(message, (width - stringWidth-40) / 2, (height / 2)+150 + stringHeight *2);
       
       ImageIO.write(bi, "PNG", new File("C:/tmp/"+s+".PNG"));

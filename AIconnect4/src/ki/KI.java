@@ -578,6 +578,7 @@ public class KI implements java.io.Serializable, Comparable {
 				
 			}
 			child.mutate(30);
+			child.fitness= -9998;
 		}
 		
 		//Mutation
@@ -659,43 +660,37 @@ public class KI implements java.io.Serializable, Comparable {
 	}
 	
 
-	public int compareTo(KI comparestu){
-		if(((KI)comparestu).gen == this.gen){
-		int compare =((KI)comparestu).fitness+((KI)comparestu).generation ;
-		return  compare-this.fitness-this.generation;
-		}
-		if(((KI)comparestu).gen > this.gen){
-			int compare =((KI)comparestu).fitness+((KI)comparestu).generation ;
-			return  compare-this.fitness-this.generation;
-		}
-		else{
-			int compare =((KI)comparestu).fitness+((KI)comparestu).generation ;
-			return  compare-this.fitness-this.generation;
-		}
-	}
+//	public int compareTo(KI comparestu){
+//		if(((KI)comparestu).gen == this.gen){
+//		int compare =((KI)comparestu).fitness+((KI)comparestu).generation ;
+//		return  compare-this.fitness-this.generation;
+//		}
+//		if(((KI)comparestu).gen > this.gen){
+//			int compare =((KI)comparestu).fitness+((KI)comparestu).generation ;
+//			return  compare-this.fitness-this.generation;
+//		}
+//		else{
+//			int compare =((KI)comparestu).fitness+((KI)comparestu).generation ;
+//			return  compare-this.fitness-this.generation;
+//		}
+//	}
 
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 	//	int compare =((KI)o).fitness+((KI)o).generation ; 
-		if(((KI)o).gen == this.gen){
-				int comp = ( ((KI)o).fitness-this.fitness )*10000;
+		
+				int comp = ((((KI)o).fitness )- this.fitness);//*100;
+				int	comp2 = ((KI)o).gen - this.gen;
+					comp2 *= 1000;
+					comp2 += (((KI)o).generation-this.generation)*10;
 					comp += ((KI)o).Links.size() -this.Links.size();
-					if(comp == 0){
-						comp += ((KI)o).generation-this.generation;
-					}
+					comp += comp2;
+					
+			
 				return comp;
 		}
-		if(((KI)o).gen > this.gen){
-			int comp = ( ((KI)o).fitness-this.fitness )*10000;
-				comp += ((KI)o).generation+9999-this.generation;
-			return comp;
-	}
-		else{
-			int comp = ( ((KI)o).fitness-this.fitness )*10000;
-				comp += ((KI)o).generation-this.generation-9999;
-			return comp;
-	}
-	}
+	
+
 	
 
 }

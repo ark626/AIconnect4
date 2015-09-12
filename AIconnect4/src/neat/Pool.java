@@ -41,12 +41,14 @@ public class Pool implements Serializable {
 	public static final double StepSize = 0.1;
 	public static final double DisableMutationChance = 0.4;
 	public static final double EnableMutationChance = 0.2;
-	public static final int Inputs = 42;
-	public static final int Outputs = 3;
+	public int Inputs = 42;
+	public int Outputs = 3;
 	public static final int MaxNodes = 1000000;
 	
-	public Pool() {
+	public Pool(int in, int out) {
 		super();
+		this.Inputs = in;
+		this.Outputs = out;
 		Species = new ArrayList<Species>();
 		this.generation = 0;
 		Innovation = Outputs;
@@ -55,7 +57,7 @@ public class Pool implements Serializable {
 		this.currentFrame = 0;
 		this.maxFitness = 0;
 		for(int i=0;i<Population;i++){
-			Genome basic = Genome.basicGenome();
+			Genome basic = Genome.basicGenome(this.Inputs,this.Outputs);
 			this.Innovation = basic.mutate(this.Innovation);
 			this.addToSpecies(basic);
 		}
@@ -63,7 +65,7 @@ public class Pool implements Serializable {
 	}
 	
 	public Genome getbest(){
-		Genome temp = null;
+		Genome temp = this.Species.get(0).Genomes.get(0);
 		int maxfit = Integer.MIN_VALUE;
 		for(Species s:this.Species){
 			for(Genome g:s.Genomes){
@@ -76,8 +78,10 @@ public class Pool implements Serializable {
 		return temp;
 	}
 	
-	public Pool(int i){
+	public Pool(int i,int in, int out){
 		super();
+		this.Inputs = in;
+		this.Outputs =out;
 		Species = new ArrayList<Species>();
 		this.generation = 0;
 		Innovation = Outputs;
@@ -213,7 +217,7 @@ public class Pool implements Serializable {
 			}
 		}
 		if(!found){
-			Species childSpecies = new Species();
+			Species childSpecies = new Species(this.Inputs,this.Outputs);
 			childSpecies.Genomes.add(child);
 			this.Species.add(childSpecies);
 		}
@@ -341,7 +345,7 @@ public class Pool implements Serializable {
 	
 	public boolean alreadyMeasured(){
 		
-		return this.Species.get(this.currentSpecies-1).Genomes.get(this.currentGenome-1).fitness != 0;
+		return (this.Species.get(this.currentSpecies-1).Genomes.get(this.currentGenome-1).fitness != 0);
 	}
 	
 	//Serializable
@@ -353,6 +357,8 @@ public class Pool implements Serializable {
 	         new FileOutputStream(s);
 	         ObjectOutputStream out = new ObjectOutputStream(fileOut);
 	         //writing KI's
+	         out.writeInt(this.Inputs);
+	         out.writeInt(this.Outputs);
 	         out.writeInt(this.generation);
 	         out.writeInt(this.Innovation);
 	         out.writeInt(this.maxFitness);
@@ -382,7 +388,11 @@ public class Pool implements Serializable {
 	      {
 	         FileInputStream fileIn = new FileInputStream(s);
 	         ObjectInputStream in = new ObjectInputStream(fileIn);
-	         Pool p = new Pool(1);
+	         int inn = in.readInt();
+	         int out = in.readInt();
+	         Pool p = new Pool(1,inn,out);
+	         p.Inputs = inn;
+	         p.Outputs = out;
 	         p.generation = in.readInt();
 	         p.Innovation = in.readInt();
 	         p.maxFitness = in.readInt();
@@ -391,7 +401,7 @@ public class Pool implements Serializable {
 	         int Speciessize = in.readInt();
 	         for(int i=0;i<Speciessize;i++){
 	        	 int Genomesize = in.readInt();
-	        	 Species spe = new Species();
+	        	 Species spe = new Species(p.Inputs,p.Outputs);
 	        	 spe.topFitness = in.readInt();
 	        	 spe.averageFitness = in.readInt();
 	        	 for(int j=0;j<Genomesize;j++){
@@ -408,7 +418,7 @@ public class Pool implements Serializable {
 	      }catch(IOException i)
 	      {
 	    	  i.getMessage();
-	    	  return new Pool();
+	    	  return null;
 	    	  //return new Pool();
 
 	      }
