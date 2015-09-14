@@ -7,6 +7,9 @@ public class Game {
 	int set;
 	StringBuilder GRID;
 	int iteration;
+	int testplay;
+	int showgui;
+	String path = "";
 
 	public Game(Player a, Player b){
 		grid = new int[6][7];
@@ -29,6 +32,16 @@ public class Game {
 		for(int i = grid.length-1;i>=0;i--){
 			if(grid[i][z] ==0){
 				grid[i][z] = value;
+				return i;
+				
+			}
+		}
+		return -1;
+	}
+	public int fallsim(int z){
+		for(int i = grid.length-1;i>=0;i--){
+			if(grid[i][z] ==0){
+				//grid[i][z] = value;
 				return i;
 				
 			}
@@ -62,6 +75,24 @@ public class Game {
 			System.out.println(GRID);
 		}
 	}
+	
+	public int draw(Player z,int i,boolean xes) throws Exception{
+		z.step(grid, xes,set,this.fallsim(set));
+		String s = " Player b ";
+		String b = "0";
+		if(i>9){
+			b = "";
+		}
+		if(xes){
+			s = " Player a ";
+		}
+		switch(z.Playertype){
+		case(0):ki.visualizer.visualize(z.ki, this.path+s+" Turn: "+b+i++);
+		case(3):neat.visualizer.visualize(z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1), this.path+s+" Turn: "+b+i++);
+		case(4):hyperneat.visualizer.visualize(z.h, this.path+s+" Species "+z.pool.currentSpecies+" Genome "+z.pool.currentGenome+" Turn: "+b+i++, z.pool.currentSpecies-1, z.pool.currentGenome-1);
+		}
+		return i;
+	}
 
 	
 	
@@ -73,18 +104,21 @@ public class Game {
 				this.grid[i][j] = 0;
 			}
 		}
-		while(1 == 1){
+		int graphics = 0;
+		int y = 0;
+		int x = 0;
+		while(2>1){
 	//		System.out.println("Round:"+reac);
-			int y = 0;
+			
 			//Player 1 Turn
 			if(a.getChips()>0){
 			//AI THinking
 			AIcheckgrid(a);
-			set = a.turn(0,grid,true);
+			set = a.turn(0,grid,true,x,y);
 			int tries = 0;
 			while(!isDoable(set)){
 				tries += 1;
-				set = a.turn(tries,grid,true);
+				set = a.turn(tries,grid,true,x,y);
 				if(set == -5){
 					evaluategame(a, false,times);
 					return 2;
@@ -94,7 +128,23 @@ public class Game {
 			dis.drawPanel.updateUI();;
 			}
 			y = fall(set,1);
+			x = set;
+			if(this.showgui  ==1){
 		gamedisplay();
+			}
+			if(this.testplay == 1){
+				try {
+					if(a.pool != null){
+						graphics =this.draw(a, graphics,true);
+					}
+					if(b.pool != null){
+						graphics =this.draw(b, graphics,false);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			
 			a.setChips(a.getChips()-1);
 			a.setTurns(a.getTurns()+1);
@@ -109,11 +159,11 @@ public class Game {
 			if(b.getChips()>0){
 			//AI THinking
 			AIcheckgrid(b);
-			set = b.turn(0,grid,false);
+			set = b.turn(0,grid,false,x,y);
 			int tries = 0;
 			while(!isDoable(set)){
 				tries += 1;
-				set = b.turn(tries,grid,false);
+				set = b.turn(tries,grid,false,x,y);
 				if(set == -5){
 					evaluategame(b, false,times);
 					return 1;
@@ -123,12 +173,43 @@ public class Game {
 			dis.drawPanel.updateUI();;
 			}
 			y=fall(set,-1);
-			gamedisplay();
+			x = set;
+			if(this.showgui  ==1){
+		gamedisplay();
+			}
+			if(this.testplay == 1){
+				try {
+					if(a.pool != null){
+					graphics = this.draw(a, graphics ,true);
+					}
+					if(b.pool != null){
+					graphics = 	this.draw(b, graphics,false);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			b.setChips(b.getChips()-1);
 			b.setTurns(b.getTurns()+1);
 			}
 			if(check(-1,set,y)){
-				gamedisplay();
+				if(this.showgui  ==1){
+					gamedisplay();
+						}
+				if(this.testplay == 1){
+					try {
+						if(a.pool != null){
+							graphics =this.draw(a, graphics,true);
+						}
+						if(b.pool != null){
+							graphics =this.draw(b, graphics,false);
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				evaluategame(a, false,times);
 				evaluategame(b, true,times);
 				return 2;
@@ -144,6 +225,7 @@ public class Game {
 	}
 	
 	public void evaluategame(Player z, boolean hasWon, int times){
+		if(this.testplay != 1){
 		int chips = z.getChips();
 	//	int turns = z.getTurns();
 		//int rowcount = 0;
@@ -173,6 +255,7 @@ public class Game {
 			}
 			}
 		 
+		}
 	}
 	
 	public void turn(){

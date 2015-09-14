@@ -2,7 +2,7 @@ import java.util.Random;
 
 
 public  class minmax {
-	public static int step(int[][] grid,boolean player,int rec,boolean xes){
+	public static int step(int[][] grid,boolean player,int rec,boolean xes, int lastx,int lasty){
 		int step = 0;
 		int stepvalue[][] = new int[2][7];
 		for(int[] a : stepvalue){
@@ -23,8 +23,8 @@ public  class minmax {
 							pgrid[x][j] = grid[x][j];
 						}
 					}
-					comp = playerstep(pgrid,i,rec,0,0,xes);
-//					tst += comp +" ";
+					comp = playerstep(pgrid,i,rec,lastx,lasty,xes);
+				//	tst += comp +" ";
 				}
 				
 				else{
@@ -34,9 +34,9 @@ public  class minmax {
 							pgrid[x][j] = grid[x][j];
 						}
 					}
-					comp = enemystep(pgrid,i,rec,0,4,xes);
+					comp = enemystep(pgrid,i,rec,lastx,lasty,xes);
 				}
-				//System.out.println("Compvalue for step "+i+" is "+comp);
+		//		System.out.println("Compvalue for step "+i+" is "+comp);
 				stepvalue[0][i] = i;
 				stepvalue[1][i] = comp;
 				tst += stepvalue[0][i]+" "+stepvalue[1][i]+" ";
@@ -87,10 +87,14 @@ public  class minmax {
 				l++;
 			}
 		}
-	//	System.out.println(tst);
+
 		Random rand = new Random();
 		step = wanted[rand.nextInt(wanted.length)];
-		System.out.println(tst+ " Step: "+step);
+		while(!isDoable(step,grid)){
+			step = wanted[rand.nextInt(wanted.length)];
+		}
+	//	System.out.println(tst+ " Step: "+step);
+	//	System.out.println(tst);
 		return step;
 		
 //		if(step == 0){
@@ -160,7 +164,8 @@ public  class minmax {
 //			return 1*rec;
 //		}
 		int y = 0;
-		for(int i = 4;i>=0;i--){
+
+		for(int i = grid.length-1;i>=0;i--){
 			if(grid[i][x] ==0){
 				if(xes){
 				grid[i][x] = -1;
@@ -177,13 +182,13 @@ public  class minmax {
 		if(xes){
 		if(check(-1,lastx,lasty,grid)){
 		//	System.out.print("Value; "+ (-1+((int) ((-1)*(Math.pow( 8,rec))))));
-		return -1*((int) ((Math.pow( 64,rec))));
+		return -1*((int) (8*(Math.pow( 64,rec))));
 	}
 		}
 		else{
 			if(check(1,lastx,lasty,grid)){
 				//	System.out.print("Value; "+ (-1+((int) ((-1)*(Math.pow( 8,rec))))));
-				return -1*((int) ((Math.pow( 64,rec))));
+				return -1*((int) (8*(Math.pow( 64,rec))));
 			}
 		}
 		rec -=1;
@@ -225,7 +230,7 @@ public  class minmax {
 	}
 		}
 		else{
-			if(check(2,lastx,lasty,grid)){
+			if(check(-1,lastx,lasty,grid)){
 				return (int) ((Math.pow( 64,rec)));
 			}
 		}

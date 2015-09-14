@@ -1,3 +1,5 @@
+import hyperneat.HyperNeat;
+
 import java.awt.EventQueue;
 
 import javax.imageio.IIOException;
@@ -81,7 +83,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Human", "Algorithm", "KI", "Neat"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Human", "Algorithm", "KI", "Neat","HyperNeat"}));
 		comboBox.setBounds(88, 157, 89, 20);
 		frame.getContentPane().add(comboBox);
 		
@@ -98,7 +100,7 @@ public class GUI {
 		frame.getContentPane().add(lblPlayerB);
 		
 		final JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Human", "Algorithm", "KI" , "Neat"}));
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Human", "Algorithm", "KI" , "Neat","HyperNeat"}));
 		comboBox_1.setBounds(235, 157, 73, 20);
 		frame.getContentPane().add(comboBox_1);
 		
@@ -191,8 +193,16 @@ public class GUI {
 						typebb = 3;
 						
 					}
+					if(typea.equals("HyperNeat")){
+						typeaa = 4;
+					}
+					if(typeb.equals("HyperNeat")){
+						typebb = 4;
+					}
 					Player a = new Player(typeaa,strengtha);
 					Player b = new Player(typebb,strengthb);
+					HyperNeat hyper1 = null;
+					HyperNeat hyper2 = null;
 					System.out.println(a.Playertype+" "+a.Playerstrength);
 					System.out.println(b.Playertype+" "+b.Playerstrength);
 					
@@ -220,7 +230,7 @@ public class GUI {
 					
 					if(a.Playertype == 3 && !txtCtmp.getText().equals("")){
 					try {
-						p = Pool.load("/tmp/Neat/Shodan1.ki");
+						p = Pool.load("C:/tmp/Neat/Shodan1.ki");
 						load1=3;
 					} catch (ClassNotFoundException e) {
 						// TODO Auto-generated catch block
@@ -231,21 +241,52 @@ public class GUI {
 								
 					if(b.Playertype == 3 && !txtCtmp_1.getText().equals("")){
 					try {
-						p2 = Pool.load("/tmp/Neat/Shodan2.ki");
+						p2 = Pool.load("C:/tmp/Neat/Shodan2.ki");
 						load2 = 3;
 					} catch (ClassNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					}
+					//hyperneat
+					if(a.Playertype == 4 && !txtCtmp.getText().equals("")){
+						p = new Pool(4,1);
+						try {
+							p = Pool.load("C:/tmp/Hyper/generator.ki");
+							load1=4;
+						} catch (ClassNotFoundException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						if(p == null){
+							p = new Pool(4,1);
+						}
+						hyper1 = new HyperNeat(42,3,0,7,6,p);
+					}
+					
+					if(b.Playertype == 4 && !txtCtmp.getText().equals("")){
+						p2 = new Pool(4,1);
+						try {
+							p2 = Pool.load("C:/tmp/Hyper/generator.ki");
+							load2 = 4;
+						} catch (ClassNotFoundException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						if(p == null){
+							p = new Pool(4,1);
+						}
+						hyper2 = new HyperNeat(42,3,0,7,6,p);
+					}
+					
 					if(a.Playertype == 0 && !txtCtmp.getText().equals("")){
-					test = KICluster.load("/tmp/Normal/GLaDoS.ki");
+					test = KICluster.load("C:/tmp/Normal/GLaDoS.ki");
 					load1 = 1;
 					}
 					
 		
 					if(b.Playertype == 0 && !txtCtmp_1.getText().equals("")){
-					test = KICluster.load("/tmp/Normal/GLaDoS.ki");
+					test = KICluster.load("C:/tmp/Normal/GLaDoS.ki");
 					load2 = 1;
 					}
 					
@@ -273,7 +314,8 @@ public class GUI {
 					
 					int minfit = Integer.parseInt(textField_3.getText());
 					
-					Running r = new Running(g,runden,test,p,p2,load1,load2,dis,minfit);
+					Running r = new Running(g,runden,test,p,p2,load1,load2,dis,minfit,hyper1,hyper2);
+					g.showgui = 1;
 					GUI.t = new Thread(r);
 					t.start();
 	//				TODO: ADD save routine

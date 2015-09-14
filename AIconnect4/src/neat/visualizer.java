@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -90,7 +91,8 @@ public class visualizer {
 
       
 
-     
+    
+      
 
       
       int x1=0;
@@ -113,8 +115,8 @@ public class visualizer {
     			 if(x1 >= x2){
     				 x1 -= 60;
     			 }
-    			 if(x1 <220){
-    				 x1 = 220;
+    			 if(x1 <280){
+    				 x1 = 280;
     			 }
     			 if(x1>550){
     				 x1 = 550;
@@ -128,8 +130,8 @@ public class visualizer {
     			 if(x1 >= x2){
     				 x2 += 60;
     			 }
-    			 if(x2 <220){
-    				 x2 = 220;
+    			 if(x2 <280){
+    				 x2 = 280;
     			 }
     			 if(x2>550){
     				 x2 = 550;
@@ -215,8 +217,17 @@ public class visualizer {
       ig2.drawString(message, (width - stringWidth-40) / 2, (height / 2)+150 + stringHeight / 4);
       message =  " Generation: "+g.Generation+" Fitness: "+g.fitness;
       ig2.drawString(message, (width - stringWidth-40) / 2, (height / 2)+150 + stringHeight *2);
-      
-      ImageIO.write(bi, "PNG", new File("C:/tmp/"+s+".PNG"));
+      String se = s.substring(33, s.length());
+      message = se;
+      ig2.drawString(message, (width - stringWidth-40) / 2, (height / 2)+150 - stringHeight );
+      ig2.drawString("Inputs",20,20);
+      ig2.drawString("Hidden", 210, 20);
+      ig2.drawRect(270, 20, 560-270, 25*13);
+      ig2.drawRect(20-15, 100-15, 25*10-10, 25*9);
+//      Image b  = bi.getScaledInstance(1280, 960, BufferedImage.SCALE_FAST);
+//      bi = new BufferedImage(1280,960,BufferedImage.TYPE_INT_ARGB);
+//      bi.getGraphics().drawImage(b, 0, 0, null);
+      ImageIO.write(bi, "PNG", new File(s+".PNG"));
 //      ImageIO.write(bi, "JPEG", new File("c:\\yourImageName.JPG"));
 //      ImageIO.write(bi, "gif", new File("c:\\yourImageName.GIF"));
 //      ImageIO.write(bi, "BMP", new File("c:\\yourImageName.BMP"));

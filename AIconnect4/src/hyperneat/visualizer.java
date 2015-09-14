@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -86,7 +87,7 @@ import neat.Neuron;
 
 	      
 
-	     
+	      
 
 	      
 	      int x1=0;
@@ -185,7 +186,13 @@ import neat.Neuron;
 				  ig2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)that.weigth)); 
 			  }
 			  if(that.weigth != 0.0){
-	    	  ig2.drawLine(x1, y1, x2, y2);
+	    	
+				  if(that.into <42){
+	    	  ig2.drawRect((x1-10)+(that.out)%7*3, (y1-10)+(that.out/7)%6*3, 1, 1);
+				  }
+				  else{
+					  ig2.drawLine(x1, y1, x2, y2);
+				  }
 			  }
 	    	  ig2.setComposite(temp);
 	    	  }
@@ -211,8 +218,17 @@ import neat.Neuron;
 	      ig2.drawString(message, (width - stringWidth-40) / 2, (height / 2)+150 + stringHeight / 4);
 	      message =  " Generation: "+g.pool.Species.get(Spec).Genomes.get(Geno).Generation+" Fitness: "+g.pool.Species.get(Spec).Genomes.get(Geno).fitness;
 	      ig2.drawString(message, (width - stringWidth-40) / 2, (height / 2)+150 + stringHeight *2);
-	      
-	      ImageIO.write(bi, "PNG", new File("C:/tmp/"+s+".PNG"));
+	      String se = s.substring(24, s.length());
+	      message = se;
+	      ig2.drawString(message, (width - stringWidth-40) / 2, (height / 2)+150 - stringHeight );
+	      ig2.drawString("Inputs",20,20);
+	      ig2.drawString("Hidden", 25*10-5, 20);
+	      ig2.drawRect(25*10, 100-15, 25*10-5, 25*9);
+	      ig2.drawRect(20-15, 100-15, 25*10-10, 25*9);
+//	      Image b  = bi.getScaledInstance(1280, 960, BufferedImage.SCALE_FAST);
+//	      bi = new BufferedImage(1280,960,BufferedImage.TYPE_INT_ARGB);
+//	      bi.getGraphics().drawImage(b, 0, 0, null);
+	      ImageIO.write(bi, "PNG", new File(s+".PNG"));
 //	      ImageIO.write(bi, "JPEG", new File("c:\\yourImageName.JPG"));
 //	      ImageIO.write(bi, "gif", new File("c:\\yourImageName.GIF"));
 //	      ImageIO.write(bi, "BMP", new File("c:\\yourImageName.BMP"));

@@ -1,3 +1,5 @@
+import hyperneat.HyperNeat;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -20,9 +22,11 @@ int minfit;
 long time;
 int loadedtype1;
 int loadedtype2;
+HyperNeat hyper1;
+HyperNeat hyper2;
 
 
-	public Running(Game g, int i,KICluster k,Pool p,Pool p2,int a, int b,gameDisplay dis, int minfit){
+	public Running(Game g, int i,KICluster k,Pool p,Pool p2,int a, int b,gameDisplay dis, int minfit,HyperNeat hyper1,HyperNeat hyper2){
 		this.game = g;
 		this.i = i;
 		test = k;
@@ -32,6 +36,8 @@ int loadedtype2;
 		this.minfit = minfit;
 		this.loadedtype1 = a;
 		this.loadedtype2 = b;
+		this.hyper1 = hyper1;
+		this.hyper2 = hyper2;
 	}
 	public boolean dowhile(int currentround,int i){
 		int tempfit =Integer.MIN_VALUE;
@@ -76,6 +82,17 @@ int loadedtype2;
 			path2 += "Neat/Playerb.txt";
 			file = new File(path2);
 			}
+			if(game.b.Playertype == 4){
+				content = "Playerb: "+"NEAT "+" Playera Strength: "+game.a.Playerstrength+" Playera Type: "+game.a.Playertype+" Started at: "+time2+ " ms"+" for "+this.i+" Rounds "+" minfit: "+this.minfit+ "\n";
+			path2 += "Hyper/Playerb.txt";
+			file = new File(path2);
+			}
+			if(game.a.Playertype == 3){
+			content = "Playera: "+"NEAT "+" Playerb Strength: "+game.b.Playerstrength+" Playerb Type: "+game.b.Playertype+" Started at: "+time2+ " ms"+" for "+this.i+" Rounds "+" minfit: "+this.minfit+ "\n";
+			path += "Hyper/Playera.txt";
+			file = new File(path);
+			//System.out.println("Done");
+			}
 			
 			if(game.a.Playertype == 0){
 				content = "Playera: "+"KI Cluster "+" Playerb Strength: "+game.b.Playerstrength+" Playerb Type: "+game.b.Playertype+" Started at: "+time2+ " ms"+" for "+this.i+" Rounds "+" minfit: "+this.minfit+ "\n";
@@ -90,15 +107,17 @@ int loadedtype2;
 				}
 			
 			// if file doesnt exists, then create it
-			if (!file.exists()) {
+			if (file != null&&!file.exists()&&(game.a.Playertype >2 ||game.b.Playertype > 2)) {
 				file.createNewFile();
 			}
+			if(file != null){
 			FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
 			BufferedWriter bw = new BufferedWriter(fw);
 			bw.newLine();
 			bw.write(content);
 			bw.newLine();
 			bw.close();
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -177,6 +196,53 @@ int loadedtype2;
 				
 				
 			}
+			if(game.a.Playertype == 4){
+				game.a.ki = null;
+				game.a.pool = hyper1.pool;
+				game.a.h = hyper1;
+				dis = null;
+				game.a.pool.currentGenome = 1;
+				game.a.pool.currentSpecies = 1;
+				while(game.a.pool.alreadyMeasured()){
+					game.a.pool.nextGenome();
+				}
+				Genome current = game.a.pool.Species.get(game.a.pool.currentSpecies-1).Genomes.get(game.a.pool.currentGenome-1);
+				current.generateNetwork();
+				game.a.h.generateweigths(current);
+				
+				if(p.alreadyMeasured()){
+				while(game.a.pool.alreadyMeasured()){
+					game.a.pool.nextGenome();
+					current = game.a.pool.Species.get(game.a.pool.currentSpecies-1).Genomes.get(game.a.pool.currentGenome-1);
+					current.generateNetwork();
+					game.a.h.generateweigths(current);
+				}
+				}
+			}
+			
+			if(game.b.Playertype == 4){
+				game.b.ki = null;
+				game.b.pool = hyper2.pool;
+				game.b.h = hyper2;
+				dis = null;
+				game.b.pool.currentGenome = 1;
+				game.b.pool.currentSpecies = 1;
+				while(game.b.pool.alreadyMeasured()){
+					game.b.pool.nextGenome();
+				}
+				Genome current = game.b.pool.Species.get(game.b.pool.currentSpecies-1).Genomes.get(game.b.pool.currentGenome-1);
+				current.generateNetwork();
+				game.b.h.generateweigths(current);
+				
+				if(game.b.pool.alreadyMeasured()){
+				while(game.b.pool.alreadyMeasured()){
+					game.b.pool.nextGenome();
+					current = game.b.pool.Species.get(game.b.pool.currentSpecies-1).Genomes.get(game.b.pool.currentGenome-1);
+					current.generateNetwork();
+					game.b.h.generateweigths(current);
+				}
+				}
+			}
 			
 		
 		
@@ -209,8 +275,8 @@ int loadedtype2;
 		
 		//Write result to text
 		try {
-			String path = "/tmp/";
-			String path2= "/tmp/";
+			String path = "C:/tmp/";
+			String path2= "C:/tmp/";
 			long time2 = System.currentTimeMillis()-time;
 			String content = "";
 			File file = null;
@@ -223,6 +289,19 @@ int loadedtype2;
 			if(game.b.Playertype == 3){
 			content = "maxFitness: "+p2.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
 			path2 += "Neat/Playerb.txt";
+			file = new File(path2);
+			}
+			
+			if(game.a.Playertype == 4){
+			content = "maxFitness: "+game.a.pool.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
+			path += "Hyper/Playera.txt";
+			file = new File(path);
+			//System.out.println("Done");
+			}
+			
+			if(game.b.Playertype == 4){
+			content = "maxFitness: "+game.b.pool.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
+			path2 += "Hyper/Playerb.txt";
 			file = new File(path2);
 			}
 			
@@ -288,7 +367,7 @@ int loadedtype2;
 
 		if(this.loadedtype1 == 1||this.loadedtype2 == 1){
 		 test.rank();
-			test.save("/tmp/Normal/GLaDoS.ki", 0);
+			test.save("C:/tmp/Normal/GLaDoS.ki", 0);
 			try {
 				for(int i=0;i<test.ranking.size();i++){
 				ki.visualizer.visualize(test.ranking.get(i),"Normal/GLaDoS"+i);
@@ -300,24 +379,53 @@ int loadedtype2;
 			}
 		}
 		if(this.loadedtype1 == 3){
-			p.save("/tmp/Neat/Shodan1.ki", 0);
+			p.save("C:/tmp/Neat/Shodan1.ki", 0);
 			for(Species s :p.Species){
 				for(Genome g:s.Genomes){
 					//g.generateNetwork();
-					neat.visualizer.visualize(g, "Neat/Shodan1 Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
+					neat.visualizer.visualize(g, "C:/tmp/Neat/Shodan1 Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
 				}
 			}
 			
 		}
 		if(this.loadedtype2 == 3){
-			p.save("/tmp/Neat/Shodan2.ki", 0);
+			p.save("C:/tmp/Neat/Shodan2.ki", 0);
 			for(Species s :p.Species){
 				for(Genome g:s.Genomes){
 					//g.generateNetwork();
-					neat.visualizer.visualize(g, "Neat/Shodan2 Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
+					neat.visualizer.visualize(g, "C:/tmp/Neat/Shodan2 Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
 				}
 			}
 			
+		}
+		
+		if(this.loadedtype1 == 4){
+			game.a.pool.save("C:/tmp/Hyper/generator.ki",0);
+			for(Species s :game.a.pool.Species){
+				for(Genome g:s.Genomes){
+					//g.generateNetwork();
+					int Speci = p.Species.indexOf(s);
+					int Geno = s.Genomes.indexOf(g);
+					neat.visualizer.visualize(g, "C:/tmp/Hyper/generator/generator Species "+Speci+" Genome "+Geno);
+					g.generateNetwork();
+					game.a.h.generateweigths(g);
+					hyperneat.visualizer.visualize(game.a.h, "C:/tmp/Hyper/Hyper/Hyper Species "+Speci+" Genome "+Geno, Speci, Geno);
+				}
+			}
+		}
+		if(this.loadedtype2 == 4){
+			game.b.pool.save("C:/tmp/Hyper/generator.ki",0);
+			for(Species s :game.b.pool.Species){
+				for(Genome g:s.Genomes){
+					//g.generateNetwork();
+					int Speci = p.Species.indexOf(s);
+					int Geno = s.Genomes.indexOf(g);
+					neat.visualizer.visualize(g, "C:/tmp/Hyper/generator/generator Species "+Speci+" Genome "+Geno);
+					g.generateNetwork();
+					game.b.h.generateweigths(g);
+					hyperneat.visualizer.visualize(game.b.h, "C:/tmp/Hyper/Hyper/Hyper Species "+Speci+" Genome "+Geno, Speci, Geno);
+				}
+			}
 		}
 		System.out.println("DONE");
 		}

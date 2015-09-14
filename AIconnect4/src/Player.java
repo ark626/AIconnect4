@@ -38,10 +38,10 @@ public class Player {
 	    this.Playerstrength = b;
 	}
 
-	public int turn(int errors, int[][] grid,boolean xes){
+	public int turn(int errors, int[][] grid,boolean xes, int lastx,int lasty){
 		if(errors < 10){
 		//TODO:Set evaluation of network with timer to do a step.
-			return this.step(grid,xes);
+			return this.step(grid,xes,lastx,lasty);
 		}
 		else{
 		//	System.out.println("Error: "+ this.Playertype);
@@ -61,7 +61,7 @@ public class Player {
 		return true;
 	}
 	
-	public int step(int[][] grid,boolean xes){
+	public int step(int[][] grid,boolean xes,int lastx, int lasty){
 		if(Playertype == 0){
 		return this.ki.step();
 		}
@@ -117,7 +117,7 @@ public class Player {
 					pgrid[i][j] = grid[i][j];
 				}
 			}
-			return minmax.step(pgrid, true,this.Playerstrength,xes);
+			return minmax.step(pgrid, true,this.Playerstrength,xes,lastx,lasty);
 		}
 		else{
 			Scanner in = new Scanner(System.in);
