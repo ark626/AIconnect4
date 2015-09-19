@@ -266,6 +266,15 @@ public class Pool implements Serializable {
 			if(cutToOne){
 				remain = 1;
 			}
+//			ArrayList<Genome> remove = new ArrayList<Genome>();
+//			for(Genome g:s.Genomes){
+//				if(g.fitness == -9999){
+//					remove.add(g);
+//				}
+//			}
+//			for(Genome g: remove){
+//				s.Genomes.remove(g);
+//			}
 			while(s.Genomes.size()-2 > remain){
 				s.Genomes.remove(s.Genomes.size()-1);
 				
@@ -293,6 +302,11 @@ public class Pool implements Serializable {
 			for(int i = 0;i<breed;i++){
 				Genome ge = s.breedChild();
 				this.Innovation = ge.mutate(this.Innovation);
+				while(ge.Genes.size() ==0){
+					ge = s.breedChild();
+				this.Innovation = ge.mutate(this.Innovation);
+				}
+				
 				children.add(ge);
 			}
 		}
@@ -311,7 +325,15 @@ public class Pool implements Serializable {
 			Species s = this.Species.get(r.nextInt(this.Species.size()));
 			Genome ge = s.breedChild();
 			this.Innovation = ge.mutate(this.Innovation);
+			
+			while(ge.Genes.size()==0){
+				 ge = s.breedChild();
+			this.Innovation = ge.mutate(this.Innovation);
+			}
+			
+			if(ge.Genes.size()>0){
 			children.add(ge);
+			}
 		}
 		for(Genome g:children){
 			this.addToSpecies(g);

@@ -251,6 +251,7 @@ public  class minmax {
 	}
 	
 	public static boolean check(int player,int laststonex,int laststoney, int[][] grid){
+		
 		//Horizonzal check
 		int times = 0;
 		for(int i =0;i<6;i++){
@@ -281,12 +282,14 @@ public  class minmax {
 		
 		//Diagonal Check l to r
 		times = 0;
-		int y = 0;
-		int x = laststonex -laststoney;
-		while(x < 0){
-			x +=1;
-			y +=1;
-		}
+		int y = laststoney;
+		int x = laststonex;
+		
+		while(x>0&&y>0){
+	    	x -=1;
+	    	y -=1;
+	    }
+
 		for(int i =0;i+x<7 &&i+y<6;i++){
 			if(grid[y+i][x+i]==player){
 				times +=1;
@@ -298,16 +301,23 @@ public  class minmax {
 				times = 0;
 			}
 		}
+
 		//Diagonal Check l to r
 		times = 0;
 		y = 0;
-	    x = laststonex +laststoney;
-		while(x > 6){
-			x -=1;
-			y +=1;
-		}
-		for(int i =0;x-i>0 &&i+y<6;i++){
-			if(grid[y+i][x-i]==player){
+		
+	    
+			x = laststonex;
+			y = laststoney;
+		
+		
+	    while(x>0&&y<5){
+	    	x -=1;
+	    	y +=1;
+	    }
+		
+		for(int i =0;x+i<7 &&i-y>0;i++){
+			if(grid[y-i][x+i]==player){
 				times +=1;
 				if(times >= 4){
 					return true;
@@ -317,9 +327,11 @@ public  class minmax {
 				times = 0;
 			}
 		}
+		
 		return false;
-	}
 	
+	
+	}
 	
 	
 

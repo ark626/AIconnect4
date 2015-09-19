@@ -1,3 +1,5 @@
+import java.io.File;
+
 import hyperneat.HyperNeat;
 import neat.Genome;
 import neat.Pool;
@@ -11,7 +13,7 @@ import ki.visualizer;
 
 public class main {
 	public static void main(String[] args){
-		System.out.println(-9999>-800);
+
 	Pool p = new Pool(4,1);
 	try {
 		p = Pool.load("/KI/tmp/Hyper/generator.ki");
@@ -78,6 +80,33 @@ public class main {
 	
 	
 	System.out.println("Started saving");
+	File file = new File("/var/www/PICTURES/bestGame");
+    String[] myFiles;    
+    if(file.isDirectory()){
+        myFiles = file.list();
+        for (int i=0; i<myFiles.length; i++) {
+            File myFile = new File(file, myFiles[i]); 
+            myFile.delete();
+        }
+     }
+	 file = new File("/var/www/PICTURES/Hyper");
+          
+     if(file.isDirectory()){
+         myFiles = file.list();
+         for (int i=0; i<myFiles.length; i++) {
+             File myFile = new File(file, myFiles[i]); 
+             myFile.delete();
+         }
+      }
+	 file = new File("/var/www/PICTURES/HyperGenerator");
+         
+     if(file.isDirectory()){
+         myFiles = file.list();
+         for (int i=0; i<myFiles.length; i++) {
+             File myFile = new File(file, myFiles[i]); 
+             myFile.delete();
+         }
+      }
 
 	
 		String null1 = "";

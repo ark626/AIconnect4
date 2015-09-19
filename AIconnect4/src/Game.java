@@ -216,6 +216,22 @@ public class Game {
 			}
 			
 			if(a.getChips() == b.getChips() && a.getChips() == 0){
+				if(this.showgui  ==1){
+					gamedisplay();
+						}
+				if(this.testplay == 1){
+					try {
+						if(a.pool != null){
+							graphics =this.draw(a, graphics,true);
+						}
+						if(b.pool != null){
+							graphics =this.draw(b, graphics,false);
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				evaluategame(a, false,times);
 				evaluategame(b, false,times);
 				return 0;
@@ -232,11 +248,11 @@ public class Game {
 		if(hasWon){
 			//z.receivefeedback((chips+100+z.fitness)*times/2);
 			if(z.ki != null){
-			z.receivefeedback(100+z.ki.fitness+chips);
+			z.receivefeedback(10000+z.ki.fitness+chips);
 			}
 			else{
 			if(z.pool != null){
-				z.receivefeedback((100+chips+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));
+				z.receivefeedback((10000+chips+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));
 					}
 				
 			}
@@ -279,6 +295,7 @@ public class Game {
 	}
 	
 	public  boolean check(int player,int laststonex,int laststoney){
+
 		//Horizonzal check
 		int times = 0;
 		for(int i =0;i<6;i++){
@@ -309,12 +326,14 @@ public class Game {
 		
 		//Diagonal Check l to r
 		times = 0;
-		int y = 0;
-		int x = laststonex -laststoney;
-		while(x < 0){
-			x +=1;
-			y +=1;
-		}
+		int y = laststoney;
+		int x = laststonex;
+		
+		while(x>0&&y>0){
+	    	x -=1;
+	    	y -=1;
+	    }
+
 		for(int i =0;i+x<7 &&i+y<6;i++){
 			if(grid[y+i][x+i]==player){
 				times +=1;
@@ -326,16 +345,23 @@ public class Game {
 				times = 0;
 			}
 		}
+
 		//Diagonal Check l to r
 		times = 0;
 		y = 0;
-	    x = laststonex +laststoney;
-		while(x > 6){
-			x -=1;
-			y +=1;
-		}
-		for(int i =0;x-i>0 &&i+y<6;i++){
-			if(grid[y+i][x-i]==player){
+		
+	    
+			x = laststonex;
+			y = laststoney;
+		
+		
+	    while(x>0&&y<5){
+	    	x -=1;
+	    	y +=1;
+	    }
+		
+		for(int i =0;x+i<7 &&i-y>0;i++){
+			if(grid[y-i][x+i]==player){
 				times +=1;
 				if(times >= 4){
 					return true;
@@ -345,98 +371,11 @@ public class Game {
 				times = 0;
 			}
 		}
+		
 		return false;
-	}
 	
-//	public boolean check(int z){
-//		//int result = 0;
-//		for(int i = 0;i<grid.length;i++){
-//			for(int j = 0;j<grid[i].length;j++){
-//				if(grid[i][j]==z){
-//					if(checkhelper(0,0,z,i,j)==z){
-//						return true;
-//					}
-//					if(checkhelper(0,1,z,i,j)==z){
-//						return true;
-//					}
-//					if(checkhelper(0,2,z,i,j)==z){
-//						return true;
-//					}
-//					if(checkhelper(0,3,z,i,j)==z){
-//						return true;
-//					}
-//					
-//				}
-//			
-//			}
-//		}
-//		return false;
-//		
-//		
-//	}
-//	
-//	public int checkhelper(int times,int direction,int value, int x, int y){	
-//		if(times < 3){
-//			switch(direction){
-//			case(0):
-//				if(y > 0){
-//					if(grid[x][y-1]==value){
-//						return checkhelper(times+1,direction,value,x,y-1);
-//					}
-//					else{
-//						return 0;
-//					}
-//				}
-//				else{
-//					return 0;
-//				}
-//			
-//		case(1):
-//			if(y < grid[x].length-1){
-//				if(grid[x][y+1]==value){
-//					return checkhelper(times+1,direction,value,x,y+1);
-//				}
-//				else{
-//					return 0;
-//				}
-//			}
-//			else{
-//				return 0;
-//			}
-//
-//		case(2):
-//			if(x > 0){
-//				if(grid[x-1][y]==value){
-//					return checkhelper(times+1,direction,value,x-1,y);
-//				}
-//				else{
-//					return 0;
-//				}
-//			}
-//			else{
-//				return 0;
-//			}
-//		
-//		case(3):
-//			if(x < grid.length-1){
-//				if(grid[x+1][y]==value){
-//					return checkhelper(times+1,direction,value,x+1,y);
-//				}
-//				else{
-//					return 0;
-//				}
-//			}
-//			else{
-//				return 0;
-//			}
-//		
-//}
-//		}
-//		else{
-//			return value;
-//		}
-//		return value;
-//}
+	
+	}
 	
 }
 
