@@ -89,8 +89,9 @@ public class Game {
 		switch(z.Playertype){
 		case(0):ki.visualizer.visualize(z.ki, this.path+s+" Turn: "+b+i++);
 		case(3):neat.visualizer.visualize(z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1), this.path+s+" Turn: "+b+i++);
-		case(4):hyperneat.visualizer.visualize(z.h, this.path+s+" Species "+z.pool.currentSpecies+" Genome "+z.pool.currentGenome+" Turn: "+b+i++, z.pool.currentSpecies-1, z.pool.currentGenome-1);
-		}
+		case(4):if(z.h != null){
+			hyperneat.visualizer.visualize(z.h, this.path+s+" Species "+z.pool.currentSpecies+" Genome "+z.pool.currentGenome+" Turn: "+b+i++, z.pool.currentSpecies-1, z.pool.currentGenome-1);
+		}}
 		return i;
 	}
 
@@ -252,7 +253,7 @@ public class Game {
 			}
 			else{
 			if(z.pool != null){
-				z.receivefeedback((10000+chips+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));
+				z.receivefeedback((10000+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));//+chips
 					}
 				
 			}

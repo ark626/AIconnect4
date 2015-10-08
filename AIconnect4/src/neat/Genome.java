@@ -27,11 +27,11 @@ public class Genome implements Serializable,Comparable<Genome>{
 //	genome.mutationRates["enable"] = EnableMutationChance
 //	genome.mutationRates["disable"] = DisableMutationChance
 //	genome.mutationRates["step"] = StepSize
-	public static final double Population = 300;
-	public static final double DeltaDisjoint = 2.0;
-	public static final double DeltaWeights = 0.4;
-	public static final double DeltaThreshold = 1.0;
-	public static final double StaleSpecies = 15;
+//	public static final double Population = 300;
+//	public static final double DeltaDisjoint = 2.0;
+//	public static final double DeltaWeights = 0.4;
+//	public static final double DeltaThreshold = 1.0;
+//	public static final double StaleSpecies = 15;
 	public static final double MutateConnectionsChance = 0.25;
 	public static final double PerturbChance = 0.90;
 	public static final double CrossoverChance = 0.75;
@@ -41,7 +41,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 	public static final double ActivitionMutationChance = 0.5;
 	public static final double StepSize = 0.1;
 	public static final double DisableMutationChance = 0.4;
-	public static final double EnableMutationChance = 0.2;
+	public static final double EnableMutationChance = 0.4;//0.2
 	public int Inputs = 42;
 	public int Outputs = 3;
 	public static final int MaxNodes = 10000;
