@@ -236,6 +236,9 @@ public class GUI {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					if(p == null){
+						p = new Pool(42,3);
+					}
 					}
 					
 								
@@ -247,6 +250,10 @@ public class GUI {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					if(p2 == null){
+						p2 = new Pool(42,3);
+					}
+					
 					}
 					//hyperneat
 					if(a.Playertype == 4 && !txtCtmp.getText().equals("")){
@@ -259,10 +266,16 @@ public class GUI {
 							e1.printStackTrace();
 						}
 						if(p == null){
-							p = new Pool(4,1);
+						p = new Pool(4,1);
 						}
 						hyper1 = new HyperNeat(42,3,0,7,6,p);
 					}
+					
+					if(a.Playertype == 4 && txtCtmp.getText().equals("")){
+				    p = new Pool(4,1);
+					hyper1 = new HyperNeat(42,3,0,7,6,p);
+					}
+					
 					
 					if(b.Playertype == 4 && !txtCtmp.getText().equals("")){
 						p2 = new Pool(4,1);
@@ -273,10 +286,15 @@ public class GUI {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						if(p == null){
-							p = new Pool(4,1);
+						if(p2 == null){
+							p2 = new Pool(4,1);
 						}
-						hyper2 = new HyperNeat(42,3,0,7,6,p);
+						hyper2 = new HyperNeat(42,3,0,7,6,p2);
+					}
+					
+					if(b.Playertype == 4 && txtCtmp.getText().equals("")){
+						p2 = new Pool(4,1);
+	                    hyper2 = new HyperNeat(42,3,0,7,6,p2);
 					}
 					
 					if(a.Playertype == 0 && !txtCtmp.getText().equals("")){
@@ -301,14 +319,26 @@ public class GUI {
 						}
 
 						if(a.Playertype == 3){
+							a.pool = p;
 							dis = gameDisplay.main(p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1),p.generation);
 							a.ki = null;
-							a.pool = p;
+							
 						}
 						if(b.Playertype == 3){
-							dis = gameDisplay.main(p2.Species.get(p2.currentSpecies-1).Genomes.get(p2.currentGenome-1),p2.generation);
-							b.ki = null;
 							b.pool = p2;
+							dis = gameDisplay.main(p2.Species.get(p2.currentSpecies-1).Genomes.get(p2.currentGenome-1),p2.generation);
+							b.ki = null;	
+						}
+						if(a.Playertype == 4){
+							a.pool = p;
+							dis = gameDisplay.main(p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1),p.generation);
+							a.ki = null;
+							
+						}
+						if(b.Playertype == 4){
+							b.pool = p2;
+							dis = gameDisplay.main(p2.Species.get(p2.currentSpecies-1).Genomes.get(p2.currentGenome-1),p2.generation);
+							b.ki = null;	
 						}
 					
 					

@@ -34,7 +34,6 @@ HyperNeat hyper2;
 		this.p = p;
 		this.p2= p2;
 		this.minfit = minfit;
-		this.loadedtype1 = a;
 		this.loadedtype2 = b;
 		this.hyper1 = hyper1;
 		this.hyper2 = hyper2;
@@ -200,12 +199,19 @@ HyperNeat hyper2;
 				game.a.ki = null;
 				game.a.pool = hyper1.pool;
 				game.a.h = hyper1;
-				dis = null;
+			//	dis = null;
+
 				game.a.pool.currentGenome = 1;
 				game.a.pool.currentSpecies = 1;
 				while(game.a.pool.alreadyMeasured()){
 					game.a.pool.nextGenome();
 				}
+				
+				dis.drawPanel.update = true;
+				dis.drawPanel.g = game.a.pool.Species.get(game.a.pool.currentSpecies-1).Genomes.get(game.a.pool.currentGenome-1);
+				dis.drawPanel.generation = game.a.pool.generation;
+				dis.drawPanel.update = false;
+				
 				Genome current = game.a.pool.Species.get(game.a.pool.currentSpecies-1).Genomes.get(game.a.pool.currentGenome-1);
 				current.generateNetwork();
 				game.a.h.generateweigths(current);
@@ -224,7 +230,7 @@ HyperNeat hyper2;
 				game.b.ki = null;
 				game.b.pool = hyper2.pool;
 				game.b.h = hyper2;
-				dis = null;
+				//dis = null;
 				game.b.pool.currentGenome = 1;
 				game.b.pool.currentSpecies = 1;
 				while(game.b.pool.alreadyMeasured()){
@@ -233,6 +239,13 @@ HyperNeat hyper2;
 				Genome current = game.b.pool.Species.get(game.b.pool.currentSpecies-1).Genomes.get(game.b.pool.currentGenome-1);
 				current.generateNetwork();
 				game.b.h.generateweigths(current);
+				
+				dis.drawPanel.update = true;
+				dis.drawPanel.g = game.b.pool.Species.get(game.b.pool.currentSpecies-1).Genomes.get(game.b.pool.currentGenome-1);
+				dis.drawPanel.generation = game.b.pool.generation;
+				dis.drawPanel.update = false;
+				
+				
 				
 				if(game.b.pool.alreadyMeasured()){
 				while(game.b.pool.alreadyMeasured()){
@@ -382,7 +395,7 @@ HyperNeat hyper2;
 			p.save("C:/tmp/Neat/Shodan1.ki", 0);
 			for(Species s :p.Species){
 				for(Genome g:s.Genomes){
-					//g.generateNetwork();
+					g.generateNetwork();
 					neat.visualizer.visualize(g, "C:/tmp/Neat/Shodan1 Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
 				}
 			}
@@ -390,9 +403,9 @@ HyperNeat hyper2;
 		}
 		if(this.loadedtype2 == 3){
 			p.save("C:/tmp/Neat/Shodan2.ki", 0);
-			for(Species s :p.Species){
+			for(Species s :p2.Species){
 				for(Genome g:s.Genomes){
-					//g.generateNetwork();
+					g.generateNetwork();
 					neat.visualizer.visualize(g, "C:/tmp/Neat/Shodan2 Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
 				}
 			}
@@ -403,11 +416,11 @@ HyperNeat hyper2;
 			game.a.pool.save("C:/tmp/Hyper/generator.ki",0);
 			for(Species s :game.a.pool.Species){
 				for(Genome g:s.Genomes){
-					//g.generateNetwork();
-					int Speci = p.Species.indexOf(s);
-					int Geno = s.Genomes.indexOf(g);
-					neat.visualizer.visualize(g, "C:/tmp/Hyper/generator/generator Species "+Speci+" Genome "+Geno);
 					g.generateNetwork();
+					int Speci = game.a.pool.Species.indexOf(s);
+					int Geno = s.Genomes.indexOf(g);
+					
+					neat.visualizer.visualize(g, "C:/tmp/Hyper/generator/generator Species "+Speci+" Genome "+Geno);
 					game.a.h.generateweigths(g);
 					hyperneat.visualizer.visualize(game.a.h, "C:/tmp/Hyper/Hyper/Hyper Species "+Speci+" Genome "+Geno, Speci, Geno);
 				}
@@ -417,11 +430,11 @@ HyperNeat hyper2;
 			game.b.pool.save("C:/tmp/Hyper/generator.ki",0);
 			for(Species s :game.b.pool.Species){
 				for(Genome g:s.Genomes){
-					//g.generateNetwork();
-					int Speci = p.Species.indexOf(s);
+					g.generateNetwork();
+					int Speci = game.b.pool.Species.indexOf(s);
 					int Geno = s.Genomes.indexOf(g);
 					neat.visualizer.visualize(g, "C:/tmp/Hyper/generator/generator Species "+Speci+" Genome "+Geno);
-					g.generateNetwork();
+					
 					game.b.h.generateweigths(g);
 					hyperneat.visualizer.visualize(game.b.h, "C:/tmp/Hyper/Hyper/Hyper Species "+Speci+" Genome "+Geno, Speci, Geno);
 				}

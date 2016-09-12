@@ -19,7 +19,7 @@ public class main {
 
 	Pool p = new Pool(42,3);
 	try {
-		p = Pool.load("/KI/tmp/Hyper/Neat.ki");
+		p = Pool.load("/KI/tmp/Hyper/HyperNeat.ki");
 	} catch (ClassNotFoundException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
@@ -90,20 +90,18 @@ public class main {
 		p.nextGenome();
 		current = p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1);
 		current.generateNetwork();
-	//	test.generateweigths(current);
+		//test.generateweigths(current);
 	}
 	}
 	
 	
-	//dis.drawPanel.g = current;
-	
-	//dis.drawPanel.g = p.Species.get(p.currentSpecies).Genomes.get(p.currentGenome);
+
 	for(int j = 0;j<Integer.parseInt(args[1]);j++){
 		g.reset();
 		g.run(i, dis, j);
 		
 	}
-	//current.fitness = current.fitness / Integer.parseInt(args[1]);
+//	current.fitness = current.fitness / Integer.parseInt(args[1]);
 	}
 	
 	
@@ -145,9 +143,9 @@ public class main {
 		p.save("/KI/tmp/Hyper/Neat.ki", 0);
 		for(Species s :p.Species){
 			for(Genome ge:s.Genomes){
-				//g.generateNetwork();
+				ge.generateNetwork();
 				try {
-					//test.step(input);
+				//	test.step(input);
 					te.step(input);
 					int Spec = (p.Species.indexOf(s));
 					int Genome = s.Genomes.indexOf(ge);
@@ -186,8 +184,8 @@ public class main {
 						}
 					}
 					neat.visualizer.visualize(ge, "/var/www/PICTURES/HyperGenerator/Generator Species "+null1+Spec+" Genome "+null2+Genome);
-//					test.generateweigths(ge);
-//					hyperneat.visualizer.visualize(test, "/var/www/PICTURES/Hyper/HN Species "+null1+Spec+" Genome "+null2+Genome,p.Species.indexOf(s),s.Genomes.indexOf(ge));
+					//test.generateweigths(ge);
+					//hyperneat.visualizer.visualize(test, "/var/www/PICTURES/Hyper/HN Species "+null1+Spec+" Genome "+null2+Genome,p.Species.indexOf(s),s.Genomes.indexOf(ge));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
