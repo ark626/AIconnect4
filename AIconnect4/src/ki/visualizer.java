@@ -137,7 +137,8 @@ public class visualizer {
       message =  " Generation: "+ki.generation+" Fitness: "+ki.fitness;
       ig2.drawString(message, (width - stringWidth-40) / 2, (height / 2)+150 + stringHeight *2);
       
-      ImageIO.write(bi, "PNG", new File("/tmp/"+s+".PNG"));
+     // ImageIO.write(bi, "PNG", new File("/tmp/"+s+".PNG"));
+      ImageIO.write(bi, "PNG", new File("C:\\tmp\\"+s+".PNG"));
 //      ImageIO.write(bi, "JPEG", new File("c:\\yourImageName.JPG"));
 //      ImageIO.write(bi, "gif", new File("c:\\yourImageName.GIF"));
 //      ImageIO.write(bi, "BMP", new File("c:\\yourImageName.BMP"));

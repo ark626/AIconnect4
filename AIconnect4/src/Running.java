@@ -53,7 +53,7 @@ HyperNeat hyper2;
 			tempfit = game.b.pool.Species.get(game.b.pool.currentSpecies-1).Genomes.get(game.b.pool.currentGenome-1).fitness;
 		}
 
-		if((((currentround<(i))&&i !=0))&&(minfit!=0&&tempfit<= minfit)){
+		if((((currentround<(i))||i ==0))&&(minfit==0||tempfit<= minfit)){
 			return true;
 		}
 		else{
@@ -65,8 +65,8 @@ HyperNeat hyper2;
 		test.retest();
 		//Write initvalues to text
 		try {
-			String path = "/tmp/";
-			String path2= "/tmp/";
+			String path = "C:/tmp/";
+			String path2= "C:/tmp/";
 			long time2 = System.currentTimeMillis();
 			String content = "";
 			File file = null;
@@ -86,7 +86,7 @@ HyperNeat hyper2;
 			path2 += "Hyper/Playerb.txt";
 			file = new File(path2);
 			}
-			if(game.a.Playertype == 3){
+			if(game.a.Playertype == 4){
 			content = "Playera: "+"NEAT "+" Playerb Strength: "+game.b.Playerstrength+" Playerb Type: "+game.b.Playertype+" Started at: "+time2+ " ms"+" for "+this.i+" Rounds "+" minfit: "+this.minfit+ "\n";
 			path += "Hyper/Playera.txt";
 			file = new File(path);
@@ -107,6 +107,9 @@ HyperNeat hyper2;
 			
 			// if file doesnt exists, then create it
 			if (file != null&&!file.exists()&&(game.a.Playertype >2 ||game.b.Playertype > 2)) {
+//				new File(path).mkdir();
+//				new File(path2).mkdir();
+			//	System.out.println("asdf"+file.getAbsolutePath()+"asd");
 				file.createNewFile();
 			}
 			if(file != null){
@@ -380,10 +383,10 @@ HyperNeat hyper2;
 
 		if(this.loadedtype1 == 1||this.loadedtype2 == 1){
 		 test.rank();
-			test.save("C:/tmp/Normal/GLaDoS.ki", 0);
+			test.save("C:/KI/GLaDoS.ki", 0);
 			try {
 				for(int i=0;i<test.ranking.size();i++){
-				ki.visualizer.visualize(test.ranking.get(i),"Normal/GLaDoS"+i);
+				ki.visualizer.visualize(test.ranking.get(i),"C:/tmp/Normal/GLaDoS"+i);
 				}
 				
 			} catch (Exception e) {
@@ -393,6 +396,8 @@ HyperNeat hyper2;
 		}
 		if(this.loadedtype1 == 3){
 			p.save("C:/tmp/Neat/Shodan1.ki", 0);
+		//	File f =  new File("C:/tmp/Neat/Shodan1.ki");
+			//System.out.println(f.getAbsolutePath());
 			for(Species s :p.Species){
 				for(Genome g:s.Genomes){
 					g.generateNetwork();
@@ -402,11 +407,11 @@ HyperNeat hyper2;
 			
 		}
 		if(this.loadedtype2 == 3){
-			p.save("C:/tmp/Neat/Shodan2.ki", 0);
+			p2.save("C:/tmp/Neat/Shodan2.ki", 0);
 			for(Species s :p2.Species){
 				for(Genome g:s.Genomes){
 					g.generateNetwork();
-					neat.visualizer.visualize(g, "C:/tmp/Neat/Shodan2 Species "+p.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
+					neat.visualizer.visualize(g, "C:/tmp/Neat/Shodan2 Species "+p2.Species.indexOf(s)+" Genome "+s.Genomes.indexOf(g));
 				}
 			}
 			

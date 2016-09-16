@@ -57,23 +57,23 @@ public class Game {
 	}
 	
 	public void gamedisplay(){
-		System.out.println("Round: " +this.iteration+" Turn: "+ a.getTurns() );
-		for(int[] line:grid){
-			GRID = new StringBuilder();
-			GRID.append("|");
-			for(int z:line){
-				if(z == 1){
-				GRID.append("X|");
-				}
-				if(z == -1){
-				GRID.append("O|");
-				}
-				if(z == 0){
-					GRID.append(" |");
-				}
-			}
-			System.out.println(GRID);
-		}
+//		System.out.println("Round: " +this.iteration+" Turn: "+ a.getTurns() );
+//		for(int[] line:grid){
+//			GRID = new StringBuilder();
+//			GRID.append("|");
+//			for(int z:line){
+//				if(z == 1){
+//				GRID.append("X|");
+//				}
+//				if(z == -1){
+//				GRID.append("O|");
+//				}
+//				if(z == 0){
+//					GRID.append(" |");
+//				}
+//			}
+//			System.out.println(GRID);
+//		}
 	}
 	
 	public int draw(Player z,int i,boolean xes) throws Exception{
@@ -253,7 +253,8 @@ public class Game {
 			}
 			else{
 			if(z.pool != null){
-				z.receivefeedback((10000+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));//+chips
+				//z.receivefeedback((10000+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));//+chips
+				z.receivefeedback((1000+chips+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));//+chips
 					}
 				
 			}
@@ -266,7 +267,7 @@ public class Game {
 		}
 			else{
 					if(z.pool != null){
-				z.receivefeedback((-chips+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));
+				z.receivefeedback((-chips-1000+z.pool.Species.get(z.pool.currentSpecies-1).Genomes.get(z.pool.currentGenome-1).fitness));
 					}
 				
 			}

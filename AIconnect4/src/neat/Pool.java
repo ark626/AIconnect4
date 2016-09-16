@@ -1,6 +1,8 @@
 package neat;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -404,11 +406,30 @@ public class Pool implements Serializable {
 	         out.close();
 	         fileOut.close();
 	         System.out.printf("Serialized data is saved in "+s);
-	      }catch(IOException e)
+	      }
+//catch(FileNotFoundException e){
+//			 File f = new File(s);
+//			 try {
+//				String[] st =  s.split("/");
+//				String path = "";
+//				for(int j = 0;j<st.length-1;j++){
+//					path += st;
+//				}
+//			    new File(path).mkdir();
+//				f.createNewFile();
+//				this.save(s, i);
+//			} 
+//		 catch (IOException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//		 }
+		 catch(IOException e)
 	      {
 	          e.printStackTrace();
 	        //  this.save("/tmp/employee"+i+1+".ser",i+1);
 	      }
+		 
 	   }
 	
 	public static Pool load(String s) throws ClassNotFoundException{
