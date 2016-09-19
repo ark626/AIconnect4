@@ -1,3 +1,4 @@
+package game;
 
 public class Steptree {
 	Steptree parent;

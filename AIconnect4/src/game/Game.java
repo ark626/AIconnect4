@@ -1,3 +1,4 @@
+package game;
 
 public class Game {
 	Player a;
@@ -8,7 +9,7 @@ public class Game {
 	StringBuilder GRID;
 	int iteration;
 	int testplay;
-	int showgui;
+	public int showgui;
 	String path = "";
 
 	public Game(Player a, Player b){

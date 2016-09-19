@@ -7,6 +7,12 @@ import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.JTextField;
+
+import game.Game;
+import game.Player;
+import game.Running;
+import game.gameDisplay;
+
 import javax.swing.JLabel;
 
 import java.awt.Font;

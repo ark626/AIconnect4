@@ -20,6 +20,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 	public double[] mutationrates;
 	public int Innovation =0;
 	public int Generation ;
+	public transient Pool parent;
 //	genome.mutationRates["connections"] = MutateConnectionsChance
 //	genome.mutationRates["link"] = LinkMutationChance
 //	genome.mutationRates["bias"] = BiasMutationChance
@@ -47,15 +48,15 @@ public class Genome implements Serializable,Comparable<Genome>{
 	public static final int MaxNodes = 10000;
 	
 	
-	public Genome(int in,int out,int gen) {
+	public Genome(int in,int out,int gen,Pool p) {
 		super();
 		this.Generation = gen;
 		//this.pool = p;
 		this.Inputs = in;
 		this.Outputs = out;
 		Genes = new ArrayList<Gene>();
-		this.fitness = 0;
-		this.adjustedfitness = 0;
+		this.fitness = -9999;
+		this.adjustedfitness = -9999;
 		Network = new Network();
 		this.maxneuron = 0;
 		this.globalRank = 0;
@@ -68,21 +69,28 @@ public class Genome implements Serializable,Comparable<Genome>{
 		this.mutationrates[5] = Genome.DisableMutationChance;
 		this.mutationrates[6] = Genome.StepSize;
 		this.mutationrates[7] = Genome.ActivitionMutationChance;
+		this.parent = p;
 	}
 
 
 
-	public static Genome basicGenome(int in, int out){
-		Genome g = new Genome(in,out,1);
-
+	public static Genome basicGenome(int in, int out,Pool p){
+		Genome g = new Genome(in,out,1,p);
+	
 		g.maxneuron = in+out;
 		g.Innovation = 1;
 		g.Generation = 1;
 		return g;
 	}
 	
+	public void setFitness(int fitness){
+		if(fitness>this.parent.maxFitness){
+			this.parent.maxFitness = fitness; 
+		}
+		this.fitness = fitness;
+	}
 	public Genome copyGenome(){
-		Genome temp = new Genome(this.Inputs,this.Outputs,this.Generation);
+		Genome temp = new Genome(this.Inputs,this.Outputs,this.Generation,this.parent);
 		temp.Genes = new ArrayList<Gene>();
 		for(Gene g :this.Genes){
 			temp.Genes.add(g.copyGene());
@@ -142,7 +150,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 			}
 		}
 		if(Check){
-			this.fitness = -9999;
+			this.fitness = -999999;
 		}
 		g.Network = net;
 	
@@ -452,7 +460,7 @@ public double activition(int n,double value){
 	
 	public int compareTo(Genome arg0) {
 		
-		return ((Genome)arg0).fitness -this.fitness;
+		return (int) (((Genome)arg0).fitness -this.fitness);
 	}
 
 }

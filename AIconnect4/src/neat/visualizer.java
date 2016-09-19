@@ -227,7 +227,9 @@ public class visualizer {
 //      Image b  = bi.getScaledInstance(1280, 960, BufferedImage.SCALE_FAST);
 //      bi = new BufferedImage(1280,960,BufferedImage.TYPE_INT_ARGB);
 //      bi.getGraphics().drawImage(b, 0, 0, null);
-      ImageIO.write(bi, "PNG", new File(s+".PNG"));
+      File f = new File(s+".PNG");
+      String pa = f.getAbsolutePath();
+      ImageIO.write(bi, "PNG", new File(pa));
 //      ImageIO.write(bi, "JPEG", new File("c:\\yourImageName.JPG"));
 //      ImageIO.write(bi, "gif", new File("c:\\yourImageName.GIF"));
 //      ImageIO.write(bi, "BMP", new File("c:\\yourImageName.BMP"));

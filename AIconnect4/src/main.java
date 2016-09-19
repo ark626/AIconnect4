@@ -3,6 +3,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import game.Game;
+import game.Player;
+import game.gameDisplay;
 import hyperneat.HyperNeat;
 import neat.Genome;
 import neat.Pool;

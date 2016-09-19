@@ -187,7 +187,7 @@ import neat.Neuron;
 			  }
 			  if(that.weigth != 0.0){
 	    	
-				  if(that.into <42){
+				  if(that.into <g.Input){//42
 	    	  ig2.drawRect((x1-10)+(that.out)%7*3, (y1-10)+(that.out/7)%6*3, 1, 1);
 				  }
 				  else{

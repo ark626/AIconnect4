@@ -1,3 +1,4 @@
+package game;
 import hyperneat.HyperNeat;
 
 import java.util.Random;
@@ -129,15 +130,15 @@ public class Player {
 	
 	public void receivefeedback(int fitness){
 		if(Playertype ==0){
-		this.ki.fitness = fitness;
+		this.ki.fitness =(int)fitness;
 		}
 		if(Playertype == 3||Playertype == 4){
-			this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).fitness= fitness;
-			if(fitness > pool.maxFitness){
-				pool.maxFitness = fitness;
-			}
-			if(fitness == 0){
-				this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).fitness= -1;
+			this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).setFitness(fitness);//= fitness;
+//			if(fitness > pool.maxFitness){
+//				pool.maxFitness = fitness;
+//			}
+			if(fitness == -9999){
+				this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).fitness= -9998;
 			}
 		}
 		}

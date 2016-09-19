@@ -2,6 +2,8 @@ package neat.test;
 
 import static org.junit.Assert.*;
 
+import java.util.Random;
+
 import org.junit.Test;
 
 import neat.Gene;
@@ -15,6 +17,7 @@ public class test {
 	static int geninmax=100;
 	static int genoutmax=100;
 	static int gengenmax=100;
+	
 	@Test
 	public void initializeGenome(){
 		Genome g = null;
@@ -50,8 +53,6 @@ public class test {
 		}
 	}
 	
-	
-	
 	@Test
 	public  void Mutateandgenerategenomes(){
 		
@@ -65,15 +66,7 @@ public class test {
 	    	for(Gene g:temp.Genes){
 	    		if(g.out != g.into&&g.weigth!=0){
 	    			countgenomes++;
-	    		}
-//	    	for(Gene g:temp.Genes){
-//	    		//System.out.print("Von "+g.out +" Zu "+g.into);
-//	    		//if(g.out!= null&&g.into != null)
-//	    	}
-//	    	test.alreadyMeasured();
-	    
-	    
-	    
+	    		}    
 	    }
 		}
 	    System.out.println(countgenomes+" valid Genes generated");
@@ -81,6 +74,17 @@ public class test {
 	    	fail("To less Genes generated");
 	    }
 		}
+	
+	@Test
+	public void Neatrunnigntest(){
+		Pool pool = new Pool(4,1);
+		Random r = new Random();
+		for(int j = 0;j<999999;j++){
+		for(int i = 0;i<999999;i++){
+		pool.nextGenome();
+		pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).fitness  = r.nextInt(-300 - Integer.MIN_VALUE + 1) + Integer.MIN_VALUE;
+		System.out.println(pool.getbest().fitness);
+	} }}
 	}
 
 

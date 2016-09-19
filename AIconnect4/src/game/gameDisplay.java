@@ -1,3 +1,4 @@
+package game;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -19,8 +20,8 @@ import ki.Link;
 final public class gameDisplay
 {
 
-    JFrame frame;
-    DrawPanel drawPanel;
+    public JFrame frame;
+    public DrawPanel drawPanel;
     
     public gameDisplay re(gameDisplay gold){
     	gameDisplay g = new gameDisplay();

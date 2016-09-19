@@ -25,14 +25,17 @@ public class Species {
 	public int Inputs = 42;
 	public int Outputs = 3;
 	public static final int MaxNodes = 1000000;
+	 
+	public transient Pool p;
 	
-	public Species(int in,int out){
+	public Species(int in,int out,Pool p){
 		this.Inputs = in;
 		this.Outputs = out;
-		this.topFitness = 0;
+		this.topFitness = -9999;
 		this.staleness = 0;
+		this.p = p;
 		this.Genomes = new ArrayList<Genome>();
-		this.averageFitness = 0;
+		this.averageFitness = -9999;
 	}
 	
 	public void calculateAverageFitness(){
@@ -66,7 +69,7 @@ public class Species {
 			gen = g2.Generation+1;
 		}
 		
-		Genome child = new Genome(this.Inputs,this.Outputs,gen);
+		Genome child = new Genome(this.Inputs,this.Outputs,gen,p);
 		ArrayList<Gene> Innovation = new ArrayList<Gene>();
 		for(Gene gene:g2.Genes){
 			Innovation.add(gene);
@@ -99,7 +102,7 @@ public class Species {
 		if(Math.random() <CrossoverChance){
 			int rand = r.nextInt(this.Genomes.size());
 			Genome g1 = this.Genomes.get(rand);
-			 child = new Genome(this.Inputs,this.Outputs,1);
+			 child = new Genome(this.Inputs,this.Outputs,1,p);
 			rand = r.nextInt(this.Genomes.size());
 			Genome g2 = this.Genomes.get(rand);
 			child = this.crossover(g1,g2);

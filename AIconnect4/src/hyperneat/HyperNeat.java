@@ -35,6 +35,8 @@ public class HyperNeat {
 			this.Neurons[i] = new Neuron();
 		}
 		
+
+		
 		//Generate empty links from Input to hidden (Input^2)
 		int no = 0;
 		int ni = Input;
@@ -60,7 +62,7 @@ public class HyperNeat {
 		ni = Input*2;
 		
 		//Generate empty Hidden to Output Links
-		for(int i = Input*Input;i<(Input*Input)+Input*3;i++){
+		for(int i = Input*Input;i<(Input*Input)+Input*Output;i++){
 		    
 			this.Links.add(new Gene());
 			//From is i
@@ -77,9 +79,14 @@ public class HyperNeat {
 				ni = Input*2;
 			}
 			}
+		System.out.println("Neurons" + Neurons.length+" Links "+this.Links.size());
 	//	Collections.sort(Links);
 			
 		}
+	
+	public int topFit(){
+		return this.pool.getTopfitness();
+	}
 	
 	public void generateweigths(Genome CPPN){
 		//Genome CPPN = this.pool.Species.get(this.pool.currentSpecies-1).Genomes.get(this.pool.currentGenome-1);
@@ -88,10 +95,10 @@ public class HyperNeat {
 		boolean Empty = true;
 		for(Gene g:Links){
 			double[] Inputs = new double[4];
-					Inputs[0] = g.into%7+1;
-					Inputs[1] = (g.into/7)%6+1;
-					Inputs[2] = g.out%7+1;
-					Inputs[3] = (g.out/7)%6+1;
+					Inputs[0] = g.into%this.x+1;
+					Inputs[1] = (g.into/x)%y+1;
+					Inputs[2] = g.out%x+1;
+					Inputs[3] = (g.out/x)%y+1;
 				
 
 				g.weigth = CPPN.step(Inputs)[0];
@@ -126,7 +133,8 @@ public class HyperNeat {
 //				}
 		}
 		if(Empty){
-			CPPN.fitness = -9999;
+			CPPN.fitness = -999999;
+			//this.pool.
 			}
 		Collections.sort(Links);
 		
@@ -166,7 +174,7 @@ public class HyperNeat {
 		double[] Output = new double[this.Output];
 		int j = 0;
 	//	String s = "Outputs: ";
-		for(int i=this.Neurons.length-3;i<this.Neurons.length;i++){
+		for(int i=this.Neurons.length-this.Output;i<this.Neurons.length;i++){
 			Output[j] = this.Neurons[i].value;
 			
 			//s+= " "+Output[j];

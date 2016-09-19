@@ -28,8 +28,8 @@ public class Pool implements Serializable {
 	public int currentSpecies;
 	public int currentGenome;
 	public int currentFrame;
-	public int maxFitness;
-	public static final double Population = 500;
+	public int maxFitness = -Integer.MIN_VALUE;
+	public static final double Population = 300;
 	public static final double DeltaDisjoint = 2.0;
 	public static final double DeltaWeights = 0.4;
 	public static final double DeltaThreshold = 1.0; //1
@@ -57,26 +57,38 @@ public class Pool implements Serializable {
 		this.currentSpecies = 1;
 		this.currentGenome = 1;
 		this.currentFrame = 0;
-		this.maxFitness = 0;
+		this.maxFitness = Integer.MIN_VALUE;
 		for(int i=0;i<Population;i++){
-			Genome basic = Genome.basicGenome(this.Inputs,this.Outputs);
+			Genome basic = Genome.basicGenome(this.Inputs,this.Outputs,this);
 			this.Innovation = basic.mutate(this.Innovation);
 			this.addToSpecies(basic);
 		}
 		
 	}
 	
+	public Pool copy(){
+		Pool p = new Pool(this.Inputs,this.Outputs);
+		this.save("./copyPool.pl",0);
+		try {
+			p = Pool.load("./copyPool.pl");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return p;
+	}
+	
 	public Genome getbest(){
 		Genome temp = this.Species.get(0).Genomes.get(0);
-		int maxfit = temp.fitness;
+		int maxfit = Integer.MIN_VALUE;//temp.fitness;
 		for(Species s:this.Species){
 			for(Genome g:s.Genomes){
-				if(g.fitness!=0){
+				if(g.fitness!=-9999){
 				if((g.fitness >= maxfit)){
 					temp = g;
 					maxfit = temp.fitness;
-					this.currentGenome = s.Genomes.indexOf(temp)+1;
-					this.currentSpecies = this.Species.indexOf(s)+1;
+//					this.currentGenome = s.Genomes.indexOf(temp)+1;
+//					this.currentSpecies = this.Species.indexOf(s)+1;
 				}
 				}
 			}
@@ -84,6 +96,26 @@ public class Pool implements Serializable {
 		
 		
 		return temp;
+	}
+
+	public int getTopfitness(){
+		Genome temp = this.Species.get(0).Genomes.get(0);//this.Species.get(0).Genomes.get(0);
+		int maxfit = Integer.MIN_VALUE;//temp.fitness;
+		for(Species s:this.Species){
+			for(Genome g:s.Genomes){
+				if(g.fitness!=-9999){
+				if((g.fitness >= maxfit)){
+					//temp = g;
+					maxfit = g.fitness;
+//					this.currentGenome = s.Genomes.indexOf(temp)+1;
+//					this.currentSpecies = this.Species.indexOf(s)+1;
+				}
+				}
+			}
+		}
+		
+		
+		return maxfit;
 	}
 	
 	public Pool(int i,int in, int out){
@@ -96,7 +128,7 @@ public class Pool implements Serializable {
 		this.currentSpecies = 1;
 		this.currentGenome = 1;
 		this.currentFrame = 0;
-		this.maxFitness = 0;
+		this.maxFitness = -9999;
 		
 	}
 	
@@ -225,7 +257,7 @@ public class Pool implements Serializable {
 			}
 		}
 		if(!found){
-			Species childSpecies = new Species(this.Inputs,this.Outputs);
+			Species childSpecies = new Species(this.Inputs,this.Outputs,this);
 			childSpecies.Genomes.add(child);
 			this.Species.add(childSpecies);
 		}
@@ -250,7 +282,7 @@ public class Pool implements Serializable {
 	public int totalAverageFitness(){
 		int total =0;
 		for(Species s:this.Species){
-			//s.calculateAverageFitness();
+			s.calculateAverageFitness();
 			total += s.averageFitness;
 			
 		}
@@ -314,7 +346,7 @@ public class Pool implements Serializable {
 		}
 		this.cullSpecies(true);
 		Random r = new Random();
-//		this.removeEmptySpecies();
+		this.removeEmptySpecies();
 //		if(this.Species.size()<=0){
 //			for(int i=0;i<Population;i++){
 //				Genome basic = Genome.basicGenome();
@@ -347,10 +379,10 @@ public class Pool implements Serializable {
 	
 	public void nextGenome(){
 		this.currentGenome += 1;
-		if(this.currentGenome >= this.Species.get(this.currentSpecies-1).Genomes.size()){
+		if(this.currentGenome > this.Species.get(this.currentSpecies-1).Genomes.size()){
 		currentGenome = 1;
 		currentSpecies += 1;
-		if(currentSpecies >= this.Species.size()){
+		if(currentSpecies > this.Species.size()){
 			this.newGeneration();
 			//System.out.println(this.toString());
 			this.currentSpecies = 1;
@@ -375,7 +407,7 @@ public class Pool implements Serializable {
 	
 	public boolean alreadyMeasured(){
 		
-		return (this.Species.get(this.currentSpecies-1).Genomes.get(this.currentGenome-1).fitness != 0);
+		return (this.Species.get(this.currentSpecies-1).Genomes.get(this.currentGenome-1).fitness != -9999);
 	}
 	
 	//Serializable
@@ -383,20 +415,21 @@ public class Pool implements Serializable {
 	public void save(String s,int i){
 		 try
 	      {
+			 File f = new File(s);
 	         FileOutputStream fileOut =
-	         new FileOutputStream(s);
+	         new FileOutputStream(f.getAbsolutePath());
 	         ObjectOutputStream out = new ObjectOutputStream(fileOut);
 	         //writing KI's
 	         out.writeInt(this.Inputs);
 	         out.writeInt(this.Outputs);
 	         out.writeInt(this.generation);
 	         out.writeInt(this.Innovation);
-	         out.writeInt(this.maxFitness);
+	         out.writeFloat(this.maxFitness);
 	         out.writeInt(this.Species.size());
 	         for(Species sp:this.Species){
 	         out.writeInt(sp.Genomes.size());
-	         out.writeInt(sp.topFitness);
-	         out.writeInt(sp.averageFitness);
+	         out.writeFloat(sp.topFitness);
+	         out.writeFloat(sp.averageFitness);
 	         for(Genome g :sp.Genomes){
 	        	 out.writeObject(g);
 	         }
@@ -405,7 +438,7 @@ public class Pool implements Serializable {
 	         }
 	         out.close();
 	         fileOut.close();
-	         System.out.printf("Serialized data is saved in "+s);
+	         System.out.println("Serialized data is saved in "+f.getAbsolutePath()+" with Generation "+this.generation+" Fitness "+this.getbest().fitness);
 	      }
 //catch(FileNotFoundException e){
 //			 File f = new File(s);
@@ -435,7 +468,8 @@ public class Pool implements Serializable {
 	public static Pool load(String s) throws ClassNotFoundException{
 	      try
 	      {
-	         FileInputStream fileIn = new FileInputStream(s);
+	    	  File f = new File(s);
+	         FileInputStream fileIn = new FileInputStream(f.getAbsolutePath());
 	         ObjectInputStream in = new ObjectInputStream(fileIn);
 	         int inn = in.readInt();
 	         int out = in.readInt();
@@ -450,11 +484,12 @@ public class Pool implements Serializable {
 	         int Speciessize = in.readInt();
 	         for(int i=0;i<Speciessize;i++){
 	        	 int Genomesize = in.readInt();
-	        	 Species spe = new Species(p.Inputs,p.Outputs);
+	        	 Species spe = new Species(p.Inputs,p.Outputs,p);
 	        	 spe.topFitness = in.readInt();
 	        	 spe.averageFitness = in.readInt();
 	        	 for(int j=0;j<Genomesize;j++){
 	        		 Genome g = (Genome)in.readObject();
+	        		 g.parent = p;
 
 	        		spe.Genomes.add(g);
 	        	 }
@@ -463,14 +498,16 @@ public class Pool implements Serializable {
 	         
 	         in.close();
 	         fileIn.close();
-	         return p;
+
+	         System.out.println("Loaded file from" +f.getAbsolutePath()+"with Generation: "+p.generation+" Fitness "+p.getbest().fitness);//Thread.currentThread().getStackTrace().toString());
+	        return p;
 	      }catch(IOException i)
 	      {
 	    	  i.getMessage();
 	    	  return null;
 	    	  //return new Pool();
 
-	      }
+	      } 
 
 	      }
 		

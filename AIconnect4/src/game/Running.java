@@ -1,3 +1,4 @@
+package game;
 import hyperneat.HyperNeat;
 
 import java.io.BufferedWriter;
@@ -39,7 +40,7 @@ HyperNeat hyper2;
 		this.hyper2 = hyper2;
 	}
 	public boolean dowhile(int currentround,int i){
-		int tempfit =Integer.MIN_VALUE;
+		float tempfit =Float.MIN_VALUE;
 		if(game.a.Playertype==0&&(game.a.ki.fitness > tempfit)){
 			tempfit = game.a.ki.fitness;
 		}
@@ -283,6 +284,14 @@ HyperNeat hyper2;
 			
 	
 		game.run(j,dis,runs);
+		String data = "";
+		if(this.hyper1 != null){
+			data += hyper1.pool.generation+" "+(hyper1.pool.currentSpecies-1)+"/"+hyper1.pool.Species.size()+" "+hyper1.pool.currentGenome+"/"+hyper1.pool.Species.get(hyper1.pool.currentSpecies-1).Genomes.size()+" "+hyper1.pool.Species.size()+hyper1.pool.Species.get(0).Genomes.get(0).fitness+" "+hyper1.pool.Species.get(hyper1.pool.currentSpecies-1).Genomes.get(hyper1.pool.currentGenome-1).fitness+" "+this.p.maxFitness;
+		}
+		if(this.hyper2 != null){
+		//	data += hyper2.pool.getbest().fitness+" "+hyper2.pool.Species.get(hyper2.pool.currentSpecies-1).Genomes.get(hyper2.pool.currentGenome-1).fitness;
+		}
+		System.out.println(data);
 		game.reset();
 		
 		}
@@ -290,63 +299,64 @@ HyperNeat hyper2;
 		j++;
 		
 		//Write result to text
-		try {
-			String path = "C:/tmp/";
-			String path2= "C:/tmp/";
-			long time2 = System.currentTimeMillis()-time;
-			String content = "";
-			File file = null;
-			if(game.a.Playertype == 3){
-			content = "maxFitness: "+p.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
-			path += "Neat/Playera.txt";
-			file = new File(path);
-			//System.out.println("Done");
-			}
-			if(game.b.Playertype == 3){
-			content = "maxFitness: "+p2.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
-			path2 += "Neat/Playerb.txt";
-			file = new File(path2);
-			}
-			
-			if(game.a.Playertype == 4){
-			content = "maxFitness: "+game.a.pool.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
-			path += "Hyper/Playera.txt";
-			file = new File(path);
-			//System.out.println("Done");
-			}
-			
-			if(game.b.Playertype == 4){
-			content = "maxFitness: "+game.b.pool.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
-			path2 += "Hyper/Playerb.txt";
-			file = new File(path2);
-			}
-			
-			if(game.a.Playertype == 0){
-			content = "maxFitness: "+test.best().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
-			path += "Normal/Playera.txt";
-			file = new File(path);
-			}
-			
-			if(game.b.Playertype == 0){
-				content = "maxFitness: "+test.best().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
-				path2 += "Normal/Playerb.txt";
-				file = new File(path2);
-				}
-			
+//		try {
+//			String path = "C:/tmp/";
+//			String path2= "C:/tmp/";
+//			long time2 = System.currentTimeMillis()-time;
+//			String content = "";
+//			File file = null;
+//			if(game.a.Playertype == 3){
+//			content = "maxFitness: "+p.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
+//			path += "Neat/Playera.txt";
+//			file = new File(path);
+//			//System.out.println("Done");
+//			}
+//			if(game.b.Playertype == 3){
+//			content = "maxFitness: "+p2.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
+//			path2 += "Neat/Playerb.txt";
+//			file = new File(path2);
+//			}
+//			
+//			if(game.a.Playertype == 4){
+//			content = "maxFitness: "+game.a.pool.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
+//			path += "Hyper/Playera.txt";
+//			file = new File(path);
+//			//System.out.println("Done");
+//			}
+//			
+//			if(game.b.Playertype == 4){
+//			content = "maxFitness: "+game.b.pool.getbest().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
+//			path2 += "Hyper/Playerb.txt";
+//			file = new File(path2);
+//			}
+//			
+//			if(game.a.Playertype == 0){
+//			content = "maxFitness: "+test.best().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
+//			path += "Normal/Playera.txt";
+//			file = new File(path);
+//			}
+//			
+//			if(game.b.Playertype == 0){
+//				content = "maxFitness: "+test.best().fitness+" after "+j+" Rounds"+" in "+time2+ " ms \n";
+//				path2 += "Normal/Playerb.txt";
+//				file = new File(path2);
+//				}
+//			
 			// if file doesnt exists, then create it
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(content);
-			bw.close();
-
-		} catch (IOException e) {
-			e.printStackTrace();
+//			if (!file.exists()) {
+//				file.createNewFile();
+//			}
+//			FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
+//			BufferedWriter bw = new BufferedWriter(fw);
+//			bw.write(content);
+//			bw.close();
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
 		}
-		
-		}while(this.dowhile(j,this.i));
+		while(this.dowhile(j,this.i));
 		
 		//Output
 		time = System.currentTimeMillis()-time;
