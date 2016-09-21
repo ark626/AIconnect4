@@ -138,7 +138,7 @@ public class Player {
 //				pool.maxFitness = fitness;
 //			}
 			if(fitness == -9999){
-				this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).fitness= -9998;
+				this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).fitness= -999998;
 			}
 		}
 		}

@@ -31,7 +31,7 @@ public class Species {
 	public Species(int in,int out,Pool p){
 		this.Inputs = in;
 		this.Outputs = out;
-		this.topFitness = -9999;
+		this.topFitness = -999999;
 		this.staleness = 0;
 		this.p = p;
 		this.Genomes = new ArrayList<Genome>();

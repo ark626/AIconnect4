@@ -79,6 +79,9 @@ public class HyperNeat {
 				ni = Input*2;
 			}
 			}
+		for(Gene g:this.Links){
+			this.Neurons[g.into].outgoing.add(g);
+		}
 		System.out.println("Neurons" + Neurons.length+" Links "+this.Links.size());
 	//	Collections.sort(Links);
 			
@@ -134,7 +137,9 @@ public class HyperNeat {
 		}
 		if(Empty){
 			CPPN.fitness = -999999;
-			//this.pool.
+//			this.pool.nextGenome();
+//			this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).generateNetwork();
+//			this.generateweigths(this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1));
 			}
 		Collections.sort(Links);
 		
@@ -155,13 +160,93 @@ public class HyperNeat {
 //			//this.Neurons.get(this.Input+Output).value = 1.0;
 //		}
 		
+//		for(int i = this.Input;i<this.Neurons.length;i++){
+//			Neuron n = this.Neurons[i];
+//			double sum =0;
+//			for(Gene g:n.incoming){
+//				if(Neurons[g.into].value != 0.0&&g.weigth !=0.0){
+//				sum += g.weigth * this.Neurons[g.into].value;
+//			//	System.out.println("LOL: "+sum);
+//				}
+//				
+//			}
+//
+//			if(n.incoming.size() >1){
+//				n.value = (2/(1+Math.exp(-4.9*sum))-1);
+//			}
+//		}
+		//Just 1 layer
+		//From Input to first Layer
+		for(int i = 0;i<this.Neurons.length-Output-Input;i++){
+			Neuron n = this.Neurons[i];
+			if(n.value != 0.0){
+				for(Gene g:n.outgoing){
+					if(g.weigth != 0.0){
+						Neurons[g.out].value += g.into*g.weigth;
+					}
+				}
+			}
+		}
+		//Fixing 1 Layer Output
+		for(int i = Input;i<Neurons.length-Output;i++){
+		//	System.out.println("f:"+Neurons[i].incoming.size());
+			//Neurons[i].value = Neurons[i].value/Neurons[i].incoming.size();
+			Neurons[i].value = (2/(1+Math.exp(-4.9*Neurons[i].value))-1);
+		}
+		
+		//From 1 Layer to Output
+		for(int i = this.Neurons.length-Output-Input;i<this.Neurons.length-Output;i++){
+			Neuron n = this.Neurons[i];
+			if(n.value != 0.0){
+				for(Gene g:n.outgoing){
+					if(g.weigth != 0.0){
+						
+						Neurons[g.out].value += g.into*g.weigth;
+					}
+				}
+			}
+		}
+		//Fixing Output
+		for(int i = this.Neurons.length-Output;i<Neurons.length;i++){
+		//	Neurons[i].value = Neurons[i].value/Neurons[i].incoming.size();
+			Neurons[i].value = (2/(1+Math.exp(-4.9*Neurons[i].value))-1);
+		}
+		
+		double[] Output = new double[this.Output];
+		int j = 0;
+	//	String s = "Outputs: ";
+		for(int i=this.Neurons.length-this.Output;i<this.Neurons.length;i++){
+			Output[j] = this.Neurons[i].value;
+			
+			//s+= " "+Output[j];
+			j++;
+		}
+	//	System.out.println(s);
+		return Output;
+
+		
+		
+	}
+	
+public double[] stepold(double[] Inputs){
+		
+		//Inputs im Netzwerk setzen
+		int z=0;
+		for(double i:Inputs){
+			this.Neurons[z].value = i;
+			z++;
+		}
+//		if(this.Neurons.length > Output+this.Input){
+//			//this.Neurons.get(this.Input+Output).value = 1.0;
+//		}
+		
 		for(int i = this.Input;i<this.Neurons.length;i++){
 			Neuron n = this.Neurons[i];
 			double sum =0;
 			for(Gene g:n.incoming){
 				if(Neurons[g.into].value != 0.0&&g.weigth !=0.0){
 				sum += g.weigth * this.Neurons[g.into].value;
-			//	System.out.println("LOL: "+sum);
+				//System.out.println("LOL: "+sum);
 				}
 				
 			}

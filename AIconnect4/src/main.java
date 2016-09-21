@@ -20,22 +20,22 @@ import ki.visualizer;
 public class main {
 	public static void main(String[] args){
 
-	Pool p = new Pool(42,3);
+	Pool p = new Pool(4,1);
 	try {
-		p = Pool.load("/KI/tmp/Hyper/HyperNeat.ki");
+		p = Pool.load("/KI/tmp/Hyper/Neat.ki");
 	} catch (ClassNotFoundException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
 	}
 	if(p == null){
-		p = new Pool(42,3);
+		p = new Pool(4,1);
 	}
-	//HyperNeat test = new HyperNeat(42,3,0,7,6,p);
-	Player a = new Player(3,3);
+	HyperNeat test = new HyperNeat(42,3,0,7,6,p);
+	Player a = new Player(4,4);
 	Player b = new Player(1,1);
 	a.pool = p;
     Genome  current = p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1);
-    //a.h = test;
+    a.h = test;
 	gameDisplay dis = null;//gameDisplay.main(current, 0);
 	Game g = new Game(a,b);
 	int Iteration = 0;
@@ -74,7 +74,7 @@ public class main {
 			 used  = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 			 
 			System.out.println("Run: "+i+" Iteration: "+Iteration +" Iterating: "+args[0]+" Batching: "+args[1]+" Runtime: "+(System.currentTimeMillis()-round)/1000+" Iterationtime: "+(System.currentTimeMillis()-it)/1000+" Total: "+(System.currentTimeMillis()-started)/1000);
-			System.out.println("Total: "+total+" used "+used);
+			System.out.println("Total: "+total+" used "+used+" best Fitness:"+a.h.pool.getTopfitness()+" maxfit: "+a.h.pool.maxFitness);
 			
 
 			round = System.currentTimeMillis();
@@ -86,14 +86,14 @@ public class main {
 	}
 	current = p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1);
 	current.generateNetwork();
-	//test.generateweigths(current);
+	test.generateweigths(current);
 	
 	if(p.alreadyMeasured()){
 	while(p.alreadyMeasured()){
 		p.nextGenome();
 		current = p.Species.get(p.currentSpecies-1).Genomes.get(p.currentGenome-1);
 		current.generateNetwork();
-		//test.generateweigths(current);
+		test.generateweigths(current);
 	}
 	}
 	
@@ -142,14 +142,14 @@ public class main {
 		String null2 = "";
 		double[] input = new double[7];
 		//Umgestellt
-		Genome te = a.pool.Species.get(a.pool.currentSpecies-1).Genomes.get(a.pool.currentGenome-1);
+	//	Genome te = a.pool.Species.get(a.pool.currentSpecies-1).Genomes.get(a.pool.currentGenome-1);
 		p.save("/KI/tmp/Hyper/Neat.ki", 0);
 		for(Species s :p.Species){
 			for(Genome ge:s.Genomes){
 				ge.generateNetwork();
 				try {
-				//	test.step(input);
-					te.step(input);
+					test.step(input);
+				//	te.step(input);
 					int Spec = (p.Species.indexOf(s));
 					int Genome = s.Genomes.indexOf(ge);
 					if(Spec >999){
@@ -187,8 +187,8 @@ public class main {
 						}
 					}
 					neat.visualizer.visualize(ge, "/var/www/PICTURES/HyperGenerator/Generator Species "+null1+Spec+" Genome "+null2+Genome);
-					//test.generateweigths(ge);
-					//hyperneat.visualizer.visualize(test, "/var/www/PICTURES/Hyper/HN Species "+null1+Spec+" Genome "+null2+Genome,p.Species.indexOf(s),s.Genomes.indexOf(ge));
+					test.generateweigths(ge);
+					hyperneat.visualizer.visualize(test, "/var/www/PICTURES/Hyper/HN Species "+null1+Spec+" Genome "+null2+Genome,p.Species.indexOf(s),s.Genomes.indexOf(ge));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -213,12 +213,12 @@ if(file2 != null){
 		e.printStackTrace();
 	}
 	}
-best.generateNetwork();
-//test.generateweigths(best);
+best.generateNetwork();;
+test.generateweigths(best);
 g.reset();
 
 g.path = "/var/www/PICTURES/bestGame/";
-g.a.Playertype = 3;
+g.a.Playertype = 4;
 g.testplay = 1;
 g.run(1, dis, 1);
 g.testplay = 0;

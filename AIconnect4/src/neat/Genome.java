@@ -55,7 +55,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 		this.Inputs = in;
 		this.Outputs = out;
 		Genes = new ArrayList<Gene>();
-		this.fitness = -9999;
+		this.fitness = 0;
 		this.adjustedfitness = -9999;
 		Network = new Network();
 		this.maxneuron = 0;
@@ -85,6 +85,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 	
 	public void setFitness(int fitness){
 		if(fitness>this.parent.maxFitness){
+			//this.parent.Species.get(parent.currentSpecies-1).staleness = 0;
 			this.parent.maxFitness = fitness; 
 		}
 		this.fitness = fitness;
@@ -151,6 +152,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 		}
 		if(Check){
 			this.fitness = -999999;
+
 		}
 		g.Network = net;
 	

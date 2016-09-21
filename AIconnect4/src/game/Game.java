@@ -1,16 +1,16 @@
 package game;
 
 public class Game {
-	Player a;
-	Player b;
-	int[][] grid;
-	long started;
-	int set;
-	StringBuilder GRID;
-	int iteration;
-	int testplay;
+	public Player a;
+	public Player b;
+	public int[][] grid;
+	public long started;
+	public int set;
+	public StringBuilder GRID;
+	public int iteration;
+	public int testplay;
 	public int showgui;
-	String path = "";
+	public String path = "";
 
 	public Game(Player a, Player b){
 		grid = new int[6][7];
