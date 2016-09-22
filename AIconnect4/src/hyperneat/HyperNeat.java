@@ -1,10 +1,7 @@
 package hyperneat;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import neat.Gene;
@@ -62,7 +59,8 @@ public class HyperNeat {
 		ni = Input*2;
 		
 		//Generate empty Hidden to Output Links
-		for(int i = Input*Input;i<(Input*Input)+Input*Output;i++){
+		int layers = (int) Math.pow(Input,Hidden+2);
+		for(int i = layers;i<(layers)+Input*Output;i++){
 		    
 			this.Links.add(new Gene());
 			//From is i
@@ -83,7 +81,7 @@ public class HyperNeat {
 			this.Neurons[g.into].outgoing.add(g);
 		}
 		System.out.println("Neurons" + Neurons.length+" Links "+this.Links.size());
-	//	Collections.sort(Links);
+		Collections.sort(Links);
 			
 		}
 	
@@ -94,7 +92,7 @@ public class HyperNeat {
 	public void generateweigths(Genome CPPN){
 		//Genome CPPN = this.pool.Species.get(this.pool.currentSpecies-1).Genomes.get(this.pool.currentGenome-1);
 		CPPN.generateNetwork();
-		int i = 0;
+	//	int i = 0;
 		boolean Empty = true;
 		for(Gene g:Links){
 			double[] Inputs = new double[4];
@@ -104,7 +102,7 @@ public class HyperNeat {
 					Inputs[3] = (g.out/x)%y+1;
 				
 
-				g.weigth = CPPN.step(Inputs)[0];
+				g.weigth = ((CPPN.step(Inputs,11)[0]));
 				if(g.weigth != 0.0 ){
 					Empty = false;
 				}
@@ -135,6 +133,7 @@ public class HyperNeat {
 //					e.printStackTrace();
 //				}
 		}
+	//	System.out.println("Nodes"+CPPN.Network.Neurons.size()+" Genes "+CPPN.Genes.size());
 		if(Empty){
 			CPPN.fitness = -999999;
 //			this.pool.nextGenome();
@@ -190,8 +189,8 @@ public class HyperNeat {
 		//Fixing 1 Layer Output
 		for(int i = Input;i<Neurons.length-Output;i++){
 		//	System.out.println("f:"+Neurons[i].incoming.size());
-			//Neurons[i].value = Neurons[i].value/Neurons[i].incoming.size();
-			Neurons[i].value = (2/(1+Math.exp(-4.9*Neurons[i].value))-1);
+			Neurons[i].value = Neurons[i].value/Neurons[i].incoming.size();
+			Neurons[i].value = Math.sin(Neurons[i].value);//(2/(1+Math.exp(-4.9*Neurons[i].value))-1);
 		}
 		
 		//From 1 Layer to Output
@@ -206,26 +205,28 @@ public class HyperNeat {
 				}
 			}
 		}
-		//Fixing Output
+//		//Fixing Output
 		for(int i = this.Neurons.length-Output;i<Neurons.length;i++){
-		//	Neurons[i].value = Neurons[i].value/Neurons[i].incoming.size();
-			Neurons[i].value = (2/(1+Math.exp(-4.9*Neurons[i].value))-1);
+		Neurons[i].value = Neurons[i].value/Neurons[i].incoming.size();
+			//Neurons[i].value = (2/(1+Math.exp(-4.9*Neurons[i].value))-1);
 		}
 		
 		double[] Output = new double[this.Output];
 		int j = 0;
 	//	String s = "Outputs: ";
 		for(int i=this.Neurons.length-this.Output;i<this.Neurons.length;i++){
-			Output[j] = this.Neurons[i].value;
-			
-			//s+= " "+Output[j];
-			j++;
-		}
-	//	System.out.println(s);
-		return Output;
+//			if((int)Math.floor(Neurons[i].value)%2==0)
+//				Output[j] =  1.0; 
+//			else{
+//			Output[j]= 0.0;
+//			}
+					Output[j]=Math.round(2.0 / (1.0 + Math.exp(-(Neurons[i].value * 2))) - 1.0);//Math.round(Math.sin(Neurons[i].value));
 
-		
-		
+			j++;
+			
+		}
+		//System.out.println(s);
+		return Output;
 	}
 	
 public double[] stepold(double[] Inputs){
@@ -271,5 +272,57 @@ public double[] stepold(double[] Inputs){
 		
 		
 	}
+
+@Override
+public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + Hidden;
+	result = prime * result + Input;
+	result = prime * result + ((Links == null) ? 0 : Links.hashCode());
+	result = prime * result + Arrays.hashCode(Neurons);
+	result = prime * result + Output;
+	result = prime * result + ((pool == null) ? 0 : pool.hashCode());
+	result = prime * result + x;
+	result = prime * result + y;
+	return result;
+}
+
+@Override
+public boolean equals(Object obj) {
+	if (this == obj)
+		return true;
+	if (obj == null)
+		return false;
+	if (getClass() != obj.getClass())
+		return false;
+	HyperNeat other = (HyperNeat) obj;
+	if (Hidden != other.Hidden)
+		return false;
+	if (Input != other.Input)
+		return false;
+	if (Links == null) {
+		if (other.Links != null)
+			return false;
+	} else if (!Links.equals(other.Links))
+		return false;
+//	if (!Arrays.equals(Neurons, other.Neurons))
+//		return false;
+	if (Output != other.Output)
+		return false;
+//	if (pool == null) {
+//		if (other.pool != null)
+//			return false;
+//	} else if (!pool.equals(other.pool))
+//		return false;
+	if (x != other.x)
+		return false;
+	if (y != other.y)
+		return false;
+	return true;
+}
+
+
+
 	
 }

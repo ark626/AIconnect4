@@ -40,9 +40,9 @@ public class Genome implements Serializable,Comparable<Genome>{
 	public static final double NodeMutationChance = 0.50;
 	public static final double BiasMutationChance = 0.40;
 	public static final double ActivitionMutationChance = 0.5;
-	public static final double StepSize = 0.1;
+	public static final double StepSize = 0.2;
 	public static final double DisableMutationChance = 0.4;
-	public static final double EnableMutationChance = 0.4;//0.2
+	public static final double EnableMutationChance = 0.2;//0.4
 	public int Inputs = 42;
 	public int Outputs = 3;
 	public static final int MaxNodes = 10000;
@@ -89,6 +89,9 @@ public class Genome implements Serializable,Comparable<Genome>{
 			this.parent.maxFitness = fitness; 
 		}
 		this.fitness = fitness;
+		if(fitness == 0){
+			 this.fitness = 1;
+			}
 	}
 	public Genome copyGenome(){
 		Genome temp = new Genome(this.Inputs,this.Outputs,this.Generation,this.parent);
@@ -306,7 +309,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 	
 	public int mutate(int inovation){
 
-		Random r = new Random();
+	//	Random r = new Random();
 		for(int i =0;i<this.mutationrates.length;i++){
 			if(Math.round(Math.random())==1){
 				this.mutationrates[i] = this.mutationrates[i]* 0.95;
@@ -370,56 +373,63 @@ public class Genome implements Serializable,Comparable<Genome>{
 		return inovation;
 	}
 	
-public double[] step(double[] Inputs){
+public double[] step(double[] Inputs){	
+return this.step(Inputs, 10);
 	
-	//Inputs im Netzwerk setzen
-	int z=0;
-	for(double i:Inputs){
-		this.Network.Neurons.get(z).value = i;
-		z++;
-	}
-	//Biased Cell
-	if(this.Network.Neurons.size() > Outputs+this.Inputs){
-		this.Network.Neurons.get(this.Inputs+Outputs).value = 1.0;
-	}
-	
-	for(Neuron n:this.Network.Neurons){
-		double sum =0;
-		int act[] =new int[n.incoming.size()];
-		int ct = 0;
-		for(Gene g:n.incoming){
-			act[ct++] = g.activition;
-			sum += g.weigth * this.Network.Neurons.get(g.into).value;
-			
-		}
-		if(n.incoming.size() >1){
-			int currentbest = 0;
-			int currenccount= 0;
-			int temp = 0;
-			for(int actid=0;actid<10;actid++){
-				temp = 0;
-				for(int a:act){
-					if(actid == a){
-						temp++;
-					}
-				}
-				if(temp > currenccount){
-					currenccount = temp;
-					currentbest = actid;
-				}
-				}
-			n.value = activition(currentbest,sum);
-		}
-	}
-	
-	double[] Output = new double[this.Outputs];
-	for(int i=0;i<this.Outputs;i++){
-		Output[i] = this.Network.Neurons.get(this.Inputs+i).value;
-	}
-	return Output;
+}
 
-	
-	
+
+public double[] step(double[] Inputs, int act){	
+//Inputs im Netzwerk setzen
+int z=0;
+for(double i:Inputs){
+	this.Network.Neurons.get(z).value = i;
+	z++;
+}
+//Biased Cell
+if(this.Network.Neurons.size() > Outputs+this.Inputs){
+	this.Network.Neurons.get(this.Inputs+Outputs).value = 1.0;
+}
+
+for(Neuron n:this.Network.Neurons){
+	double sum =0;
+	//int act[] =new int[n.incoming.size()];
+	int ct = 0;
+	for(Gene g:n.incoming){
+	//	act[ct++] = g.activition;
+		sum += g.weigth * this.Network.Neurons.get(g.into).value;
+		
+	}
+//	if(n.incoming.size() >1){
+//		int currentbest = 0;
+//		int currenccount= 0;
+//		int temp = 0;
+//		for(int actid=0;actid<10;actid++){
+//			temp = 0;
+//			for(int a:act){
+//				if(actid == a){
+//					temp++;
+//				}
+//			}
+//			if(temp > currenccount){
+//				currenccount = temp;
+//				currentbest = actid;
+//			}
+//			}
+		n.value = sum;//activition(act,sum);//currentbest
+//	}
+
+}
+
+double[] Output = new double[this.Outputs];
+for(int i=0;i<this.Outputs;i++){
+	Output[i] = activition(act,this.Network.Neurons.get(this.Inputs+i).value);
+	//Output[i] = this.Network.Neurons.get(this.Inputs+i).value;
+}
+return Output;
+
+
+
 }
 
 public double activition(int n,double value){
@@ -440,7 +450,15 @@ public double activition(int n,double value){
 	case 8:if((int)Math.floor(value)%2==0)return 1.0-2.0*(value-Math.floor(value));
 	return -1-2*(value-Math.floor(value));
 	case 9: return -value;
-//	case 0: return (2/(1+Math.exp(-4.9*value))-1);//Sigmoid
+	case 10: return (2/(1+Math.exp(-4.9*value))-1);
+	case 11:return value;
+	case 12:if((int)Math.floor(value)%2==0){
+		return 1.0;
+	}
+	else{
+	return 0.0;
+	}
+	//Sigmoid
 //	case 1: return value; //Linear
 //	case 2: return Math.round(value); //Binary
 //	case 3: return Math.exp(-(value*value )); //Gaussian

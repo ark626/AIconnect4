@@ -99,7 +99,7 @@ public class Pool implements Serializable {
 	}
 
 	public int getTopfitness(){
-		Genome temp = this.Species.get(0).Genomes.get(0);//this.Species.get(0).Genomes.get(0);
+	//	Genome temp = this.Species.get(0).Genomes.get(0);//this.Species.get(0).Genomes.get(0);
 		int maxfit = Integer.MIN_VALUE;//temp.fitness;
 		for(Species s:this.Species){
 			for(Genome g:s.Genomes){

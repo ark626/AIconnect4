@@ -44,6 +44,7 @@ public class mainwin {
 	long it = System.currentTimeMillis();
 	long total = Runtime.getRuntime().totalMemory();
 	long used  = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+	boolean testi = true;
 	
 	//Filewriter
 	
@@ -96,12 +97,34 @@ public class mainwin {
 		test.generateweigths(current);
 	}
 	}
-	
-	
 
+String st ="";
 	for(int j = 0;j<Integer.parseInt(args[1]);j++){
+if(testi){
+	int bests=0;
+	int bestg=0;
+	for(Species s:test.pool.Species){
+	if(s.Genomes.contains(test.pool.getbest())){
+		bestg = 	s.Genomes.indexOf(test.pool.getbest());
+	    bests = test.pool.Species.indexOf(s);
+		test.pool.currentSpecies = bests+1;
+		test.pool.currentGenome = bestg+1;
+		test.pool.getbest().generateNetwork();
+		test.generateweigths(test.pool.getbest());
+	break;
+	}
+	}
+
+	 st = "TEST Fitness vorher: "+test.pool.getbest().fitness;
+	
+	
+}
 		g.reset();
 		g.run(i, dis, j);
+		if(testi){
+			System.out.println(st+" Fitness nachher: "+test.pool.getbest().fitness);
+			testi = false;
+		}
 		
 	}
 //	current.fitness = current.fitness / Integer.parseInt(args[1]);
