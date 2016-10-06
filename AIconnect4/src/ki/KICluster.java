@@ -1,6 +1,7 @@
 package ki;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -84,10 +85,9 @@ public class KICluster implements java.io.Serializable{
 	
 
 	
-	public static KICluster load(String s){
+	public static KICluster load(String s) throws IOException, ClassNotFoundException{
 		  KICluster e = new KICluster(1);
-	      try
-	      {
+
 	         FileInputStream fileIn = new FileInputStream(s);
 	         ObjectInputStream in = new ObjectInputStream(fileIn);
 	         int i = in.readInt();
@@ -121,14 +121,7 @@ public class KICluster implements java.io.Serializable{
 	         in.close();
 	         fileIn.close();
 	         return e;
-	      }catch(IOException i)
-	      {
-	    	  return new KICluster(42,3,4,1);
-
-	      }catch(ClassNotFoundException c)
-	      {
-	    	  return new KICluster(42,3,4,1);
-	      }
+	      
 		
 	}
 	

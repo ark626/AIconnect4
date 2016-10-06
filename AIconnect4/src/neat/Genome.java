@@ -40,7 +40,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 	public static final double NodeMutationChance = 0.50;
 	public static final double BiasMutationChance = 0.40;
 	public static final double ActivitionMutationChance = 0.5;
-	public static final double StepSize = 0.2;
+	public static final double StepSize = 0.1;
 	public static final double DisableMutationChance = 0.4;
 	public static final double EnableMutationChance = 0.2;//0.4
 	public int Inputs = 42;
@@ -56,7 +56,7 @@ public class Genome implements Serializable,Comparable<Genome>{
 		this.Outputs = out;
 		Genes = new ArrayList<Gene>();
 		this.fitness = 0;
-		this.adjustedfitness = -9999;
+		this.adjustedfitness = 0;
 		Network = new Network();
 		this.maxneuron = 0;
 		this.globalRank = 0;
@@ -394,7 +394,7 @@ if(this.Network.Neurons.size() > Outputs+this.Inputs){
 for(Neuron n:this.Network.Neurons){
 	double sum =0;
 	//int act[] =new int[n.incoming.size()];
-	int ct = 0;
+	//int ct = 0;
 	for(Gene g:n.incoming){
 	//	act[ct++] = g.activition;
 		sum += g.weigth * this.Network.Neurons.get(g.into).value;
@@ -416,7 +416,7 @@ for(Neuron n:this.Network.Neurons){
 //				currentbest = actid;
 //			}
 //			}
-		n.value = sum;//activition(act,sum);//currentbest
+		n.value = activition(act,sum);//currentbest
 //	}
 
 }
@@ -458,6 +458,7 @@ public double activition(int n,double value){
 	else{
 	return 0.0;
 	}
+	case 13:return 2.0 / (1.0 + Math.exp(-(value * 2))) - 1.0;
 	//Sigmoid
 //	case 1: return value; //Linear
 //	case 2: return Math.round(value); //Binary

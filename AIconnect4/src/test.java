@@ -6,17 +6,49 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import eshyperneat.EsHyperNeat;
 import hyperneat.HyperNeat;
 import neat.Gene;
 import neat.Genome;
 import neat.Pool;
 
 public class test {
+	
+	@Test 
+	public void Estest(){
+		Pool pool = new Pool(5,1);
+		EsHyperNeat eh = new EsHyperNeat( 16, 1, 2, pool);
+		Genome g = null;
+		boolean notdone = true;
+		while(notdone){
+		while(pool.alreadyMeasured()){
+			pool.nextGenome();
+		}
+		g = pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1);
+		g.generateNetwork();
+		eh.generateweigths(g);
+		String s = "From 0 to ";
+				s+= eh.Neurons.get(0).Neurons[0].outgoing.get(0).into;
+				s+= eh.Neurons.get(1).Neurons[eh.Neurons.get(0).Neurons[0].outgoing.get(0).into];
+				
+				System.out.println(s);
+		or(eh);
+		if(g.fitness>=5){
+			notdone = false;
+			for(Gene ge:g.Genes){
+				System.out.println("Gen: "+ge.into+" "+ge.out+" "+ge.weigth);
+				System.out.println("Solution found after: "+pool.generation);
+			}
+		}
+		}
+		
+	}
 	@Test
 	public  void Teststarter(){
 		boolean notdone = true;
 		Pool p = new Pool(4,1);
 		HyperNeat h = new HyperNeat(2,1,0,2,1,p);//(int Input,int Output, int Hidden, int xsize,int ysize,Pool pool){
+		
 
 		Genome g = null;
 		while(notdone){
@@ -73,7 +105,7 @@ public class test {
 		if(g.fitness>=5){
 		notdone = false;
 		for(Gene ge:g.Genes){
-			System.out.println("Gen: "+ge.into+" "+ge.out+" "+ge.weigth);
+			System.out.println("Gen: "+ge.into+" "+" "+" "+" "+ge.out+" "+ge.weigth);
 			System.out.println("Solution found after: "+p.generation);
 		}
 		}
@@ -127,7 +159,7 @@ public class test {
 		inputs[0] =0; 
 		inputs[1] =0; 
 		if(g.step(inputs)[0]==0.0){
-			fitness += 1;
+			fitness += 3;
 			s+= "1";
 		}
 		inputs[0] =1; 
@@ -148,9 +180,41 @@ public class test {
 			fitness += 1;
 			s+="4";
 		}
-	//	System.out.println(s);
+		System.out.println(s);
 	//	System.out.println(g.step(inputs,9)[0]);
 		g.pool.Species.get(g.pool.currentSpecies-1).Genomes.get(g.pool.currentGenome-1).setFitness(fitness);
 	}
 
+	public static void or(EsHyperNeat g){
+		String s = "";
+		double[] inputs = new double[2];
+		int fitness = 1;
+		inputs[0] =0; 
+		inputs[1] =0; 
+		if(g.step(inputs)[0]==0.0){
+			fitness += 3;
+			s+= "1";
+		}
+		inputs[0] =1; 
+		inputs[1] =0; 
+		if(g.step(inputs)[0]==1.0){
+			fitness += 1;
+			s+="2";
+		}
+		inputs[0] =0; 
+		inputs[1] =1; 
+		if(g.step(inputs)[0]==1.0){
+			fitness += 1;
+			s+="3";
+		}
+		inputs[0] =1; 
+		inputs[1] =1; 
+		if(g.step(inputs)[0]==1.0){
+			fitness += 1;
+			s+="4";
+		}
+		System.out.println(s);
+	//	System.out.println(g.step(inputs,9)[0]);
+		g.pool.Species.get(g.pool.currentSpecies-1).Genomes.get(g.pool.currentGenome-1).setFitness(fitness);
+	}
 }

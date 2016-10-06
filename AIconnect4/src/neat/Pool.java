@@ -156,7 +156,7 @@ public class Pool implements Serializable {
 		ArrayList<Species> survivors = new ArrayList<Species>();
 		for(Species s:this.Species){
 		s.calculateAverageFitness();
-			int breed = (int)Math.ceil(((double)s.averageFitness/(double)sum*Population)) ;
+			int breed = (int)Math.floor(((double)s.averageFitness/(double)sum*Population)) ;
 
 			if(breed >= 1){
 				survivors.add(s);
@@ -297,6 +297,8 @@ public class Pool implements Serializable {
 			Collections.sort(s.Genomes);
 			
 			int remain = (int)Math.ceil(s.Genomes.size()/2);
+			if(remain < 1)
+				remain = 1;
 			if(cutToOne){
 				remain = 1;
 			}
@@ -309,7 +311,7 @@ public class Pool implements Serializable {
 //			for(Genome g: remove){
 //				s.Genomes.remove(g);
 //			}
-			while(s.Genomes.size()-1 > remain){
+			while(s.Genomes.size() > remain){
 				s.Genomes.remove(s.Genomes.size()-1);
 				
 			}
@@ -332,14 +334,14 @@ public class Pool implements Serializable {
 		int sum = totalAverageFitness();
 		ArrayList<Genome> children = new ArrayList<Genome>();
 		for(Species s:this.Species){
-			int breed = (int)Math.ceil(Math.floor((double)s.averageFitness/(double)sum*Population)-1);
+			int breed = (int)Math.floor(((double)s.averageFitness/(double)sum*Population)-1);
 			for(int i = 0;i<breed;i++){
 				Genome ge = s.breedChild();
 				this.Innovation = ge.mutate(this.Innovation);
-				while(ge.Genes.size() ==0){
-					ge = s.breedChild();
-				this.Innovation = ge.mutate(this.Innovation);
-				}
+//				while(ge.Genes.size() ==0){
+//					ge = s.breedChild();
+//				this.Innovation = ge.mutate(this.Innovation);
+//				}
 				
 				children.add(ge);
 			}

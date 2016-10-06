@@ -3,12 +3,16 @@ package neat;
 import java.io.Serializable;
 
 public class Gene implements Serializable,Comparable<Gene>{
-	public int into;
-	public int out;
-	public double weigth;
-	public boolean enabled;
-	public int innovation;
-	public int activition;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -27186992329707267L;
+	private int into;
+	private int out;
+	private double weigth;
+	private boolean enabled;
+	private int innovation;
+	private int activition;
 	
 	public Gene() {
 		super();

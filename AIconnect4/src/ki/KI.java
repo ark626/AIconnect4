@@ -42,7 +42,7 @@ public class KI implements java.io.Serializable, Comparable {
 		
 		generation =0;
 		////System.out.println("Anzahl Nodes: "+this.Nodes.size());
-		this.mutate(4);
+		this.mutate(10);
 	}
 	
 	public KI copy(){
@@ -59,6 +59,13 @@ public class KI implements java.io.Serializable, Comparable {
 			ki.Links.add(li);
 		}
 		return ki;
+	}
+	
+	public void setObservation(double values[]){
+		int i = 0;
+		for(double d:values){
+		this.Nodes.get(out+i++).setValue(d);
+		}
 	}
 	
 	public KI(int j,int in, int out, int hid,int hidlayer){
@@ -327,8 +334,29 @@ public class KI implements java.io.Serializable, Comparable {
 		
 	}
 	
-	
 	public int step(){
+		double[] d = this.step2();
+		double max = 0.0;
+		int curmax= 0;
+		String nodes = "";
+		for(int i =out-1;i>=0;i--){
+				max = Math.round(this.Nodes.get(i).getValue());
+				if(((int)((double)curmax + max*Math.pow((double)2, (double)i)))>=0.0 ){
+					curmax = (int)((double)curmax + max*Math.pow((double)2, (double)i));
+				}
+				if(curmax >6){
+					curmax = 0;
+				}
+	
+			//	System.out.println(curmax);
+			
+			nodes += " "+this.Nodes.get(i).getValue();
+		}
+		System.out.println("Step Calculation: "+nodes+" Step: "+ Math.round(curmax));
+		
+		return Math.round(curmax);
+	}
+	public double[] step2(){
 
 		//Add nulify for Hiddensl1
 		for(int i=this.out+this.in;i<in+out+hid;i++){
@@ -418,7 +446,7 @@ public class KI implements java.io.Serializable, Comparable {
 		for(int i =0;i<hth.length;i++){
 	if(hth[i]>0){
 				
-				double j = this.Nodes.get(i+in+out+hid).getValue()/hth[i];
+				double j = this.Nodes.get(i+in+out+hid).getValue()/hth.length;
 				//Binär
 //				if(j > 0){
 //					this.Nodes.get(i).setValue(1);	
@@ -433,18 +461,19 @@ public class KI implements java.io.Serializable, Comparable {
 //				this.Nodes.get(i).setValue(Math.round(j));
 
 				//Sigmoid
-				double a = 5.0;
-				if(j <=-1){
-					j = -1;
-				}
-				else{
-					if(j >=1){
-						j = 1;
-					}
-					else{
-				j = 1.0/(1.0+Math.exp(-j*a));
-				}
-				}
+//				double a = 5.0;
+//				if(j <=-1){
+//					j = -1;
+//				}
+//				else{
+//					if(j >=1){
+//						j = 1;
+//					}
+//					else{
+//				j = 1.0/(1.0+Math.exp(-j*a));
+//				}
+//				}
+				j=(2/(1+Math.exp(-4.9*j))-1);
 				this.Nodes.get(i+in+out+hid).setValue(j);
 				
 			}
@@ -464,17 +493,17 @@ public class KI implements java.io.Serializable, Comparable {
 		}
 		
 		for(int i =0;i<hto.length;i++){
-			if(hto[i]>0){
-				
-				double j = this.Nodes.get(i).getValue()/hto[i];
-
-				//Binär
-//				if(j > 0){
-//					this.Nodes.get(i).setValue(1);	
-//				}
-//				else{
-//					this.Nodes.get(i).setValue(0);
-//				}
+//			if(hto[i]>0){
+//				
+				double j = this.Nodes.get(i).getValue()/hto.length;
+//
+//				//Binär
+				if(j > 0){
+					this.Nodes.get(i).setValue(1);	
+				}
+				else{
+					this.Nodes.get(i).setValue(0);
+				}
 				//Linear
 //				this.Nodes.get(i).setValue(j);
 //				
@@ -482,26 +511,28 @@ public class KI implements java.io.Serializable, Comparable {
 //				this.Nodes.get(i).setValue(Math.round(j));
 				
 				//Sigmoid
-				double a = 5.0;
-				if(j <=-1){
-					j = -1;
-				}
-				else{
-					if(j >=1){
-						j = 1;
-					}
-					else{
-				j = 1.0/(1.0+Math.exp(-j*a));
-				}
-				}
+//				double a = 5.0;
+//				if(j <=-1){
+//					j = -1;
+//				}
+//				else{
+//					if(j >=1){
+//						j = 1;
+//					}
+//					else{
+//				j = 1.0/(1.0+Math.exp(-j*a));
+//				}
+//				}
+				//if((int)Math.floor(j)%2==0)j= 1.0-2.0*(j-Math.floor(j));
 				this.Nodes.get(i).setValue(j);
-			}
+//			}
+				
 		}
-		
+
 //	for(Link l :this.Links){
 //		Node to = this.Nodes.get(l.getTo());
 //		Node from = this.Nodes.get(l.getFrom());
-//		to.setValue(from.getValue()*l.getValue()+to.getValue());
+//		to.setValue(to.getValue()+from.getValue()*l.getValue()+to.getValue());
 //	}
 //	String s = "Values Nodes: ";
 //	for(Node n:this.Nodes){
@@ -510,23 +541,19 @@ public class KI implements java.io.Serializable, Comparable {
 //	System.out.println(s);
 		double max = 0.0;
 		int curmax= 0;
+		double[] ret = new double[this.out];
 		String nodes = "";
+		int z = 0;
 		for(int i =out-1;i>=0;i--){
-				max = Math.round(this.Nodes.get(i).getValue());
-				if(((int)((double)curmax + max*Math.pow((double)2, (double)i)))>=0.0 ){
-					curmax = (int)((double)curmax + max*Math.pow((double)2, (double)i));
-				}
-				if(curmax >6){
-					curmax = 0;
-				}
-	
-			//	System.out.println(curmax);
-			
+			ret[z++]  = (this.Nodes.get(i).getValue());
+//				if(((int)((double)curmax + max*Math.pow((double)2, (double)i)))>=0.0 ){
+//					ret[z++] = (int)((double)curmax + max*Math.pow((double)2, (double)i));
+		//		}
 			nodes += " "+this.Nodes.get(i).getValue();
 		}
-		System.out.println("Step Calculation: "+nodes+" Step: "+ Math.round(curmax));
+//		System.out.println("Step Calculation: "+nodes+" Step: "+ Math.round(curmax));
 		
-		return Math.round(curmax);
+		return ret;
 	}
 	
 	public KI offspring(KI father){
@@ -537,7 +564,6 @@ public class KI implements java.io.Serializable, Comparable {
 			linksize = this.Links.size();
 		}
 		else{
-			linksize = father.Links.size();
 		}
 		
 		for(int i = 0;i<linksize;i++){
