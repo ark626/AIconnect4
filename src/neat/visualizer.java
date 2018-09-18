@@ -18,9 +18,12 @@ import javax.imageio.ImageIO;
 
 
 public class visualizer {
+    
+    public static final int MAXX = 1100-(640-550);
+    public static final int MINX = 460;
   static public void visualize(Genome g,String s) throws Exception {
     try {
-      int width = 640, height = 480;
+      int width = 1024, height = 480;
       if(g.getNetwork() == null||g.getNetwork().Neurons.size() ==0){
       g.generateNetwork();
       }
@@ -67,14 +70,14 @@ public class visualizer {
     	  }
     	  else{
     		  if(i<g.getInputs()+g.getOutputs()){
-    			  Nodes.add(600.0);
+    			  Nodes.add(1024-40.0);
     			  Nodes.add(30.0+25*(i-g.getInputs()));
     			  Nodes.add(n.getValue());
     		  }
     		  else{
         		  if(i==g.getInputs()+g.getOutputs()){
           			//Bias Cell
-          			  Nodes.add(80.0);
+          			  Nodes.add(160.0);
           			  Nodes.add(450.0);
           			  Nodes.add(n.getValue());
           		  }
@@ -115,11 +118,11 @@ public class visualizer {
     			 if(x1 >= x2){
     				 x1 -= 60;
     			 }
-    			 if(x1 <280){
-    				 x1 = 280;
+    			 if(x1 <MINX){
+    				 x1 = MINX;
     			 }
-    			 if(x1>550){
-    				 x1 = 550;
+    			 if(x1>MAXX){
+    				 x1 = MAXX;
     			 }
     			 y1 = (int)Math.round(0.75*y1+0.25*y2);
     			 
@@ -130,11 +133,11 @@ public class visualizer {
     			 if(x1 >= x2){
     				 x2 += 60;
     			 }
-    			 if(x2 <280){
-    				 x2 = 280;
+    			 if(x2 <MINX){
+    				 x2 = MINX;
     			 }
-    			 if(x2>550){
-    				 x2 = 550;
+    			 if(x2>MAXX){
+    				 x2 = MAXX;
     			 }
     			 y2 = (int)Math.round(0.75*y2+0.25*y1);
     		 
@@ -221,9 +224,12 @@ public class visualizer {
       message = se;
       ig2.drawString(message, (width - stringWidth-40) / 2, (height / 2)+150 - stringHeight );
       ig2.drawString("Inputs",20,20);
-      ig2.drawString("Hidden", 210, 20);
-      ig2.drawRect(270, 20, 560-270, 25*13);
-      ig2.drawRect(20-15, 100-15, 25*10-10, 25*9);
+      ig2.drawString("Hidden", 450, 20);
+//      ig2.drawRect(270, 20, 560-270, 25*13);
+//      ig2.drawRect(20-15, 100-15, 25*10-10, 25*9);
+    ig2.drawRect(440, 20, 440, 25*13);
+    ig2.drawRect(20-15, 100-30, 430, 25*9);
+      
 //      Image b  = bi.getScaledInstance(1280, 960, BufferedImage.SCALE_FAST);
 //      bi = new BufferedImage(1280,960,BufferedImage.TYPE_INT_ARGB);
 //      bi.getGraphics().drawImage(b, 0, 0, null);

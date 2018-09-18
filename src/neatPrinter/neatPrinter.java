@@ -157,7 +157,9 @@ public class neatPrinter {
 
                         }
                     }
-                    neat.visualizer.visualize(ge,filePathPictures+ "/Species " + null1 + Spec + " Genome " + null2 + Genome);
+                    File file2 = new File(filePathPictures+ "/Species " + null1 + Spec );
+                    file2.mkdir();
+                    neat.visualizer.visualize(ge,filePathPictures+ "/Species " + null1 + Spec +"/"+ " Genome " + null2 + Genome);
 
                } catch (Exception e) {
                     // TODO Auto-generated catch block
