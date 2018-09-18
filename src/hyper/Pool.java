@@ -1,4 +1,4 @@
-package neat;
+package hyper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +28,7 @@ public class Pool implements Serializable {
     public static final double DeltaWeights = 0.4;
     public static final double DeltaThreshold =  1;
     public static final double StaleSpecies = 15; // 15
-    private static final double SPECIESPERCENTAGE = 0.2;//normally 0.5
+    private static final double SPECIESPERCENTAGE = 0.5;//normally 0.5
     private static final int MINSPECIES = 5;
     private static final int MAXSPECIES = 15;
     public int Inputs = 42;
@@ -68,7 +68,7 @@ public class Pool implements Serializable {
 
     public Genome getbest() {
         Genome temp = this.Species.get(0).Genomes.get(0);
-        int maxfit = Integer.MIN_VALUE;// temp.fitness;
+        int maxfit =  temp.getFitness();
         for (Species s : this.Species) {
             for (Genome g : s.Genomes) {
                 if (g.getFitness() != 0) {
@@ -294,7 +294,7 @@ public class Pool implements Serializable {
 
 
         for (Species s : this.Species) {
-            Collections.sort(s.Genomes,Genome.Comparators.DESCENDING);
+            Collections.sort(s.Genomes,Genome.Comparators.ASCENDING);
 
             int remain = (int) Math.ceil(s.Genomes.size() * SPECIESPERCENTAGE);
             if (remain < 1)
@@ -446,11 +446,8 @@ public class Pool implements Serializable {
             }
             out.close();
             fileOut.close();
-            String saveStatement = "Serialized data is saved in " + f.getAbsolutePath() + " with Generation " + this.generation + " Fitness " + this.getbest().getFitness()+" First: "+this.Species.get(0).getGenomes().get(0).getFitness()+"/"+this.Species.get(0).getAverageFitness();
-            if(this.Species.size()>2){        
-            saveStatement += " Second: "+this.Species.get(1).getGenomes().get(0).getFitness()+"/"+this.Species.get(1).getAverageFitness();
-            }
-            System.out.println(saveStatement);
+            System.out.println("Serialized data is saved in " + f.getAbsolutePath() + " with Generation " + this.generation + " Fitness " + this.getbest().getFitness()+" First: "+this.Species.get(0).getGenomes().get(0).getFitness()
+                    +" Second: "+this.Species.get(1).getGenomes().get(0).getFitness());
         }
         // catch(FileNotFoundException e){
         // File f = new File(s);

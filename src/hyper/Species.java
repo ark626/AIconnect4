@@ -1,4 +1,4 @@
-package neat;
+package hyper;
 
 import java.util.ArrayList;
 import java.util.Random;

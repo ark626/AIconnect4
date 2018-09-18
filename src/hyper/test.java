@@ -1,4 +1,4 @@
-package neat.test;
+package hyper;
 
 import static org.junit.Assert.*;
 
@@ -6,9 +6,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import neat.Gene;
-import neat.Genome;
-import neat.Pool;
+
 
 public class test {
 	static int input = 10;
@@ -32,8 +30,8 @@ public class test {
      fail("Outputs nodes differ from input" + g.getOutputs()+" "+j);
      if(g.getGeneration()!=k)
      fail("Generation differs from input" + g.getGeneration()+" "+k);
-     if(g.getNetwork().Neurons.size()!=i+j){
-     fail("Networks neurons differs from Output+Input"+g.getNetwork().Neurons.size()+" "+i+j);
+     if(g.getNetwork().Neurons.length!=i+j){
+     fail("Networks neurons differs from Output+Input"+g.getNetwork().Neurons.length+" "+i+j);
      }
      }
      }
@@ -93,7 +91,7 @@ public class test {
          double result[] = new double[1];
 
          test.currentGenome().generateNetwork();
-         result = test.currentGenome().step(input);
+         result = test.currentGenome().evaluateNetwork(input);
          
          if(result[0] <= 0.0){
              System.out.println("First");
@@ -101,7 +99,7 @@ public class test {
          }
          
          input[0] = 1;
-         result = test.currentGenome().step(input);
+         result = test.currentGenome().evaluateNetwork(input);
          
          if(result[0] > 0.0){
              System.out.println("Second");
@@ -109,13 +107,13 @@ public class test {
          }
          
          input[1] = 1;
-         result = test.currentGenome().step(input);
+         result = test.currentGenome().evaluateNetwork(input);
          if(result[0] > 0.0){
              System.out.println("Third");
              test.currentGenome().setFitness(test.currentGenome().getFitness()+10);
          }
          input[0] = 0;
-         result = test.currentGenome().step(input);
+         result = test.currentGenome().evaluateNetwork(input);
          if(result[0] > 0.0){
              System.out.println("Fourth");
              test.currentGenome().setFitness(test.currentGenome().getFitness()+10);
@@ -151,7 +149,7 @@ public class test {
          double result[] = new double[1];
 
          test.currentGenome().generateNetwork();
-         result = test.currentGenome().step(input);
+         result = test.currentGenome().evaluateNetwork(input);
          
          if(result[0] <= 0.0&&result[1] <=0.0){
            //  System.out.println("First");
@@ -159,7 +157,7 @@ public class test {
          }
          
          input[0] = 1;
-         result = test.currentGenome().step(input);
+         result = test.currentGenome().evaluateNetwork(input);
          
          if(result[0] > 0.0&&result[1]<=0.0){
            //  System.out.println("Second");
@@ -167,13 +165,13 @@ public class test {
          }
          
          input[1] = 1;
-         result = test.currentGenome().step(input);
+         result = test.currentGenome().evaluateNetwork(input);
          if(result[0] > 0.0&&result[1] >0.0){
            //  System.out.println("Third");
              test.currentGenome().setFitness(test.currentGenome().getFitness()+10);
          }
          input[0] = 0;
-         result = test.currentGenome().step(input);
+         result = test.currentGenome().evaluateNetwork(input);
          if(result[0] > 0.0&&result[1]<=0.0){
             // System.out.println("Fourth");
              test.currentGenome().setFitness(test.currentGenome().getFitness()+10);

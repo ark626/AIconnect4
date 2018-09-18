@@ -1,4 +1,4 @@
-package neat;
+package hyper;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
-
-import eshyperneat.UtilityforMath;
 
 public class Genome implements Serializable, Comparable<Genome> {
     /**
@@ -48,7 +46,7 @@ public class Genome implements Serializable, Comparable<Genome> {
     private static final double EnableMutationChance =  0.2;
     private int Inputs = 42;
     private int Outputs = 3;
-    // private static final int MaxNodes = 10000;
+    private static final int MaxNodes = 10000;
 
 
     public Genome(int in, int out, int gen, Pool p) {
@@ -113,58 +111,76 @@ public class Genome implements Serializable, Comparable<Genome> {
     }
 
     public void generateNetwork() {
-        Genome g = this;
+        
         Network net = new Network();
+        net.Neurons = new Neuron[MaxNodes+Outputs+Inputs];
         // Harte Knoten einfügen
         for (int i = 0; i < Inputs; i++) {
 
-            net.Neurons.add(new Neuron());
+            net.Neurons[i] = new Neuron();
         }
 
         for (int i = 0; i < Outputs; i++) {
-            net.Neurons.add(new Neuron());
+            net.Neurons[i+MaxNodes]= new Neuron();
         }
 
-        if (g.Genes != null && g.Genes.size() > 1) {
-            Collections.sort(g.Genes);
+        if (this.Genes != null && this.Genes.size() > 1) {
+            Collections.sort(this.Genes);
         }
-        boolean Check = true;
-        for (Gene ge : g.Genes) {
-            if (ge.isEnabled()) {
-                boolean checker = false;
-                while (net.Neurons.size() <= ge.getOut()) {
-                    checker = true;
-                    net.Neurons.add(new Neuron());
-                    net.Neurons.get(net.Neurons.size() - 1).setActive(false);
-                    if (ge.getActivition() != 0) {
-                        net.Neurons.get(net.Neurons.size() - 1).setActivition(ge.getActivition());
-                    }
+
+        for(Gene gene :this.Genes){
+
+            if (gene.isEnabled()){ 
+                if(net.Neurons[gene.getOut()] == null){
+                    net.Neurons[gene.getOut()] = new Neuron();
                 }
-                net.Neurons.get(net.Neurons.size() - 1).setActive(true);
-                net.Neurons.get(ge.getOut()).addIncoming(ge);
-                checker = false;
-                while (net.Neurons.size() <= ge.getInto()) {
-                    checker = true;
-                    net.Neurons.add(new Neuron());
-                    net.Neurons.get(net.Neurons.size() - 1).setActive(false);
-                }
-                net.Neurons.get(net.Neurons.size() - 1).setActive(true);
-                // if(ge.out == Inputs+Outputs){
-                // net.Neurons.get(Inputs+Outputs).value = 1.0;
-                // }
-                if (ge.getWeigth() != 0.0) {
-                    Check = false;
+                Neuron neuron = net.Neurons[gene.getOut()];
+                neuron.addIncoming(gene);
+                        
+                if( net.Neurons[gene.getInto()] == null) {
+                    net.Neurons[gene.getInto()] = new Neuron();
                 }
             }
         }
-        if (Check) {
-            this.fitness = -999999;
-
-        }
-        g.Network = net;
-
+        
+        this.Network = net;
+    
     }
-
+    
+    public double[] evaluateNetwork(double[] inputs){
+        
+    
+   // table.insert(inputs, 1)
+        
+        for(int i=0;i<inputs.length;i++){
+            this.Network.Neurons[i].setValue(inputs[i]);
+        }
+        
+        for(Neuron neuron:Network.Neurons){
+            if(neuron != null){
+                double sum = 0;
+                for(Gene gene:neuron.getIncoming()){
+                    Gene incoming = gene;
+                    Neuron other = Network.Neurons[incoming.getInto()];
+                    sum += incoming.getWeigth() * other.getValue();
+                }
+                if(neuron.getIncoming().size()>0){
+                    neuron.setValue((2 / (1 + Math.exp(-4.9 * sum)) - 1) );
+                }
+            }
+        }
+        
+        double[] outputs = new double[Outputs];
+        for(int i = 0;i<outputs.length;i++){
+            if(Network.Neurons[MaxNodes+i].getValue()>0){
+                outputs[i] = 1.0;
+            }
+            else{
+                outputs[i] = 0.0;
+            }
+        }
+        return outputs;
+    }
 
     /**
      * Gets the id of an Random Neuron
@@ -173,35 +189,36 @@ public class Genome implements Serializable, Comparable<Genome> {
      * @return
      */
     public int randomNeuron(boolean nonInput) {
-        ArrayList<Integer> Neurons = new ArrayList<Integer>();
-
-        if (nonInput) {
-
-            for (int i = 0; i < Inputs; i++) {
-                Neurons.add(i);
+       
+        boolean[] neurons = new boolean[Inputs+Outputs+MaxNodes];
+        if(!nonInput){
+            for(int i = 0;i<Inputs;i++){
+                neurons[i] = true;
             }
         }
-
-        for (int i = Inputs; i < Inputs + Outputs + 1; i++) {
-            Neurons.add(i);
+        for(int i = 0;i<Outputs;i++){
+            neurons[i+MaxNodes]= true;
         }
-
-        for (int i = 0; i < this.Genes.size(); i++) {
-            if (!nonInput || this.Genes.get(i).getInto() > Inputs && this.Genes.get(i).getOut() != Inputs + Outputs) {
-                Neurons.add(this.Genes.get(i).getInto());
-
-
+        
+        for(int i = 0;i<this.Genes.size();i++){
+            if(!nonInput || Genes.get(i).getInto() > Inputs){
+            neurons[Genes.get(i).getInto()] = true;
             }
-            if (!nonInput || this.Genes.get(i).getOut() >= Inputs && this.Genes.get(i).getOut() != Inputs + Outputs) {
-                Neurons.add(this.Genes.get(i).getOut());
+            if(!nonInput||Genes.get(i).getOut()>Inputs){
+                neurons[Genes.get(i).getOut()] = true;
             }
         }
-
-        int count = Neurons.size();
+        
         Random r = new Random();
-        int rand = r.nextInt(count);
-        // System.out.println("Randnode: "+rand);
-        return Neurons.get(rand);
+        int rand = r.nextInt(neurons.length);
+        
+        while(!neurons[rand]){
+            rand = r.nextInt(neurons.length);
+        }
+        return rand;
+        
+    
+        
     }
 
     public boolean containsLink(Gene g) {
@@ -380,68 +397,7 @@ public class Genome implements Serializable, Comparable<Genome> {
         return inovation;
     }
 
-    public double[] step(double[] Inputs) {
-        return this.step(Inputs, 10);
 
-    }
-
-
-    public double[] step(double[] Inputs, int act) {
-        // Inputs im Netzwerk setzen
-        int z = 0;
-        for (double i : Inputs) {
-            this.Network.Neurons.get(z).setValue(i);
-            z++;
-        }
-        // Biased Cell
-        if (this.Network.Neurons.size() > Outputs + this.Inputs) {
-            this.Network.Neurons.get(this.Inputs + Outputs).setValue(1.0);
-        }
-
-        for (Neuron n : this.Network.Neurons) {
-            double sum = 0;
-            // int act[] =new int[n.incoming.size()];
-            // int ct = 0;
-            for (Gene g : n.getIncoming()) {
-                // act[ct++] = g.activition;
-                  // = 1 * 10^5 = 100000.
-                sum += UtilityforMath.round(((g.getWeigth() * this.Network.Neurons.get(g.getInto()).getValue())), 10);// *factor)/factor);
-
-            }
-            // if(n.incoming.size() >1){
-            // int currentbest = 0;
-            // int currenccount= 0;
-            // int temp = 0;
-            // for(int actid=0;actid<10;actid++){
-            // temp = 0;
-            // for(int a:act){
-            // if(actid == a){
-            // temp++;
-            // }
-            // }
-            // if(temp > currenccount){
-            // currenccount = temp;
-            // currentbest = actid;
-            // }
-            // }
-            if(n.getIncoming().size()>1){
-                double factor = 1e5;
-            n.setValue((activition(act, (sum))));//*factor)/factor)));// currentbest
-            }
-            // }
-
-        }
-
-        double[] Output = new double[this.Outputs];
-        for (int i = 0; i < this.Outputs; i++) {
-            //Output[i] = activition(act, this.Network.Neurons.get(this.Inputs + i).getValue());
-             Output[i] = this.Network.Neurons.get(this.Inputs+i).getValue();
-        }
-        return Output;
-
-
-
-    }
 
     public double activition(int n, double value) {
         switch (n) {

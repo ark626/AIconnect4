@@ -8,6 +8,8 @@ import neat.Genome;
 import neat.Neuron;
 import neat.Pool;
 
+
+
 public class ESneat {
 
     // Anzahl der InputNeuronen
@@ -34,7 +36,7 @@ public class ESneat {
         this.pool = pool;
 
         Output = 7;
-        Input = 52;//102;
+        Input = 102+8;
         Hidden = 17;
 
         Neurons = new Neuron[Input + Output + Hidden];
@@ -92,19 +94,19 @@ public class ESneat {
 //            }
             for (Gene g : neuron.getIncoming()) {
                 
-                
-                neuron.setValue((g.getWeigth() * Neurons[g.getOut()].getValue()) + neuron.getValue());
+                ;
+                neuron.setValue(UtilityforMath.round((g.getWeigth() * Neurons[g.getOut()].getValue()) + neuron.getValue(), 7));
             }
             if(neuron.getIncoming().size()>1){
                 //double factor = 1e5;
-                neuron.setValue((this.activition(11, (neuron.getValue( )))));//*factor)/factor)));
+                neuron.setValue((this.activition(10, (neuron.getValue( )))));//*factor)/factor)));
                 }
         }
 
         double[] outputValues = new double[Output];
         for (int i = 0; i < this.Output; i++) {
-
-            outputValues[i] = (this.activition(10, this.Neurons[Neurons.length - 1 - i].getValue()));
+            
+            outputValues[i] = (this.activition(11, this.Neurons[Neurons.length - 1 - i].getValue()));
         }
 
         return outputValues;
@@ -131,7 +133,7 @@ public class ESneat {
 
 
 
-            g.setWeigth(((this.activition(11, CPPN.step(Inputs, 0)[0]))));
+            g.setWeigth(CPPN.step(Inputs)[0]);//.step(Inputs)[0]))));
 
             if (g.getWeigth() != 0.0) {
                 Empty = false;
