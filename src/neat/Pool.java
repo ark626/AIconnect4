@@ -516,6 +516,7 @@ public class Pool implements Serializable {
             return p;
         } catch (IOException i) {
             i.getMessage();
+            System.out.println("Couldnt load file");
             return null;
             // return new Pool();
 

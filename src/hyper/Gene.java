@@ -1,13 +1,15 @@
 package hyper;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * 
  * @author vdinger
  *
  */
-public class Gene implements Serializable,Comparable<Gene>{
+public class Gene implements Serializable, Comparable<Gene> {
     /**
      * 
      */
@@ -15,23 +17,23 @@ public class Gene implements Serializable,Comparable<Gene>{
     private int into;
     private int out;
     public int layer;
-    private double weigth;
+    private BigDecimal weigth;
     private boolean enabled;
     private int innovation;
     private int activition;
     private int excess = 0;
-    
+
     public Gene() {
         super();
         this.into = 0;
         this.out = 0;
-        this.weigth = 0.0;
+        this.weigth = BigDecimal.ZERO;
         this.enabled = true;
         this.innovation = 0;
         this.activition = 0;
     }
-    
-    public Gene copyGene(){
+
+    public Gene copyGene() {
         Gene temp = new Gene();
         temp.into = this.into;
         temp.out = this.out;
@@ -43,51 +45,51 @@ public class Gene implements Serializable,Comparable<Gene>{
     }
 
     public int compareTo(Gene arg0) {
-        
-        return ((Gene)arg0).out -this.out;
+
+        return ((Gene) arg0).out - this.out;
     }
 
-//  @Override
-//  public int hashCode() {
-//      final int prime = 31;
-//      int result = 1;
-//      result = prime * result + activition;
-//      result = prime * result + (enabled ? 1231 : 1237);
-//      result = prime * result + innovation;
-//      result = prime * result + into;
-//      result = prime * result + out;
-//      result = pri,m
-////        long temp;
-////        temp = Double.doubleToLongBits(weigth);
-////        result = prime * result + (int) (temp ^ (temp >>> 32));
-//      return result;
-//  }
-    
-    
+    // @Override
+    // public int hashCode() {
+    // final int prime = 31;
+    // int result = 1;
+    // result = prime * result + activition;
+    // result = prime * result + (enabled ? 1231 : 1237);
+    // result = prime * result + innovation;
+    // result = prime * result + into;
+    // result = prime * result + out;
+    // result = pri,m
+    //// long temp;
+    //// temp = Double.doubleToLongBits(weigth);
+    //// result = prime * result + (int) (temp ^ (temp >>> 32));
+    // return result;
+    // }
 
-//  @Override
-//  public boolean equals(Object obj) {
-//      if (this == obj)
-//          return true;
-//      if (obj == null)
-//          return false;
-//      if (getClass() != obj.getClass())
-//          return false;
-//      Gene other = (Gene) obj;
-//      if (activition != other.activition)
-//          return false;
-//      if (enabled != other.enabled)
-//          return false;
-//      if (innovation != other.innovation)
-//          return false;
-//      if (into != other.into)
-//          return false;
-//      if (out != other.out)
-//          return false;
-//      if (Double.doubleToLongBits(weigth) != Double.doubleToLongBits(other.weigth))
-//          return false;
-//      return true;
-//  }
+
+
+    // @Override
+    // public boolean equals(Object obj) {
+    // if (this == obj)
+    // return true;
+    // if (obj == null)
+    // return false;
+    // if (getClass() != obj.getClass())
+    // return false;
+    // Gene other = (Gene) obj;
+    // if (activition != other.activition)
+    // return false;
+    // if (enabled != other.enabled)
+    // return false;
+    // if (innovation != other.innovation)
+    // return false;
+    // if (into != other.into)
+    // return false;
+    // if (out != other.out)
+    // return false;
+    // if (Double.doubleToLongBits(weigth) != Double.doubleToLongBits(other.weigth))
+    // return false;
+    // return true;
+    // }
 
     public int getInto() {
         return into;
@@ -105,12 +107,16 @@ public class Gene implements Serializable,Comparable<Gene>{
         this.out = out;
     }
 
-    public double getWeigth() {
-        return weigth;
+    public BigDecimal getWeigth() {
+        return weigth.setScale(16, RoundingMode.HALF_EVEN);
     }
 
+    public void setWeigth(BigDecimal weigth) {
+        this.weigth = weigth.setScale(16, RoundingMode.HALF_EVEN);;
+    }
+    
     public void setWeigth(double weigth) {
-        this.weigth = weigth;
+        this.weigth = BigDecimal.valueOf(weigth).setScale(16, RoundingMode.HALF_EVEN);;
     }
 
     public boolean isEnabled() {
@@ -144,7 +150,7 @@ public class Gene implements Serializable,Comparable<Gene>{
     public void setExcess(int excess) {
         this.excess = excess;
     }
-    
-    
+
+
 
 }

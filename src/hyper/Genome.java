@@ -162,7 +162,7 @@ public class Genome implements Serializable, Comparable<Genome> {
                 for(Gene gene:neuron.getIncoming()){
                     Gene incoming = gene;
                     Neuron other = Network.Neurons[incoming.getInto()];
-                    sum += incoming.getWeigth() * other.getValue();
+                    sum += incoming.getWeigth().multiply(other.getValue()).doubleValue();
                 }
                 if(neuron.getIncoming().size()>0){
                     neuron.setValue((2 / (1 + Math.exp(-4.9 * sum)) - 1) );
@@ -172,7 +172,7 @@ public class Genome implements Serializable, Comparable<Genome> {
         
         double[] outputs = new double[Outputs];
         for(int i = 0;i<outputs.length;i++){
-            if(Network.Neurons[MaxNodes+i].getValue()>0){
+            if(Network.Neurons[MaxNodes+i].getValue().doubleValue()>0){
                 outputs[i] = 1.0;
             }
             else{
@@ -234,7 +234,7 @@ public class Genome implements Serializable, Comparable<Genome> {
         double step = this.mutationrates[6];
         for (Gene gene : this.Genes) {
             if (Math.random() < PerturbChance) {
-                gene.setWeigth(gene.getWeigth() + Math.random() * step * 2 - step);
+                gene.setWeigth(gene.getWeigth().doubleValue() + Math.random() * step * 2 - step);
             } else {
                 gene.setWeigth(Math.random() * 4 - 2);
             }
