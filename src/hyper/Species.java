@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Species implements Comparable<Species> {
-    private int topFitness;
+    private long topFitness;
     private int staleness;
     public ArrayList<Genome> Genomes;
-    private int averageFitness;
+    private long averageFitness;
     private static final double CrossoverChance = 0.70;
     private static final int EXCESSMULTIPLIKANT = 1;
     private int Inputs = 42;
@@ -26,7 +26,7 @@ public class Species implements Comparable<Species> {
         this.averageFitness = 0;
     }
 
-    public int calculateAverageFitness() {
+    public long calculateAverageFitness() {
         int total = 0;
 
         for (Genome g : this.Genomes) {
@@ -133,11 +133,11 @@ public class Species implements Comparable<Species> {
         return child;
     }
 
-    public int getTopFitness() {
+    public long getTopFitness() {
         return topFitness;
     }
 
-    public void setTopFitness(int topFitness) {
+    public void setTopFitness(long topFitness) {
         this.topFitness = topFitness;
     }
 
@@ -157,11 +157,11 @@ public class Species implements Comparable<Species> {
         Genomes = genomes;
     }
 
-    public int getAverageFitness() {
+    public long getAverageFitness() {
         return averageFitness;
     }
 
-    public void setAverageFitness(int averageFitness) {
+    public void setAverageFitness(long averageFitness) {
         this.averageFitness = averageFitness;
     }
 

@@ -161,7 +161,7 @@ public class Genome implements Serializable, Comparable<Genome> {
             }
         }
         if (Check) {
-            this.fitness = -999999;
+            this.fitness = -9999;
 
         }
         g.Network = net;

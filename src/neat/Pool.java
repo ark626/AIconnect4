@@ -28,7 +28,7 @@ public class Pool implements Serializable {
     public static final double DeltaWeights = 0.4;
     public static final double DeltaThreshold =  1;
     public static final double StaleSpecies = 15; // 15
-    private static final double SPECIESPERCENTAGE = 0.2;//normally 0.5
+    private static final double SPECIESPERCENTAGE = 0.5;//normally 0.5
     private static final int MINSPECIES = 5;
     private static final int MAXSPECIES = 15;
     public int Inputs = 42;
@@ -153,14 +153,14 @@ public class Pool implements Serializable {
                 survivors.add(s);
             }
         }
-//        if(survivors.size()>MAXSPECIES){
-//            Collections.sort(survivors);
-//            for(int i = 0;i<survivors.size();i++){
-//                if(survivors.get(i).calculateAverageFitness() < this.totalAverageFitness()/survivors.size()){
-//                    survivors.remove(i);
-//                }
-//            }
-//        }
+        if(survivors.size()>MAXSPECIES){
+            Collections.sort(survivors);
+            for(int i = 0;i<survivors.size();i++){
+                if(survivors.get(i).calculateAverageFitness() < this.totalAverageFitness()/survivors.size()){
+                    survivors.remove(i);
+                }
+            }
+        }
         this.Species = survivors;
     }
 
@@ -413,7 +413,7 @@ public class Pool implements Serializable {
 
     public boolean alreadyMeasured() {
 
-        return (this.Species.get(this.currentSpecies - 1).Genomes.get(this.currentGenome - 1).getFitness() != 0);
+        return (this.Species.get(this.currentSpecies - 1).Genomes.get(this.currentGenome - 1).getFitness() != 0L);
     }
     
     public Genome currentGenome(){
@@ -432,12 +432,12 @@ public class Pool implements Serializable {
             out.writeInt(this.Outputs);
             out.writeInt(this.generation);
             out.writeInt(this.Innovation);
-            out.writeFloat(this.maxFitness);
+            out.writeInt(this.maxFitness);
             out.writeInt(this.Species.size());
             for (Species sp : this.Species) {
                 out.writeInt(sp.Genomes.size());
-                out.writeFloat(sp.getTopFitness());
-                out.writeFloat(sp.getAverageFitness());
+                out.writeLong(sp.getTopFitness());
+                out.writeLong(sp.getAverageFitness());
                 for (Genome g : sp.Genomes) {
                     out.writeObject(g);
                 }
@@ -495,8 +495,8 @@ public class Pool implements Serializable {
             for (int i = 0; i < Speciessize; i++) {
                 int Genomesize = in.readInt();
                 Species spe = new Species(p.Inputs, p.Outputs, p);
-                spe.setTopFitness(in.readInt());
-                spe.setAverageFitness(in.readInt());
+                spe.setTopFitness(in.readLong());
+                spe.setAverageFitness(in.readLong());
                 for (int j = 0; j < Genomesize; j++) {
                     Genome g = (Genome) in.readObject();
                     g.setParent(p);
