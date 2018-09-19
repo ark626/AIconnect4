@@ -3,6 +3,7 @@ package hyper;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import eshyperneat.UtilityforMath;
 
 /**
  * 
@@ -17,7 +18,7 @@ public class Gene implements Serializable, Comparable<Gene> {
     private int into;
     private int out;
     public int layer;
-    private BigDecimal weigth;
+    private double weigth;
     private boolean enabled;
     private int innovation;
     private int activition;
@@ -27,7 +28,7 @@ public class Gene implements Serializable, Comparable<Gene> {
         super();
         this.into = 0;
         this.out = 0;
-        this.weigth = BigDecimal.ZERO;
+        this.weigth = 0;
         this.enabled = true;
         this.innovation = 0;
         this.activition = 0;
@@ -107,16 +108,14 @@ public class Gene implements Serializable, Comparable<Gene> {
         this.out = out;
     }
 
-    public BigDecimal getWeigth() {
-        return weigth.setScale(16, RoundingMode.HALF_EVEN);
+   
+
+    public double getWeigth() {
+        return weigth;
     }
 
-    public void setWeigth(BigDecimal weigth) {
-        this.weigth = weigth.setScale(16, RoundingMode.HALF_EVEN);;
-    }
-    
     public void setWeigth(double weigth) {
-        this.weigth = BigDecimal.valueOf(weigth).setScale(16, RoundingMode.HALF_EVEN);;
+        this.weigth = UtilityforMath.round(weigth,10);
     }
 
     public boolean isEnabled() {

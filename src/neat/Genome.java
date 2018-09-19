@@ -152,7 +152,7 @@ public class Genome implements Serializable, Comparable<Genome> {
                 // if(ge.out == Inputs+Outputs){
                 // net.Neurons.get(Inputs+Outputs).value = 1.0;
                 // }
-                if (ge.getWeigth() != 0.0) {
+                if (ge.getWeigth()!=0) {
                     Check = false;
                 }
             }
@@ -405,7 +405,7 @@ public class Genome implements Serializable, Comparable<Genome> {
             for (Gene g : n.getIncoming()) {
                 // act[ct++] = g.activition;
                   // = 1 * 10^5 = 100000.
-                sum += UtilityforMath.round(((g.getWeigth() * this.Network.Neurons.get(g.getInto()).getValue())), 10);// *factor)/factor);
+                sum += (((g.getWeigth() * this.Network.Neurons.get(g.getInto()).getValue())));// *factor)/factor);
 
             }
             // if(n.incoming.size() >1){

@@ -231,7 +231,7 @@ public class Pool implements Serializable {
             if (i2.size() > g.getInnovation()) {
                 if (i2.get(g.getInnovation()) != null) {
                     Gene gene2 = i2.get(g.getInnovation());
-                    sum += Math.abs(g.getWeigth() - gene2.getWeigth());
+                    sum += Math.abs(g.getWeigth()-(gene2.getWeigth()));
                     zufall = zufall + 1;
                 }
             }

@@ -173,7 +173,7 @@ while(n.getOutgoing().size() != 0){
 					g.setWeigth((this.activition(11,CPPN.step(Inputs,0)[0])));//g.setWeigth((CPPN.step(Inputs,0)[0]));
 				//	g.setWeigth((g.getWeigth() * factor)/ factor);
 				}
-				if(g.getWeigth() != 0.0 ){
+				if(g.getWeigth()!=0){
 					Empty = false;
 				}
 //				if(g.weigth != 0.0){
@@ -288,7 +288,7 @@ while(n.getOutgoing().size() != 0){
 			Neuron n = this.Neurons[i];
 			if(n.getValue() != 0.0){
 				for(Gene g:n.getOutgoing()){
-					if(g.getWeigth() != 0.0){
+					if(g.getWeigth()!=0){
 						Neurons[g.getInto()].setValue(Neurons[g.getInto()].getValue()+g.getWeigth()*Neurons[g.getOut()].getValue());//this.activition(11,n.value*g.weigth+Neurons[g.into].value);
 					//	Neurons[g.into].value += n.value*g.weigth;
 					}
@@ -307,7 +307,7 @@ while(n.getOutgoing().size() != 0){
 			Neuron n = this.Neurons[i];
 			if(n.getValue() != 0.0){
 				for(Gene g:n.getOutgoing()){
-					if(g.getWeigth() != 0.0){
+					if(g.getWeigth()!=0){
 						Neurons[g.getInto()].setValue(Neurons[g.getInto()].getValue()+g.getWeigth()*Neurons[g.getOut()].getValue());
 						//Neurons[g.into].value += n.value*g.weigth;
 					//	Neurons[g.into].value += this.activition(11,n.value*g.weigth+Neurons[g.into].value);
@@ -345,7 +345,7 @@ Output[j++] = this.activition(12,Neurons[i].getValue());
 //			 i++;
 //			}
 //			else{
-			if(g.getWeigth()!=0.0||Neurons[g.getOut()].getValue()!=0.0){
+			if(g.getWeigth()!=0||Neurons[g.getOut()].getValue()!=0.0){
 			d+=(g.getWeigth()*Neurons[g.getOut()].getValue()*f)/f;
 			}
 //			i=0;

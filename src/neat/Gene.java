@@ -1,6 +1,9 @@
 package neat;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import eshyperneat.UtilityforMath;
 
 /**
  * 
@@ -25,7 +28,7 @@ public class Gene implements Serializable,Comparable<Gene>{
 		super();
 		this.into = 0;
 		this.out = 0;
-		this.weigth = 0.0;
+		this.weigth = 0;
 		this.enabled = true;
 		this.innovation = 0;
 		this.activition = 0;
@@ -105,15 +108,18 @@ public class Gene implements Serializable,Comparable<Gene>{
 		this.out = out;
 	}
 
+
+
+
 	public double getWeigth() {
-		return weigth;
-	}
+        return weigth;
+    }
 
-	public void setWeigth(double weigth) {
-		this.weigth = weigth;
-	}
+    public void setWeigth(double weigth) {
+        this.weigth = UtilityforMath.round(weigth,10);
+    }
 
-	public boolean isEnabled() {
+    public boolean isEnabled() {
 		return enabled;
 	}
 

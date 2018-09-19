@@ -50,7 +50,7 @@ import neat.Neuron;
 	    		  for(z = 0;z<6;z++){
 	    			  Nodes.add(20.0+35*i+cor);
 			          Nodes.add(100.0+35*z);
-			          Nodes.add(g.getNeurons()[zähler++].getValue().doubleValue());
+			          Nodes.add(g.getNeurons()[zähler++].getValue());
 	    	  }
 	    	  }
 	      }
@@ -65,7 +65,7 @@ import neat.Neuron;
 	    		  if(i<=g.getInput()*2+g.getOutput()){
 	    			  Nodes.add(600.0);
 	    			  Nodes.add(30.0+25*(i-g.getInput()*2));
-	    			  Nodes.add(n.getValue().doubleValue());
+	    			  Nodes.add(n.getValue());
 	    		  }
 	    		  else{
 //	        		  if(i==g.getInput()+g.getOutput()){
@@ -77,7 +77,7 @@ import neat.Neuron;
 //	        		  else{
 	    			  Nodes.add(440.0);
 	    			  Nodes.add(40.0);
-	    			  Nodes.add(n.getValue().doubleValue());
+	    			  Nodes.add(n.getValue());
 //	        		  }
 	    		  }
 	    	  
@@ -165,14 +165,14 @@ import neat.Neuron;
 	    	  Gene that = g.getLinks().get(i);
 	    	  Composite temp = ig2.getComposite();
 	    	  if(that.isEnabled()){
-	    		  if(that.isEnabled()&&that.getWeigth().doubleValue() != 0.0){
+	    		  if(that.isEnabled()&&that.getWeigth() != 0.0){
 	    			  
 	    		  ig2.setPaint(Color.red);
 	    		  }
-	    		  if(that.getWeigth().doubleValue() > 0){
+	    		  if(that.getWeigth() > 0){
 	        		  ig2.setPaint(Color.green);
 	        		  }
-	    		  if(that.getWeigth().doubleValue() == 0){
+	    		  if(that.getWeigth() == 0){
 	        		  ig2.setPaint(Color.gray);
 	        		  }
 			  x1 = Nodes.get(that.getInto()*3).intValue();

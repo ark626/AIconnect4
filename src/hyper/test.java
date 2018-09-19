@@ -61,7 +61,7 @@ public class test {
      temp.generateNetwork();
      test.nextGenome();
      for(Gene g:temp.Genes){
-     if(g.getOut() != g.getInto()&&g.getWeigth().doubleValue()!=0){
+     if(g.getOut() != g.getInto()&&g.getWeigth()!=0){
      countgenomes++;
      }
      }

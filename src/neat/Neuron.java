@@ -2,6 +2,7 @@ package neat;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import eshyperneat.UtilityforMath;
 
 public  class Neuron {
 	private ArrayList<Gene> incoming;
@@ -49,7 +50,7 @@ public  class Neuron {
 	}
 
 	public void setValue(double value) {
-		this.value = value;
+		this.value = UtilityforMath.round(value,10);
 	}
 
 	public boolean isActive() {

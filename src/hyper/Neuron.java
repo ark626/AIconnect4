@@ -3,18 +3,19 @@ package hyper;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import eshyperneat.UtilityforMath;
 
 public  class Neuron {
     private ArrayList<Gene> incoming;
     private ArrayList<Gene> outgoing;
-    private BigDecimal value;
+    private double value;
     private boolean active;
     private int activition;
     
     public Neuron(){
         this.incoming = new ArrayList<Gene>();
         this.outgoing = new ArrayList<Gene>();
-        this.value = BigDecimal.ZERO;
+        this.value = 0;
         this.active = true;
         this.activition = 0;
     }
@@ -45,17 +46,19 @@ public  class Neuron {
         this.outgoing = outgoing;
     }
 
-    public BigDecimal getValue() {
-        return value.setScale(16, RoundingMode.HALF_EVEN);
+
+
+    public double getValue() {
+        return value;
     }
 
-    public void setValue(BigDecimal value) {
-        this.value =  value.setScale(16, RoundingMode.HALF_EVEN);
-    }
-    
+
+
     public void setValue(double value) {
-        this.value =  BigDecimal.valueOf(value).setScale(16, RoundingMode.HALF_EVEN);
+        this.value = UtilityforMath.round(value,10);
     }
+
+
 
     public boolean isActive() {
         return active;
