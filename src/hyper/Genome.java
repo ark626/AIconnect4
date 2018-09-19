@@ -467,7 +467,7 @@ public class Genome implements Serializable, Comparable<Genome> {
     public int compareTo(Genome arg0) {
 
         
-        return Comparators.ASCENDING.compare(this, arg0);//(int) (((Genome) arg0).fitness - this.fitness);
+        return Comparators.DESCENDING.compare(this, arg0);//(int) (((Genome) arg0).fitness - this.fitness);
     }
     
     public static class Comparators {
@@ -475,13 +475,13 @@ public class Genome implements Serializable, Comparable<Genome> {
         public static Comparator<Genome> ASCENDING = new Comparator<Genome>() {
 
             public int compare(Genome o1, Genome o2) {
-                return o1.fitness-(o2.fitness);
+                return o2.fitness-(o1.fitness);
             }
         };
         public static Comparator<Genome> DESCENDING = new Comparator<Genome>() {
 
             public int compare(Genome o1, Genome o2) {
-                return o2.fitness-(o1.fitness);
+                return o1.fitness-(o2.fitness);
             }
         };
 

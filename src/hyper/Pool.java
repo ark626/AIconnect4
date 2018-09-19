@@ -153,14 +153,14 @@ public class Pool implements Serializable {
                 survivors.add(s);
             }
         }
-        if(survivors.size()>MAXSPECIES){
-            Collections.sort(survivors);
-            for(int i = 0;i<survivors.size();i++){
-                if(survivors.get(i).calculateAverageFitness() < this.totalAverageFitness()/survivors.size()){
-                    survivors.remove(i);
-                }
-            }
-        }
+//        if(survivors.size()>MAXSPECIES){
+//            Collections.sort(survivors);
+//            for(int i = 0;i<survivors.size();i++){
+//                if(survivors.get(i).calculateAverageFitness() < this.totalAverageFitness()/survivors.size()){
+//                    survivors.remove(i);
+//                }
+//            }
+//        }
         this.Species = survivors;
     }
 
