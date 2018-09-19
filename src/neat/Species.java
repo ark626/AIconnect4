@@ -1,7 +1,9 @@
 package neat;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Random;
+import neat.Genome.Comparators;
 
 public class Species implements Comparable<Species> {
     private long topFitness;
@@ -189,9 +191,32 @@ public class Species implements Comparable<Species> {
         this.p = p;
     }
 
-    public int compareTo(Species o) {
-        // TODO Auto-generated method stub
-        return (int) (((Species) o).getAverageFitness() - this.getAverageFitness());
+
+
+    public int compareTo(Species arg0) {
+
+
+        return Comparators.DESCENDING.compare(this, arg0);// (int) (((Genome) arg0).fitness -
+                                                         // this.fitness);
+    }
+
+    public static class Comparators {
+
+        public static Comparator<Species> ASCENDING = new Comparator<Species>() {
+
+            public int compare(Species o1, Species o2) {
+                return o1.getAverageFitness()- (o2.getAverageFitness());
+            }
+        };
+        public static Comparator<Species> DESCENDING = new Comparator<Species>() {
+
+            public int compare(Species o1, Species o2) {
+                return o2.getAverageFitness() - (o1.getAverageFitness());
+            }
+        };
+
+
+
     }
 
 
