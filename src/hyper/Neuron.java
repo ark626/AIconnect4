@@ -15,7 +15,7 @@ public  class Neuron {
     public Neuron(){
         this.incoming = new ArrayList<Gene>();
         this.outgoing = new ArrayList<Gene>();
-        this.value = 0;
+        this.value = 0.0;
         this.active = true;
         this.activition = 0;
     }
@@ -55,7 +55,7 @@ public  class Neuron {
 
 
     public void setValue(double value) {
-        this.value = UtilityforMath.round(value,10);
+        this.value = value;//UtilityforMath.round(value,10);
     }
 
 

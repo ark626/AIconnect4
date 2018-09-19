@@ -1,13 +1,10 @@
 package neat;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
-
-import eshyperneat.UtilityforMath;
 
 public class Genome implements Serializable, Comparable<Genome> {
     /**
@@ -45,7 +42,7 @@ public class Genome implements Serializable, Comparable<Genome> {
     private static final double ActivitionMutationChance = 0.5;
     private static final double StepSize = 0.1;
     private static final double DisableMutationChance = 0.4;
-    private static final double EnableMutationChance =  0.2;
+    private static final double EnableMutationChance = 0.2;
     private int Inputs = 42;
     private int Outputs = 3;
     // private static final int MaxNodes = 10000;
@@ -135,24 +132,30 @@ public class Genome implements Serializable, Comparable<Genome> {
                 while (net.Neurons.size() <= ge.getOut()) {
                     checker = true;
                     net.Neurons.add(new Neuron());
-                    net.Neurons.get(net.Neurons.size() - 1).setActive(false);
+                    net.Neurons.get(net.Neurons.size() - 1)
+                            .setActive(false);
                     if (ge.getActivition() != 0) {
-                        net.Neurons.get(net.Neurons.size() - 1).setActivition(ge.getActivition());
+                        net.Neurons.get(net.Neurons.size() - 1)
+                                .setActivition(ge.getActivition());
                     }
                 }
-                net.Neurons.get(net.Neurons.size() - 1).setActive(true);
-                net.Neurons.get(ge.getOut()).addIncoming(ge);
+                net.Neurons.get(net.Neurons.size() - 1)
+                        .setActive(true);
+                net.Neurons.get(ge.getOut())
+                        .addIncoming(ge);
                 checker = false;
                 while (net.Neurons.size() <= ge.getInto()) {
                     checker = true;
                     net.Neurons.add(new Neuron());
-                    net.Neurons.get(net.Neurons.size() - 1).setActive(false);
+                    net.Neurons.get(net.Neurons.size() - 1)
+                            .setActive(false);
                 }
-                net.Neurons.get(net.Neurons.size() - 1).setActive(true);
+                net.Neurons.get(net.Neurons.size() - 1)
+                        .setActive(true);
                 // if(ge.out == Inputs+Outputs){
                 // net.Neurons.get(Inputs+Outputs).value = 1.0;
                 // }
-                if (ge.getWeigth()!=0) {
+                if (ge.getWeigth() != 0.0) {
                     Check = false;
                 }
             }
@@ -187,13 +190,21 @@ public class Genome implements Serializable, Comparable<Genome> {
         }
 
         for (int i = 0; i < this.Genes.size(); i++) {
-            if (!nonInput || this.Genes.get(i).getInto() > Inputs && this.Genes.get(i).getOut() != Inputs + Outputs) {
-                Neurons.add(this.Genes.get(i).getInto());
+            if (!nonInput || this.Genes.get(i)
+                    .getInto() > Inputs
+                    && this.Genes.get(i)
+                            .getOut() != Inputs + Outputs) {
+                Neurons.add(this.Genes.get(i)
+                        .getInto());
 
 
             }
-            if (!nonInput || this.Genes.get(i).getOut() >= Inputs && this.Genes.get(i).getOut() != Inputs + Outputs) {
-                Neurons.add(this.Genes.get(i).getOut());
+            if (!nonInput || this.Genes.get(i)
+                    .getOut() >= Inputs
+                    && this.Genes.get(i)
+                            .getOut() != Inputs + Outputs) {
+                Neurons.add(this.Genes.get(i)
+                        .getOut());
             }
         }
 
@@ -259,7 +270,8 @@ public class Genome implements Serializable, Comparable<Genome> {
         if (this.Genes.size() > 0) {
             Random rand = new Random();
             int i = rand.nextInt(this.Genes.size());
-            this.Genes.get(i).setActivition(rand.nextInt(10));
+            this.Genes.get(i)
+                    .setActivition(rand.nextInt(10));
             return inovation + 1;
         }
         return inovation;
@@ -390,43 +402,28 @@ public class Genome implements Serializable, Comparable<Genome> {
         // Inputs im Netzwerk setzen
         int z = 0;
         for (double i : Inputs) {
-            this.Network.Neurons.get(z).setValue(i);
+            this.Network.Neurons.get(z)
+                    .setValue(i);
             z++;
         }
         // Biased Cell
         if (this.Network.Neurons.size() > Outputs + this.Inputs) {
-            this.Network.Neurons.get(this.Inputs + Outputs).setValue(1.0);
+            this.Network.Neurons.get(this.Inputs + Outputs)
+                    .setValue(1.0);
         }
 
         for (Neuron n : this.Network.Neurons) {
             double sum = 0;
-            // int act[] =new int[n.incoming.size()];
-            // int ct = 0;
+
             for (Gene g : n.getIncoming()) {
-                // act[ct++] = g.activition;
-                  // = 1 * 10^5 = 100000.
-                sum += (((g.getWeigth() * this.Network.Neurons.get(g.getInto()).getValue())));// *factor)/factor);
+                sum += (((g.getWeigth() * this.Network.Neurons.get(g.getInto())
+                        .getValue())));// *factor)/factor);
 
             }
-            // if(n.incoming.size() >1){
-            // int currentbest = 0;
-            // int currenccount= 0;
-            // int temp = 0;
-            // for(int actid=0;actid<10;actid++){
-            // temp = 0;
-            // for(int a:act){
-            // if(actid == a){
-            // temp++;
-            // }
-            // }
-            // if(temp > currenccount){
-            // currenccount = temp;
-            // currentbest = actid;
-            // }
-            // }
-            if(n.getIncoming().size()>1){
-                double factor = 1e5;
-            n.setValue((activition(act, (sum))));//*factor)/factor)));// currentbest
+
+            if (n.getIncoming()
+                    .size() > 1) {
+                n.setValue((activition(act, (sum))));
             }
             // }
 
@@ -434,8 +431,8 @@ public class Genome implements Serializable, Comparable<Genome> {
 
         double[] Output = new double[this.Outputs];
         for (int i = 0; i < this.Outputs; i++) {
-            //Output[i] = activition(act, this.Network.Neurons.get(this.Inputs + i).getValue());
-             Output[i] = this.Network.Neurons.get(this.Inputs+i).getValue();
+            Output[i] = this.Network.Neurons.get(this.Inputs + i)
+                    .getValue();
         }
         return Output;
 
@@ -510,28 +507,29 @@ public class Genome implements Serializable, Comparable<Genome> {
 
     public int compareTo(Genome arg0) {
 
-        
-        return Comparators.ASCENDING.compare(this, arg0);//(int) (((Genome) arg0).fitness - this.fitness);
+
+        return Comparators.ASCENDING.compare(this, arg0);// (int) (((Genome) arg0).fitness -
+                                                         // this.fitness);
     }
-    
+
     public static class Comparators {
 
         public static Comparator<Genome> ASCENDING = new Comparator<Genome>() {
 
             public int compare(Genome o1, Genome o2) {
-                return o1.fitness-(o2.fitness);
+                return o1.fitness - (o2.fitness);
             }
         };
         public static Comparator<Genome> DESCENDING = new Comparator<Genome>() {
 
             public int compare(Genome o1, Genome o2) {
-                return o2.fitness-(o1.fitness);
+                return o2.fitness - (o1.fitness);
             }
         };
 
-       
-    
-}
+
+
+    }
 
 
 

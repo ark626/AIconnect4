@@ -28,7 +28,7 @@ public class Gene implements Serializable,Comparable<Gene>{
 		super();
 		this.into = 0;
 		this.out = 0;
-		this.weigth = 0;
+		this.weigth = 0.0;
 		this.enabled = true;
 		this.innovation = 0;
 		this.activition = 0;
