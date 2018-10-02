@@ -28,6 +28,20 @@ public class Species implements Comparable<Species> {
         this.averageFitness = 0;
     }
 
+    /**
+     * Only for Testing purposes
+     * @param in
+     * @param out
+     */
+    public Species(int in, int out) {
+        this.Inputs = in;
+        this.Outputs = out;
+        this.topFitness = 0;
+        this.staleness = 0;
+        this.Genomes = new ArrayList<Genome>();
+        this.averageFitness = 0;
+    }
+
     public long calculateAverageFitness() {
         int total = 0;
 
@@ -205,13 +219,13 @@ public class Species implements Comparable<Species> {
         public static Comparator<Species> ASCENDING = new Comparator<Species>() {
 
             public int compare(Species o1, Species o2) {
-                return o1.getAverageFitness()- (o2.getAverageFitness());
+                return (int)(o1.getAverageFitness()- (o2.getAverageFitness()));
             }
         };
         public static Comparator<Species> DESCENDING = new Comparator<Species>() {
 
             public int compare(Species o1, Species o2) {
-                return o2.getAverageFitness() - (o1.getAverageFitness());
+                return (int)(o2.getAverageFitness() - (o1.getAverageFitness()));
             }
         };
 

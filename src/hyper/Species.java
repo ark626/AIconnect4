@@ -202,13 +202,13 @@ public class Species implements Comparable<Species> {
         public static Comparator<Species> ASCENDING = new Comparator<Species>() {
 
             public int compare(Species o1, Species o2) {
-                return o1.getAverageFitness()- (o2.getAverageFitness());
+                return (int)(o1.getAverageFitness()- (o2.getAverageFitness()));
             }
         };
         public static Comparator<Species> DESCENDING = new Comparator<Species>() {
 
             public int compare(Species o1, Species o2) {
-                return o2.getAverageFitness() - (o1.getAverageFitness());
+                return (int)(o2.getAverageFitness() - (o1.getAverageFitness()));
             }
         };
 

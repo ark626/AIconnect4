@@ -12,7 +12,7 @@ public class Genome implements Serializable, Comparable<Genome> {
      */
     private static final long serialVersionUID = -4198647103860678421L;
     public ArrayList<Gene> Genes;
-    private int fitness;
+    private long fitness;
     private int adjustedfitness;
     private transient Network Network;
     // public transient Pool pool;
@@ -47,6 +47,7 @@ public class Genome implements Serializable, Comparable<Genome> {
     private int Outputs = 3;
     // private static final int MaxNodes = 10000;
 
+    
 
     public Genome(int in, int out, int gen, Pool p) {
         super();
@@ -72,6 +73,36 @@ public class Genome implements Serializable, Comparable<Genome> {
         this.parent = p;
     }
 
+    /**
+     * Just for TEsting purposes
+     * @param in
+     * @param out
+     * @param gen
+     */
+    public Genome(int in, int out, int gen) {
+        super();
+        this.Generation = gen;
+        // this.pool = p;
+        this.Inputs = in;
+        this.Outputs = out;
+        Genes = new ArrayList<Gene>();
+        this.fitness = 0;
+        this.adjustedfitness = 0;
+        Network = new Network();
+        this.maxneuron = 0;
+        this.globalRank = 0;
+        this.mutationrates = new double[8];
+        this.mutationrates[0] = Genome.MutateConnectionsChance;
+        this.mutationrates[1] = Genome.LinkMutationChance;
+        this.mutationrates[2] = Genome.BiasMutationChance;
+        this.mutationrates[3] = Genome.NodeMutationChance;
+        this.mutationrates[4] = Genome.EnableMutationChance;
+        this.mutationrates[5] = Genome.DisableMutationChance;
+        this.mutationrates[6] = Genome.StepSize;
+        this.mutationrates[7] = Genome.ActivitionMutationChance;
+    }
+
+
 
 
     public static Genome basicGenome(int in, int out, Pool p) {
@@ -83,8 +114,8 @@ public class Genome implements Serializable, Comparable<Genome> {
         return g;
     }
 
-    public void setFitness(int fitness) {
-        if (fitness > this.parent.maxFitness) {
+    public void setFitness(long fitness) {
+        if (parent!= null && fitness > this.parent.maxFitness ) {
             // this.parent.Species.get(parent.currentSpecies-1).staleness = 0;
             this.parent.maxFitness = fitness;
         }
@@ -517,13 +548,13 @@ public class Genome implements Serializable, Comparable<Genome> {
         public static Comparator<Genome> ASCENDING = new Comparator<Genome>() {
 
             public int compare(Genome o1, Genome o2) {
-                return o2.fitness - (o1.fitness);
+                return (int)(o2.fitness - (o1.fitness));
             }
         };
         public static Comparator<Genome> DESCENDING = new Comparator<Genome>() {
 
             public int compare(Genome o1, Genome o2) {
-                return o1.fitness - (o2.fitness);
+                return (int)(o1.fitness - (o2.fitness));
             }
         };
 
@@ -665,7 +696,7 @@ public class Genome implements Serializable, Comparable<Genome> {
 
 
 
-    public int getFitness() {
+    public long getFitness() {
         return fitness;
     }
 

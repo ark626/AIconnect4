@@ -128,7 +128,7 @@ public class Player {
 	
 
 	
-	public void receivefeedback(int fitness){
+	public void receivefeedback(long fitness){
 		if(Playertype ==0){
 		this.ki.fitness =(int)fitness;
 		}

@@ -141,7 +141,7 @@ while(n.getOutgoing().size() != 0){
 		
 	}
 	
-	public int topFit(){
+	public long topFit(){
 		return this.pool.getTopfitness();
 	}
 	

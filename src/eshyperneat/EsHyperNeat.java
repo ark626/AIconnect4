@@ -98,7 +98,7 @@ public class EsHyperNeat {
 	
 
 	
-	public int topFit(){
+	public long topFit(){
 		return this.pool.getTopfitness();
 	}
 	
