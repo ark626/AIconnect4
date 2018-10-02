@@ -1,11 +1,12 @@
 package neat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
 import neat.Genome.Comparators;
 
-public class Species implements Comparable<Species> {
+public class Species implements Serializable,  Comparable<Species> {
     private long topFitness;
     private int staleness;
     public ArrayList<Genome> Genomes;
@@ -216,13 +217,13 @@ public class Species implements Comparable<Species> {
 
     public static class Comparators {
 
-        public static Comparator<Species> ASCENDING = new Comparator<Species>() {
+        public static Comparator<Species> DESCENDING = new Comparator<Species>() {
 
             public int compare(Species o1, Species o2) {
                 return (int)(o1.getAverageFitness()- (o2.getAverageFitness()));
             }
         };
-        public static Comparator<Species> DESCENDING = new Comparator<Species>() {
+        public static Comparator<Species> ASCENDING = new Comparator<Species>() {
 
             public int compare(Species o1, Species o2) {
                 return (int)(o2.getAverageFitness() - (o1.getAverageFitness()));

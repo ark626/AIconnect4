@@ -22,13 +22,13 @@ public class Pool implements Serializable {
     public int currentSpecies;
     public int currentGenome;
     public int currentFrame;
-    public int maxFitness = Integer.MIN_VALUE;
+    public long maxFitness = Integer.MIN_VALUE;
     public static final double Population = 300;
     public static final double DeltaDisjoint = 2.0;
     public static final double DeltaWeights = 0.4;
-    public static final double DeltaThreshold =  1;
+    public static final double DeltaThreshold = 1;
     public static final double StaleSpecies = 15; // 15
-    private static final double SPECIESPERCENTAGE = 0.5;//normally 0.5
+    private static final double SPECIESPERCENTAGE = 0.5;// normally 0.5
     private static final int MINSPECIES = 5;
     private static final int MAXSPECIES = 15;
     public int Inputs = 42;
@@ -68,7 +68,7 @@ public class Pool implements Serializable {
 
     public Genome getbest() {
         Genome temp = this.Species.get(0).Genomes.get(0);
-        int maxfit =  temp.getFitness();
+        long maxfit = Integer.MIN_VALUE;// temp.fitness;
         for (Species s : this.Species) {
             for (Genome g : s.Genomes) {
                 if (g.getFitness() != 0) {
@@ -86,9 +86,9 @@ public class Pool implements Serializable {
         return temp;
     }
 
-    public int getTopfitness() {
+    public long getTopfitness() {
         // Genome temp = this.Species.get(0).Genomes.get(0);//this.Species.get(0).Genomes.get(0);
-        int maxfit = Integer.MIN_VALUE;// temp.fitness;
+        long maxfit = Integer.MIN_VALUE;// temp.fitness;
         for (Species s : this.Species) {
             for (Genome g : s.Genomes) {
                 if (g.getFitness() != 0) {
@@ -122,24 +122,27 @@ public class Pool implements Serializable {
 
     public void removeStaleSpecies() {
         ArrayList<Species> survivors = new ArrayList<Species>();
-    //    Collections.sort(this.Species);
+        // Collections.sort(this.Species);
         for (Species s : this.Species) {
-            Collections.sort(s.Genomes,Genome.Comparators.DESCENDING
-                    );
+            Collections.sort(s.Genomes, Genome.Comparators.DESCENDING);
 
-            if (s.Genomes.get(0).getFitness() > s.getTopFitness()) {
-                s.setTopFitness(s.getGenomes().get(0).getFitness());
+            if (s.Genomes.get(0)
+                    .getFitness() > s.getTopFitness()) {
+                s.setTopFitness(s.getGenomes()
+                        .get(0)
+                        .getFitness());
                 s.setStaleness(0);
             } else {
                 s.setStaleness(s.getStaleness() + 1);
             }
-            if (s.getStaleness() < StaleSpecies || s.getTopFitness() >= this.getTopfitness()){//||(survivors.size()<MINSPECIES&&s.calculateAverageFitness()>this.totalAverageFitness()/this.Species.size())) {
+            if (s.getStaleness() < StaleSpecies || s.getTopFitness() >= this.getTopfitness()) {// ||(survivors.size()<MINSPECIES&&s.calculateAverageFitness()>this.totalAverageFitness()/this.Species.size()))
+                                                                                               // {
                 survivors.add(s);
             }
         }
 
         this.Species = survivors;
-        //this.rankGlobally();
+        // this.rankGlobally();
     }
 
     public void removeWeakSpecies() {
@@ -149,18 +152,20 @@ public class Pool implements Serializable {
             s.calculateAverageFitness();
             int breed = (int) Math.floor(((double) s.getAverageFitness() / (double) sum * Population));
 
-            if (breed >= 1||survivors.size()<MINSPECIES&&s.calculateAverageFitness()>this.totalAverageFitness()/this.Species.size()) {
+            if (breed >= 1 || survivors.size() < MINSPECIES && s.calculateAverageFitness() > this.totalAverageFitness() / this.Species.size()) {
                 survivors.add(s);
             }
         }
-//        if(survivors.size()>MAXSPECIES){
-//            Collections.sort(survivors);
-//            for(int i = 0;i<survivors.size();i++){
-//                if(survivors.get(i).calculateAverageFitness() < this.totalAverageFitness()/survivors.size()){
-//                    survivors.remove(i);
-//                }
-//            }
-//        }
+        if (survivors.size() > MAXSPECIES) {
+
+            Collections.sort(survivors, hyper.Species.Comparators.ASCENDING);
+            for (int i = 0; i < survivors.size(); i++) {
+                if (survivors.get(i)
+                        .calculateAverageFitness() < this.totalAverageFitness() / survivors.size()) {
+                    survivors.remove(i);
+                }
+            }
+        }
         this.Species = survivors;
     }
 
@@ -231,7 +236,7 @@ public class Pool implements Serializable {
             if (i2.size() > g.getInnovation()) {
                 if (i2.get(g.getInnovation()) != null) {
                     Gene gene2 = i2.get(g.getInnovation());
-                    sum += Math.abs(g.getWeigth() - gene2.getWeigth());
+                    sum += Math.abs(g.getWeigth() - (gene2.getWeigth()));
                     zufall = zufall + 1;
                 }
             }
@@ -272,7 +277,7 @@ public class Pool implements Serializable {
                 global.add(g);
             }
         }
-        Collections.sort(global,Genome.Comparators.DESCENDING);
+        Collections.sort(global, Genome.Comparators.DESCENDING);
         int i = 1;
         for (Genome g : global) {
             g.setGlobalRank(i++);
@@ -294,7 +299,7 @@ public class Pool implements Serializable {
 
 
         for (Species s : this.Species) {
-            Collections.sort(s.Genomes,Genome.Comparators.ASCENDING);
+            Collections.sort(s.Genomes, Genome.Comparators.DESCENDING);
 
             int remain = (int) Math.ceil(s.Genomes.size() * SPECIESPERCENTAGE);
             if (remain < 1)
@@ -312,7 +317,7 @@ public class Pool implements Serializable {
             // s.Genomes.remove(g);
             // }
             while (s.Genomes.size() > remain) {
-                s.Genomes.remove(s.Genomes.size()-1);
+                s.Genomes.remove(s.Genomes.size() - 1);
 
             }
         }
@@ -330,7 +335,7 @@ public class Pool implements Serializable {
 
         this.removeWeakSpecies();
 
-       // Collections.sort(this.Species);
+        // Collections.sort(this.Species);
         int sum = totalAverageFitness();
         ArrayList<Genome> children = new ArrayList<Genome>();
         for (Species s : this.Species) {
@@ -346,9 +351,9 @@ public class Pool implements Serializable {
                 children.add(ge);
             }
         }
-       // this.rankGlobally();
+        // this.rankGlobally();
         this.cullSpecies(true);
-        //this.rankGlobally();
+        // this.rankGlobally();
         Random r = new Random();
         // this.removeEmptySpecies();
         // if(this.Species.size()<=0){
@@ -413,10 +418,11 @@ public class Pool implements Serializable {
 
     public boolean alreadyMeasured() {
 
-        return (this.Species.get(this.currentSpecies - 1).Genomes.get(this.currentGenome - 1).getFitness() != 0L);
+        return (this.Species.get(this.currentSpecies - 1).Genomes.get(this.currentGenome - 1)
+                .getFitness() != 0L);
     }
-    
-    public Genome currentGenome(){
+
+    public Genome currentGenome() {
         return this.Species.get(this.currentSpecies - 1).Genomes.get(this.currentGenome - 1);
     }
 
@@ -432,7 +438,7 @@ public class Pool implements Serializable {
             out.writeInt(this.Outputs);
             out.writeInt(this.generation);
             out.writeInt(this.Innovation);
-            out.writeInt(this.maxFitness);
+            out.writeLong(this.maxFitness);
             out.writeInt(this.Species.size());
             for (Species sp : this.Species) {
                 out.writeInt(sp.Genomes.size());
@@ -446,8 +452,24 @@ public class Pool implements Serializable {
             }
             out.close();
             fileOut.close();
-            System.out.println("Serialized data is saved in " + f.getAbsolutePath() + " with Generation " + this.generation + " Fitness " + this.getbest().getFitness()+" First: "+this.Species.get(0).getGenomes().get(0).getFitness()
-                    +" Second: "+this.Species.get(1).getGenomes().get(0).getFitness());
+            String saveStatement =
+                    "Serialized data is saved in " + f.getAbsolutePath() + " with Generation " + this.generation + " Fitness " + this.getbest()
+                            .getFitness() + " First: "
+                            + this.Species.get(0)
+                                    .getGenomes()
+                                    .get(0)
+                                    .getFitness()
+                            + "/" + this.Species.get(0)
+                                    .getAverageFitness();
+            if (this.Species.size() > 2) {
+                saveStatement += " Second: " + this.Species.get(1)
+                        .getGenomes()
+                        .get(0)
+                        .getFitness() + "/"
+                        + this.Species.get(1)
+                                .getAverageFitness();
+            }
+            System.out.println(saveStatement);
         }
         // catch(FileNotFoundException e){
         // File f = new File(s);
@@ -485,7 +507,7 @@ public class Pool implements Serializable {
             p.Outputs = out;
             p.generation = in.readInt();
             p.Innovation = in.readInt();
-            p.maxFitness = in.readInt();
+            p.maxFitness = in.readLong();
             p.currentGenome = 1;
             p.currentSpecies = 1;
             int Speciessize = in.readInt();
@@ -506,13 +528,14 @@ public class Pool implements Serializable {
             in.close();
             fileIn.close();
             p.maxFitness = p.getTopfitness();
-
+      
             // System.out.println("Loaded file from" +f.getAbsolutePath()+"with Generation:
             // "+p.generation+" Fitness
             // "+p.getbest().getFitness());//Thread.currentThread().getStackTrace().toString());
             return p;
         } catch (IOException i) {
             i.getMessage();
+            System.out.println("Couldnt load file");
             return null;
             // return new Pool();
 

@@ -47,6 +47,7 @@ public class testUtils {
                 genome.setParent(pool);
                 
             }
+            species.calculateAverageFitness();
         }
         
         return pool;
@@ -66,6 +67,26 @@ public class testUtils {
         species.setGenomes(genomes);
         return species;
         
+    }
+    
+    public static Pool getSortPool(){
+        ArrayList<Species> species = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+
+
+            ArrayList<Genome> genomes = new ArrayList<>();
+
+            for (int z = 0; z < 5; z++) {
+                genomes.add(testUtils.getGenome(z * i));
+
+            }
+
+            species.add(testUtils.getSpecies(genomes));
+        }
+
+        Pool pool = testUtils.getPool(species);
+        return pool;
     }
     
 

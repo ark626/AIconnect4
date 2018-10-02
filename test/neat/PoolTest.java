@@ -4,38 +4,52 @@ package neat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
+import java.util.Collections;
 import org.junit.Test;
 import testUtils.testUtils;
 
 public class PoolTest {
 
+    
+    @Test
+    public void testThatSpeciesCrossover(){
+        
+        Pool pool = createTestPool();
+        
+
+        pool.rankGlobally();
+        assertThat(pool.Species.get(0).calculateAverageFitness(), is(18L));
+        assertThat(pool.Species.get(1).calculateAverageFitness(), is(15L));
+        assertThat(pool.Species.get(2).calculateAverageFitness(), is(12L));
+        assertThat(pool.Species.get(3).calculateAverageFitness(), is(10L));
+        assertThat(pool.Species.get(4).calculateAverageFitness(), is(9L));
+        
+        Collections.sort(pool.Species);
+        
+        assertThat(pool.Species.get(0).calculateAverageFitness(), is(9L));
+        assertThat(pool.Species.get(1).calculateAverageFitness(), is(10L));
+        assertThat(pool.Species.get(2).calculateAverageFitness(), is(12L));
+        assertThat(pool.Species.get(3).calculateAverageFitness(), is(15L));
+        assertThat(pool.Species.get(4).calculateAverageFitness(), is(18L));
+
+    }
+    
     @Test
     public void testThatPoolCalculatesAverageFitness() {
 
-        ArrayList<Species> species = new ArrayList<>();
-
-        for (int i = 0; i < 5; i++) {
-
-
-            ArrayList<Genome> genomes = new ArrayList<>();
-
-            for (int z = 0; z < 5; z++) {
-                genomes.add(testUtils.getGenome(z * i));
-
-            }
-
-            species.add(testUtils.getSpecies(genomes));
-        }
-
-        Pool pool = testUtils.getPool(species);
+        Pool pool = createTestPool();
 
         pool.rankGlobally();;
         long result = pool.totalAverageFitness();
-        assertThat(result, is(63L));
+        assertThat(result, is(64L));
         
         result = pool.getTopfitness();
         assertThat(result, is(16L));
 
+    }
+
+    private Pool createTestPool() {
+        return testUtils.getSortPool();
     }
 
   

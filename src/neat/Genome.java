@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
-public class Genome implements Serializable, Comparable<Genome> {
+public class Genome implements  Serializable, Comparable<Genome> {
     /**
      * 
      */
@@ -47,7 +47,7 @@ public class Genome implements Serializable, Comparable<Genome> {
     private int Outputs = 3;
     // private static final int MaxNodes = 10000;
 
-    
+
 
     public Genome(int in, int out, int gen, Pool p) {
         super();
@@ -75,6 +75,7 @@ public class Genome implements Serializable, Comparable<Genome> {
 
     /**
      * Just for TEsting purposes
+     * 
      * @param in
      * @param out
      * @param gen
@@ -104,7 +105,6 @@ public class Genome implements Serializable, Comparable<Genome> {
 
 
 
-
     public static Genome basicGenome(int in, int out, Pool p) {
         Genome g = new Genome(in, out, 1, p);
 
@@ -115,7 +115,7 @@ public class Genome implements Serializable, Comparable<Genome> {
     }
 
     public void setFitness(long fitness) {
-        if (parent!= null && fitness > this.parent.maxFitness ) {
+        if (parent != null && fitness > this.parent.maxFitness) {
             // this.parent.Species.get(parent.currentSpecies-1).staleness = 0;
             this.parent.maxFitness = fitness;
         }
@@ -535,35 +535,6 @@ public class Genome implements Serializable, Comparable<Genome> {
     }
 
 
-
-    public int compareTo(Genome arg0) {
-
-
-        return Comparators.DESCENDING.compare(this, arg0);// (int) (((Genome) arg0).fitness -
-                                                         // this.fitness);
-    }
-
-    public static class Comparators {
-
-        public static Comparator<Genome> ASCENDING = new Comparator<Genome>() {
-
-            public int compare(Genome o1, Genome o2) {
-                return (int)(o2.fitness - (o1.fitness));
-            }
-        };
-        public static Comparator<Genome> DESCENDING = new Comparator<Genome>() {
-
-            public int compare(Genome o1, Genome o2) {
-                return (int)(o1.fitness - (o2.fitness));
-            }
-        };
-
-
-
-    }
-
-
-
     public ArrayList<Gene> getGenes() {
         return Genes;
     }
@@ -700,5 +671,34 @@ public class Genome implements Serializable, Comparable<Genome> {
         return fitness;
     }
 
+    
+
+    public int compareTo(Genome arg0) {
+
+
+        return Comparators.DESCENDING.compare(this, arg0);// (int) (((Genome) arg0).fitness -
+                                                          // this.fitness);
+    }
+
+    public static class Comparators {
+
+        public static Comparator<Genome> DESCENDING = new Comparator<Genome>() {
+
+            public int compare(Genome o1, Genome o2) {
+                return (int) (o2.fitness - (o1.fitness));
+            }
+        };
+        public static Comparator<Genome> ASCENDING = new Comparator<Genome>() {
+
+            public int compare(Genome o1, Genome o2) {
+                return (int) (o1.fitness - (o2.fitness));
+            }
+        };
+
+
+
+    }
+
+    
 
 }
