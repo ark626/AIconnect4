@@ -1,5 +1,5 @@
 import static org.junit.Assert.fail;
-
+import java.io.IOException;
 import org.junit.Test;
 
 import eshyperneat.EsHyperNeat;
@@ -69,7 +69,7 @@ public class test {
                 }
             }
         }
-        p.save("./TEST.KI", 0);
+        p.save("./","TEST.KI", 0);
         try {
             Pool p2 = Pool.load("./TEST.KI");
             HyperNeat h2 = new HyperNeat(2, 1, 0, 2, 1, p);
@@ -80,6 +80,9 @@ public class test {
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             fail(e.getMessage());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 

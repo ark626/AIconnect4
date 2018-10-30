@@ -1,6 +1,7 @@
 package neatPrinter;
 
 import java.io.File;
+import java.io.IOException;
 import hyperneat.HyperNeat;
 import neat.Genome;
 import neat.Pool;
@@ -8,14 +9,14 @@ import neat.Species;
 
 public class neatPrinter {
     
-    public static void main(String args[]) throws ClassNotFoundException{
+    public static void main(String args[]) throws ClassNotFoundException, IOException{
         
         //neatGenerator( "C:/tmp/tmp","C:/Users/VDINGER/git/mario-ai/MARIOAI.ki");
         Pool p = Pool.load("C:/tmp/MARIOHYPERAI.ki");
         showFitnessEtc(p);
     }
     
-    public static void hyperNeatGenerator(String filePathPictures, String filePathOrigin ) throws ClassNotFoundException  {
+    public static void hyperNeatGenerator(String filePathPictures, String filePathOrigin ) throws ClassNotFoundException, IOException  {
       
         Pool p = new Pool(4, 1);
         HyperNeat test = new HyperNeat(42, 3, 0, 7, 6, p);
@@ -100,7 +101,7 @@ public class neatPrinter {
         }
     }
     
-    public static void neatGenerator(String filePathPictures, String filePathOrigin ) throws ClassNotFoundException  {
+    public static void neatGenerator(String filePathPictures, String filePathOrigin ) throws ClassNotFoundException, IOException  {
         
         Pool p = new Pool(4, 1);
 

@@ -44,7 +44,7 @@ public class Species implements Serializable,  Comparable<Species> {
     }
 
     public long calculateAverageFitness() {
-        int total = 0;
+        long total = 0;
 
         for (Genome g : this.Genomes) {
 

@@ -405,7 +405,7 @@ HyperNeat hyper2;
 			}
 		}
 		if(this.loadedtype1 == 3){
-			p.save("C:/tmp/Neat/Shodan1.ki", 0);
+			p.save("C:/tmp/Neat/","Shodan1.ki", 0);
 		//	File f =  new File("C:/tmp/Neat/Shodan1.ki");
 			//System.out.println(f.getAbsolutePath());
 			for(Species s :p.Species){
@@ -417,7 +417,7 @@ HyperNeat hyper2;
 			
 		}
 		if(this.loadedtype2 == 3){
-			p2.save("C:/tmp/Neat/Shodan2.ki", 0);
+			p2.save("C:/tmp/Neat/","Shodan2.ki", 0);
 			for(Species s :p2.Species){
 				for(Genome g:s.Genomes){
 					g.generateNetwork();
@@ -428,7 +428,7 @@ HyperNeat hyper2;
 		}
 		
 		if(this.loadedtype1 == 4){
-			game.a.pool.save("C:/tmp/Hyper/generator.ki",0);
+			game.a.pool.save("C:/tmp/Hyper/","generator.ki",0);
 			for(Species s :game.a.pool.Species){
 				for(Genome g:s.Genomes){
 					g.generateNetwork();
@@ -442,7 +442,7 @@ HyperNeat hyper2;
 			}
 		}
 		if(this.loadedtype2 == 4){
-			game.b.pool.save("C:/tmp/Hyper/generator.ki",0);
+			game.b.pool.save("C:/tmp/Hyper/","generator.ki",0);
 			for(Species s :game.b.pool.Species){
 				for(Genome g:s.Genomes){
 					g.generateNetwork();

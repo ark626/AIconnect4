@@ -70,12 +70,12 @@ public class testUtils {
     }
     
     public static Pool getSortPool(){
-        ArrayList<Species> species = new ArrayList<>();
+        ArrayList<Species> species = new ArrayList<Species>();
 
         for (int i = 0; i < 5; i++) {
 
 
-            ArrayList<Genome> genomes = new ArrayList<>();
+            ArrayList<Genome> genomes = new ArrayList<Genome>();
 
             for (int z = 0; z < 5; z++) {
                 genomes.add(testUtils.getGenome(z * i));

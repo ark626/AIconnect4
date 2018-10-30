@@ -156,16 +156,16 @@ public class Pool implements Serializable {
                 survivors.add(s);
             }
         }
-        if (survivors.size() > MAXSPECIES) {
-
-            Collections.sort(survivors, hyper.Species.Comparators.ASCENDING);
-            for (int i = 0; i < survivors.size(); i++) {
-                if (survivors.get(i)
-                        .calculateAverageFitness() < this.totalAverageFitness() / survivors.size()) {
-                    survivors.remove(i);
-                }
-            }
-        }
+//        if (survivors.size() > MAXSPECIES) {
+//
+//            Collections.sort(survivors, neat.Species.Comparators.ASCENDING);
+//            for (int i = 0; i < survivors.size(); i++) {
+//                if (survivors.get(i)
+//                        .calculateAverageFitness() < this.totalAverageFitness() / survivors.size()) {
+//                    survivors.remove(i);
+//                }
+//            }
+//        }
         this.Species = survivors;
     }
 
@@ -277,7 +277,8 @@ public class Pool implements Serializable {
                 global.add(g);
             }
         }
-        Collections.sort(global, Genome.Comparators.DESCENDING);
+        //return (a.fitness < b.fitness)
+        Collections.sort(global, Genome.Comparators.ASCENDING);
         int i = 1;
         for (Genome g : global) {
             g.setGlobalRank(i++);
@@ -295,10 +296,19 @@ public class Pool implements Serializable {
         return total;
     }
 
+    /**
+     * Sortiert die Genome in jeder Species Desc, 
+     * dannach wird errechnet wieviele % überleben
+     * und die Genome von hinten aus der Spezies herrausgelöscht
+     * Wenn cutToOne aktiv ist, werden die Spezies auf das beste 
+     * Element reduziert
+     * @param cutToOne
+     */
     public void cullSpecies(boolean cutToOne) {
 
 
         for (Species s : this.Species) {
+
             Collections.sort(s.Genomes, Genome.Comparators.DESCENDING);
 
             int remain = (int) Math.ceil(s.Genomes.size() * SPECIESPERCENTAGE);
@@ -307,15 +317,7 @@ public class Pool implements Serializable {
             if (cutToOne) {
                 remain = 1;
             }
-            // ArrayList<Genome> remove = new ArrayList<Genome>();
-            // for(Genome g:s.Genomes){
-            // if(g.fitness == -9999){
-            // remove.add(g);
-            // }
-            // }
-            // for(Genome g: remove){
-            // s.Genomes.remove(g);
-            // }
+
             while (s.Genomes.size() > remain) {
                 s.Genomes.remove(s.Genomes.size() - 1);
 

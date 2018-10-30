@@ -1,10 +1,11 @@
 package hyper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
 
-public class Species implements Comparable<Species> {
+public class Species implements Serializable, Comparable<Species> {
     private long topFitness;
     private int staleness;
     public ArrayList<Genome> Genomes;

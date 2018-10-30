@@ -234,6 +234,9 @@ public class GUI {
                         // p = new Pool(42,3);
                         // p.save("C:/Neat/Shodan1.ki", 0);
 
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                     if (p == null) {
                         p = new Pool(42, 3);
@@ -251,6 +254,9 @@ public class GUI {
                         e.printStackTrace();
                         // p = new Pool(42,3);
                         // p.save("C:/Neat/Shodan2.ki", 0);
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                     if (p2 == null) {
                         p2 = new Pool(42, 3);
@@ -266,6 +272,9 @@ public class GUI {
                     } catch (ClassNotFoundException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                     if (p == null) {
                         p = new Pool(4, 1);
@@ -287,6 +296,9 @@ public class GUI {
                     } catch (ClassNotFoundException e1) {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                     if (p2 == null) {
                         p2 = new Pool(4, 1);

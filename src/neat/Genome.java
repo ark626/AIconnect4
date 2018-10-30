@@ -1,17 +1,20 @@
 package neat;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
-public class Genome implements  Serializable, Comparable<Genome> {
+public class Genome implements Serializable, Comparable<Genome> {
     /**
      * 
      */
     private static final long serialVersionUID = -4198647103860678421L;
-    public ArrayList<Gene> Genes;
+    public transient ArrayList<Gene> Genes;
     private long fitness;
     private int adjustedfitness;
     private transient Network Network;
@@ -60,7 +63,7 @@ public class Genome implements  Serializable, Comparable<Genome> {
         this.adjustedfitness = 0;
         Network = new Network();
         this.maxneuron = 0;
-        this.globalRank = 0;
+        this.globalRank = -1;
         this.mutationrates = new double[8];
         this.mutationrates[0] = Genome.MutateConnectionsChance;
         this.mutationrates[1] = Genome.LinkMutationChance;
@@ -192,7 +195,7 @@ public class Genome implements  Serializable, Comparable<Genome> {
             }
         }
         if (Check) {
-            this.fitness = -9999;
+            // this.fitness = -9999;
 
         }
         g.Network = net;
@@ -424,7 +427,7 @@ public class Genome implements  Serializable, Comparable<Genome> {
     }
 
     public double[] step(double[] Inputs) {
-        return this.step(Inputs, 10);
+        return this.step(Inputs, 13);
 
     }
 
@@ -671,7 +674,7 @@ public class Genome implements  Serializable, Comparable<Genome> {
         return fitness;
     }
 
-    
+
 
     public int compareTo(Genome arg0) {
 
@@ -699,6 +702,47 @@ public class Genome implements  Serializable, Comparable<Genome> {
 
     }
 
-    
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        // default serialization
+        oos.defaultWriteObject();
+        oos.writeInt(this.Genes.size());
+        for (Gene gene : Genes) {
+            oos.writeInt(gene.getInto());
+            oos.writeInt(gene.getOut());
+            oos.writeInt(gene.layer);
+            oos.writeDouble(gene.getWeigth());
+            oos.writeBoolean(gene.isEnabled());
+            oos.writeInt(gene.getInnovation());
+            oos.writeInt(gene.getActivition());
+            oos.writeInt(gene.isExcess());
+
+        }
+        // write the object
+
+    }
+
+    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+        // default deserialization
+        ois.defaultReadObject();
+        int sizeOfGenes = ois.readInt();
+        this.Genes = new ArrayList<Gene>();
+        for (int i = 0; i < sizeOfGenes; i++) {
+            Gene gene = new Gene();
+            gene.setInto(ois.readInt());
+            gene.setOut(ois.readInt());
+            gene.layer = ois.readInt();
+            gene.setWeigth(ois.readDouble());
+            gene.setEnabled(ois.readBoolean());
+            gene.setInnovation(ois.readInt());
+            gene.setActivition(ois.readInt());
+            gene.setExcess(ois.readInt());
+            this.Genes.add(gene);
+
+            // ... more code
+        }
+
+    }
+
+
 
 }

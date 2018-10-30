@@ -2,10 +2,14 @@ package neat;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +35,8 @@ public class Pool implements Serializable {
     private static final double SPECIESPERCENTAGE = 0.5;// normally 0.5
     private static final int MINSPECIES = 5;
     private static final int MAXSPECIES = 15;
+    private static final int SuperMutantsMax = 2;
+    public int superMutants = 0;
     public int Inputs = 42;
     public int Outputs = 3;
     // private static final int MaxNodes = 1000000;
@@ -56,10 +62,17 @@ public class Pool implements Serializable {
 
     public Pool copy() {
         Pool p = new Pool(this.Inputs, this.Outputs);
-        this.save("./copyPool.pl", 0);
+
+        this.save("./","copyPool.pl", 0);
         try {
             p = Pool.load("./copyPool.pl");
         } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -152,20 +165,21 @@ public class Pool implements Serializable {
             s.calculateAverageFitness();
             int breed = (int) Math.floor(((double) s.getAverageFitness() / (double) sum * Population));
 
-            if (breed >= 1 || survivors.size() < MINSPECIES && s.calculateAverageFitness() > this.totalAverageFitness() / this.Species.size()) {
+            if (breed >= 1) { // ||(survivors.size() < MINSPECIES && s.calculateAverageFitness() >
+                              // (this.totalAverageFitness() / this.Species.size()))) {
                 survivors.add(s);
             }
         }
-        if (survivors.size() > MAXSPECIES) {
-
-            Collections.sort(survivors, neat.Species.Comparators.ASCENDING);
-            for (int i = 0; i < survivors.size(); i++) {
-                if (survivors.get(i)
-                        .calculateAverageFitness() < this.totalAverageFitness() / survivors.size()) {
-                    survivors.remove(i);
-                }
-            }
-        }
+        // if (survivors.size() > MAXSPECIES) {
+        //
+        // Collections.sort(survivors, neat.Species.Comparators.ASCENDING);
+        // for (int i = 0; i < survivors.size(); i++) {
+        // if (survivors.get(i)
+        // .calculateAverageFitness() < this.totalAverageFitness() / survivors.size()) {
+        // survivors.remove(i);
+        // }
+        // }
+        // }
         this.Species = survivors;
     }
 
@@ -277,7 +291,8 @@ public class Pool implements Serializable {
                 global.add(g);
             }
         }
-        Collections.sort(global, Genome.Comparators.DESCENDING);
+        // return (a.fitness < b.fitness)
+        Collections.sort(global, Genome.Comparators.ASCENDING);
         int i = 1;
         for (Genome g : global) {
             g.setGlobalRank(i++);
@@ -295,10 +310,18 @@ public class Pool implements Serializable {
         return total;
     }
 
+    /**
+     * Sortiert die Genome in jeder Species Desc, dannach wird errechnet wieviele % überleben und
+     * die Genome von hinten aus der Spezies herrausgelöscht Wenn cutToOne aktiv ist, werden die
+     * Spezies auf das beste Element reduziert
+     * 
+     * @param cutToOne
+     */
     public void cullSpecies(boolean cutToOne) {
 
 
         for (Species s : this.Species) {
+
             Collections.sort(s.Genomes, Genome.Comparators.DESCENDING);
 
             int remain = (int) Math.ceil(s.Genomes.size() * SPECIESPERCENTAGE);
@@ -307,15 +330,7 @@ public class Pool implements Serializable {
             if (cutToOne) {
                 remain = 1;
             }
-            // ArrayList<Genome> remove = new ArrayList<Genome>();
-            // for(Genome g:s.Genomes){
-            // if(g.fitness == -9999){
-            // remove.add(g);
-            // }
-            // }
-            // for(Genome g: remove){
-            // s.Genomes.remove(g);
-            // }
+
             while (s.Genomes.size() > remain) {
                 s.Genomes.remove(s.Genomes.size() - 1);
 
@@ -380,6 +395,23 @@ public class Pool implements Serializable {
                 children.add(ge);
             }
         }
+
+        // If only 1. Species, try to create supermutants.
+        if (this.Species.size() == 1) {
+            this.superMutants++;
+        }
+        else{
+            this.superMutants = 0;
+        }
+        if (this.superMutants >= SuperMutantsMax) {
+            System.out.println("Bottleneck Triggered! Creating Supermutants");
+            
+            for (Genome g : children) {
+                for (int i = 0; i < 500; i++) {
+                    this.Innovation = g.mutate(this.Innovation);
+                }
+            }
+        }
         for (Genome g : children) {
             this.addToSpecies(g);
         }
@@ -428,9 +460,13 @@ public class Pool implements Serializable {
 
     // Serializable
 
-    public void save(String s, int i) {
+    public void save(String s, String fileName, int i) {
+
         try {
-            File f = new File(s);
+            
+            Pool.cleanUp(s);
+
+            File f = new File(s+fileName);
             FileOutputStream fileOut = new FileOutputStream(f.getAbsolutePath());
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             // writing KI's
@@ -440,12 +476,19 @@ public class Pool implements Serializable {
             out.writeInt(this.Innovation);
             out.writeLong(this.maxFitness);
             out.writeInt(this.Species.size());
+            int speciesIndex = -1;
             for (Species sp : this.Species) {
                 out.writeInt(sp.Genomes.size());
                 out.writeLong(sp.getTopFitness());
                 out.writeLong(sp.getAverageFitness());
+                speciesIndex++;
+                int j = 0;
                 for (Genome g : sp.Genomes) {
-                    out.writeObject(g);
+                    File fi = new File(s +fileName+ "Species" + speciesIndex + "Genome" + j++);
+                    FileOutputStream fileOutTemp = new FileOutputStream(fi.getAbsolutePath());
+                    ObjectOutputStream outPut = new ObjectOutputStream(fileOutTemp);
+                    outPut.writeObject(g);
+                    outPut.close();
                 }
 
 
@@ -469,33 +512,58 @@ public class Pool implements Serializable {
                         + this.Species.get(1)
                                 .getAverageFitness();
             }
+
+
             System.out.println(saveStatement);
         }
-        // catch(FileNotFoundException e){
-        // File f = new File(s);
-        // try {
-        // String[] st = s.split("/");
-        // String path = "";
-        // for(int j = 0;j<st.length-1;j++){
-        // path += st;
-        // }
-        // new File(path).mkdir();
-        // f.createNewFile();
-        // this.save(s, i);
-        // }
-        // catch (IOException e1) {
-        // // TODO Auto-generated catch block
-        // e1.printStackTrace();
-        // }
-        // }
+
         catch (IOException e) {
             e.printStackTrace();
+            Pool.log(e.getMessage()+"; Pool line 523");
             // this.save("/tmp/employee"+i+1+".ser",i+1);
         }
 
+        boolean didRealodWorked = true;;
+        try {
+            Pool p = Pool.loadBackup(s+fileName);
+            // TODO:
+        } catch (Exception e) {
+            Pool.log(e.getMessage()+"; Pool line 532");
+            didRealodWorked = false;
+        }
+        if (didRealodWorked) {
+            new File("./MarioAISave").mkdirs();
+            Pool.cleanUp("./MarioAISave");
+            moveFiles(s, "./MarioAISave/");
+        }
+        else{
+            System.out.println("Reaload didnt work.");
+        }
+
+    }
+    
+    public static void log(String s){
+        
+        try (FileWriter out = new FileWriter("ErrorLog.txt", true)) {
+
+            out.write(s);
+            out.flush();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
-    public static Pool load(String s) throws ClassNotFoundException {
+    public static Pool load(String s) throws ClassNotFoundException, IOException {
+
+        return Pool.loadBackup("./MarioAISave/"+s);
+
+    }
+
+    public static Pool loadBackup(String s) throws ClassNotFoundException, IOException {
         try {
             File f = new File(s);
             FileInputStream fileIn = new FileInputStream(f.getAbsolutePath());
@@ -511,16 +579,21 @@ public class Pool implements Serializable {
             p.currentGenome = 1;
             p.currentSpecies = 1;
             int Speciessize = in.readInt();
+
             for (int i = 0; i < Speciessize; i++) {
                 int Genomesize = in.readInt();
                 Species spe = new Species(p.Inputs, p.Outputs, p);
                 spe.setTopFitness(in.readLong());
                 spe.setAverageFitness(in.readLong());
                 for (int j = 0; j < Genomesize; j++) {
-                    Genome g = (Genome) in.readObject();
+                    File fi = new File(s + "Species" + i + "Genome" + j);
+                    FileInputStream fileInTemp = new FileInputStream(fi.getAbsolutePath());
+                    ObjectInputStream inPut = new ObjectInputStream(fileInTemp);
+                    Genome g = (Genome) inPut.readObject();
                     g.setParent(p);
 
                     spe.Genomes.add(g);
+                    fileInTemp.close();
                 }
                 p.Species.add(spe);
             }
@@ -528,19 +601,79 @@ public class Pool implements Serializable {
             in.close();
             fileIn.close();
             p.maxFitness = p.getTopfitness();
-      
+
             // System.out.println("Loaded file from" +f.getAbsolutePath()+"with Generation:
             // "+p.generation+" Fitness
             // "+p.getbest().getFitness());//Thread.currentThread().getStackTrace().toString());
             return p;
+        } catch (FileNotFoundException i) {
+            System.out.println(i.getMessage() + i.toString() + i.getStackTrace()
+                    .toString() + " Couldnt load file");
+            Pool.log(i.getMessage()+"; Pool line 612");
+            throw i;
+            // return new Pool();
+
         } catch (IOException i) {
-            i.getMessage();
-            System.out.println("Couldnt load file");
-            return null;
+            i.printStackTrace();
+            Pool.log(i.getMessage()+"; Pool line 618");
+            throw i;
             // return new Pool();
 
         }
 
+
+    }
+
+    public static void copyFileUsingStream(File source, File dest) throws IOException {
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(source);
+            os = new FileOutputStream(dest);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+        } finally {
+            is.close();
+            os.close();
+        }
+    }
+    
+    public static void cleanUp(String path){
+        File file = new File(path);
+        String[] myFiles;
+        if (file.isDirectory()) {
+            myFiles = file.list();
+            for (int i = 0; i < myFiles.length; i++) {
+                File myFile = new File(file, myFiles[i]);
+                myFile.delete();
+            }
+        }
+    }
+
+    public static boolean moveFiles(String source, String dest) {
+        File sourceFile = new File(source);
+        // copy file conventional way using Stream
+        long start = System.nanoTime();
+        String[] myFiles;
+        if (sourceFile.isDirectory()) {
+            myFiles = sourceFile.list();
+            for (int i = 0; i < myFiles.length; i++) {
+                File myFile = new File(sourceFile, myFiles[i]);
+                try {
+                    File destFile = new File(dest + myFile.getName());
+                    Pool.copyFileUsingStream(myFile, destFile);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    return false;
+                }
+            }
+        }
+
+        System.out.println("Time taken by Stream Copy = " + (System.nanoTime() - start));
+        return true;
     }
 
 }

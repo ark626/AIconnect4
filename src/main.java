@@ -21,6 +21,9 @@ public class main {
         } catch (ClassNotFoundException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         if (p == null) {
             p = new Pool(4, 1);
@@ -140,7 +143,7 @@ public class main {
             // Umgestellt
             // Genome te =
             // a.pool.Species.get(a.pool.currentSpecies-1).Genomes.get(a.pool.currentGenome-1);
-            p.save("/KI/tmp/Hyper/Neat.ki", 0);
+            p.save("/KI/tmp/Hyper","Neat.ki", 0);
             for (Species s : p.Species) {
                 for (Genome ge : s.Genomes) {
                     ge.generateNetwork();

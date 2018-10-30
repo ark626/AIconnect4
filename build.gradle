@@ -1,5 +1,8 @@
 apply plugin: 'java'
 
+
+
 dependencies {
-  testCompile 'junit:junit:4.12'
+	testCompile (['junit:junit:4.12'],['de.ruedigermoeller:fst:2.56'])
+	compile (['de.ruedigermoeller:fst:2.56'])
 }

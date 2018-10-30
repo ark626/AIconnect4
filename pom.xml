@@ -1,0 +1,21 @@
+
+  <modelVersion>4.0.0</modelVersion>
+  <name>Maven Default Project</name>
+ 
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>Maven Repository Switchboard</name>
+      <layout>default</layout>
+      <url>http://repo1.maven.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+<dependency>
+    <groupId>de.ruedigermoeller</groupId>
+    <artifactId>fst</artifactId>
+    <version>2.56</version>
+</dependency>
