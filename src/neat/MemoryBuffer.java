@@ -1,4 +1,4 @@
-//package neat;
+package neat;
 //
 //import sun.misc.Unsafe;
 //import java.io.ByteArrayInputStream;
@@ -10,7 +10,7 @@
 //import java.nio.ByteBuffer;
 //import java.util.Arrays;
 //    
-//    public class MemoryBuffer {
+    public class MemoryBuffer {
 //        // getting Unsafe by reflection
 //        public static final Unsafe unsafe = UnsafeUtil.getUnsafe();
 //
@@ -64,4 +64,4 @@
 //        /* other methods */
 //      } 
 //
-//}
+}
