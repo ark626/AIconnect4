@@ -174,11 +174,11 @@ public class HyperNeat {
             // System.out.println(Inputs[0]+" " +Inputs[1]+" " +Inputs[2]+" " +Inputs[3] );
             if (i >= Input * Input) {
                 double factor = 1e5; // = 1 * 10^5 = 100000.
-                g.setWeigth((this.activition(13, CPPN.step(Inputs, 0)[0])));
+                g.setWeigth(CPPN.step(Inputs, 10)[0]);
                 // g.setWeigth((((g.getWeigth() * factor)) / factor));
             } else {
                 double factor = 1e5; // = 1 * 10^5 = 100000.
-                g.setWeigth((this.activition(13, CPPN.step(Inputs, 0)[0])));// g.setWeigth((CPPN.step(Inputs,0)[0]));
+                g.setWeigth(CPPN.step(Inputs, 10)[0]);// g.setWeigth((CPPN.step(Inputs,0)[0]));
                 // g.setWeigth((g.getWeigth() * factor)/ factor);
             }
             if (g.getWeigth() != 0) {
