@@ -20,14 +20,15 @@ public class Pool implements Serializable {
      * 
      */
     private static final long serialVersionUID = 8913652205956204258L;
-    public ArrayList<Species> Species;
+    public ArrayList<Species> Species;   
+    public transient Genome currentBest;
     public int generation;
     public int Innovation;
     public int currentSpecies;
     public int currentGenome;
     public int currentFrame;
     public long maxFitness = Integer.MIN_VALUE;
-    public static final double Population = 300;
+    public static final double Population = 1000;
     public static final double DeltaDisjoint = 2.0;
     public static final double DeltaWeights = 0.4;
     public static final double DeltaThreshold = 1;
@@ -35,7 +36,7 @@ public class Pool implements Serializable {
     private static final double SPECIESPERCENTAGE = 0.5;// normally 0.5
     private static final int MINSPECIES = 5;
     private static final int MAXSPECIES = 15;
-    private static final int SuperMutantsMax = 2;
+    private static final int SuperMutantsMax = 20;
     public int superMutants = 0;
     public int Inputs = 42;
     public int Outputs = 3;
@@ -148,7 +149,7 @@ public class Pool implements Serializable {
             } else {
                 s.setStaleness(s.getStaleness() + 1);
             }
-            if (s.getStaleness() < StaleSpecies || s.getTopFitness() >= this.getTopfitness()) {// ||(survivors.size()<MINSPECIES&&s.calculateAverageFitness()>this.totalAverageFitness()/this.Species.size()))
+            if (s.getStaleness() < StaleSpecies || s.getTopFitness() >= this.getTopfitness()||isBestInThisSpecies(s)) {// ||(survivors.size()<MINSPECIES&&s.calculateAverageFitness()>this.totalAverageFitness()/this.Species.size()))
                                                                                                // {
                 survivors.add(s);
             }
@@ -156,6 +157,10 @@ public class Pool implements Serializable {
 
         this.Species = survivors;
         // this.rankGlobally();
+    }
+    
+    private boolean isBestInThisSpecies(Species s){
+        return s.Genomes.contains(this.currentBest);
     }
 
     public void removeWeakSpecies() {
@@ -165,7 +170,7 @@ public class Pool implements Serializable {
             s.calculateAverageFitness();
             int breed = (int) Math.floor(((double) s.getAverageFitness() / (double) sum * Population));
 
-            if (breed >= 1) { // ||(survivors.size() < MINSPECIES && s.calculateAverageFitness() >
+            if (breed >= 1||isBestInThisSpecies(s)) { // ||(survivors.size() < MINSPECIES && s.calculateAverageFitness() >
                               // (this.totalAverageFitness() / this.Species.size()))) {
                 survivors.add(s);
             }
@@ -297,6 +302,7 @@ public class Pool implements Serializable {
         for (Genome g : global) {
             g.setGlobalRank(i++);
         }
+        this.currentBest = global.get(global.size()-1);
     }
 
     public int totalAverageFitness() {
@@ -407,7 +413,7 @@ public class Pool implements Serializable {
             System.out.println("Bottleneck Triggered! Creating Supermutants");
             
             for (Genome g : children) {
-                for (int i = 0; i < 500; i++) {
+                for (int i = 0; i < 100; i++) {
                     this.Innovation = g.mutate(this.Innovation);
                 }
             }
@@ -605,6 +611,7 @@ public class Pool implements Serializable {
             // System.out.println("Loaded file from" +f.getAbsolutePath()+"with Generation:
             // "+p.generation+" Fitness
             // "+p.getbest().getFitness());//Thread.currentThread().getStackTrace().toString());
+            p.rankGlobally();
             return p;
         } catch (FileNotFoundException i) {
             System.out.println(i.getMessage() + i.toString() + i.getStackTrace()
