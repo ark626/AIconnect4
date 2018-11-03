@@ -28,7 +28,7 @@ public class Pool implements Serializable {
     public int currentGenome;
     public int currentFrame;
     public long maxFitness = Integer.MIN_VALUE;
-    public static final double Population = 500;
+    public static final double Population = 300;
     public static final double DeltaDisjoint = 2.0;
     public static final double DeltaWeights = 0.4;
     public static final double DeltaThreshold = 1;
@@ -684,6 +684,8 @@ public class Pool implements Serializable {
         System.out.println("Time taken by Stream Copy = " + (System.nanoTime() - start));
         return true;
     }
+    
+
 
 }
 

@@ -16,6 +16,11 @@ public class HyperNeat {
     private Neuron Neurons[];
     private ArrayList<Gene> Links;
     private Pool pool;
+    public transient  int GENERATIONFUNCTION = 150;
+    public transient  int ACTIVATIONFUNCTION = 0;
+    private transient static double ROUNDING = 1e3;
+    
+    
 
     public HyperNeat(int Input, int Output, int Hidden, int xsize, int ysize, Pool pool) {
         this.Input = Input;
@@ -173,13 +178,13 @@ public class HyperNeat {
 
             // System.out.println(Inputs[0]+" " +Inputs[1]+" " +Inputs[2]+" " +Inputs[3] );
             if (i >= Input * Input) {
-                double factor = 1e5; // = 1 * 10^5 = 100000.
-                g.setWeigth(CPPN.step(Inputs, 10)[0]);
-                // g.setWeigth((((g.getWeigth() * factor)) / factor));
+                double factor = ROUNDING; // = 1 * 10^5 = 100000.
+                g.setWeigth(CPPN.step(Inputs, GENERATIONFUNCTION)[0]);
+                g.setWeigth((((g.getWeigth() * factor)) / factor));
             } else {
-                double factor = 1e5; // = 1 * 10^5 = 100000.
-                g.setWeigth(CPPN.step(Inputs, 10)[0]);// g.setWeigth((CPPN.step(Inputs,0)[0]));
-                // g.setWeigth((g.getWeigth() * factor)/ factor);
+                double factor = ROUNDING; // = 1 * 10^5 = 100000.
+                g.setWeigth(CPPN.step(Inputs, GENERATIONFUNCTION)[0]);// g.setWeigth((CPPN.step(Inputs,0)[0]));
+                g.setWeigth((g.getWeigth() * factor)/ factor);
             }
             if (g.getWeigth() != 0) {
                 Empty = false;
@@ -234,69 +239,6 @@ public class HyperNeat {
 
     }
 
-    public double activition(int n, double value) {
-        switch (n) {
-            case 0:
-                return Math.sin(value);
-            case 1:
-                return Math.cos(value);
-            case 2:
-                double x = Math.tan(value);
-                if (x < 10000.0 && x > -10000.0)
-                    return x;
-                if (x > 10000.0)
-                    return 10000.0;
-                if (x < -10000.0)
-                    return -10000.0;
-                return 0.0;
-            case 3:
-                return Math.tanh(value);
-            case 4:
-                return (1.0 - Math.exp(-value)) / (1.0 + Math.exp(-value));
-            case 5:
-                return Math.exp(-1.0 * (value * value));
-            case 6:
-                return 1.0 - 2.0 * (value - Math.floor(value));
-            case 7:
-                if ((int) Math.floor(value) % 2 == 0)
-                    return 1.0;
-                return -1.0;
-            case 8:
-                if ((int) Math.floor(value) % 2 == 0)
-                    return 1.0 - 2.0 * (value - Math.floor(value));
-                return -1 - 2 * (value - Math.floor(value));
-            case 9:
-                return -value;
-            case 10:
-                return (2 / (1 + Math.exp(-4.9 * value)) - 1);
-            case 11:
-                return value;
-            case 12:
-                if ((int) Math.floor(value) % 2 == 0) {
-                    return 1.0;
-                } else {
-                    return 0.0;
-                }
-            case 13:
-                return 2.0 / (1.0 + Math.exp(-(value * 2))) - 1.0;
-        }
-        return 0;
-        // Sigmoid
-        // case 1: return value; //Linear
-        // case 2: return Math.round(value); //Binary
-        // case 3: return Math.exp(-(value*value )); //Gaussian
-        // case 4: return 2.0 / (1.0 + Math.exp(-(value * 2))) - 1.0; //Sigmoid Bipolar
-        // case 5: if (value <= 0)return 0;
-        // else if (value >= 1)return 1;
-        // else return value;
-        // case 6:if (value <= 0)value = 0;
-        // else if (value >= 1)value = 1;
-        // return (value * 2) - 1;
-        // case 7: return Math.cos(value);
-        // case 8: return Math.sin(value);
-
-    }
-
     public double[] step(double[] Inputs) {
         // String test = "Input: ";
         // Inputs im Netzwerk setzen
@@ -323,11 +265,11 @@ public class HyperNeat {
 
             }
         }
-        // //Fixing 1 Layer Output
-        // for(int i = Input;i<Input*2;i++){
-        // double d = this.activition(10,Neurons[i].getValue());
-        // Neurons[i].setValue(d);
-        // }
+         //Fixing 1 Layer Output
+         for(int i = Input;i<Input*2;i++){
+         double d = tools.MathLib.activition(ACTIVATIONFUNCTION,Neurons[i].getValue());
+         Neurons[i].setValue(d);
+         }
 
         // From 1 Layer to Output
         for (int i = Input; i < Input * 2; i++) {
@@ -345,7 +287,7 @@ public class HyperNeat {
         }
         // Fixing Output
         for (int i = Input * 2; i < Neurons.length; i++) {
-            double d = this.activition(13, Neurons[i].getValue());
+            double d = tools.MathLib.activition(ACTIVATIONFUNCTION, Neurons[i].getValue());
             Neurons[i].setValue(d);
         }
 
@@ -353,7 +295,7 @@ public class HyperNeat {
         int j = 0;
         // String s = "Outputs: ";
         for (int i = Input * 2; i < this.Neurons.length; i++) {
-            Output[j++] = this.activition(13, Neurons[i].getValue());
+            Output[j++] = Neurons[i].getValue();//this.activition(ACTIVATIONFUNCTION, Neurons[i].getValue());
 
             // s+= " "+Output[j]+"";
             // j++;
@@ -374,13 +316,14 @@ public class HyperNeat {
             // }
             // else{
             if (g.getWeigth() != 0 || Neurons[g.getOut()].getValue() != 0.0) {
-                d += (g.getWeigth() * Neurons[g.getOut()].getValue() * f) / f;
+                d += (g.getWeigth() * Neurons[g.getOut()].getValue() ) ;
+                // d += (g.getWeigth() * Neurons[g.getOut()].getValue() * f) / f;
             }
             // i=0;
             // }
         }
 
-        return this.activition(act, d);
+        return tools.MathLib.activition(act, d);
     }
 
     public double[] stepold(double[] Inputs) {
@@ -543,5 +486,40 @@ public class HyperNeat {
     }
 
 
+    /**
+     * Indicates a wrong config of ActivationFunction and GenerationFunction
+     * @param act
+     * @param gen
+     * @return
+     */
+    public static boolean wrongConfig(int act, int gen) {
+        switch(act) {
+            case 5:
+                return true;
+            case 6:
+                return true;
+            case 7:
+                return true;
+            case 8:
+                return true;
+            case 12:
+                return true;
+            case 14:
+                return true;
+        }
+        switch(gen) {
+            case 6:
+                return true;
+            case 7:
+                return true;
+            case 8:
+                return true;
+            case 12:
+                return true;
+
+        }
+        return false;
+        
+    }
 
 }

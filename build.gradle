@@ -1,8 +1,33 @@
 apply plugin: 'java'
-
-
+repositories {
+    jcenter()
+        mavenCentral()
+}
+ 
 
 dependencies {
-	testCompile (['junit:junit:4.12'],['de.ruedigermoeller:fst:2.56'])
-	compile (['de.ruedigermoeller:fst:2.56'])
+  compile(
+    ['com.google.guava:guava:16.0.1']
+  )
+  
+      testCompileOnly(
+            'junit:junit:4.12'
+    )
+    testImplementation(
+            'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    )
+    testRuntimeOnly(
+            'org.junit.jupiter:junit-jupiter-engine:5.1.0',
+            'org.junit.vintage:junit-vintage-engine:5.1.0'
+    )
+
+  testCompile(
+    ['org.testng:testng:6.8.8'],
+    ['org.junit.jupiter:junit-jupiter-api:5.1.0'],
+    ['org.uncommons:reportng:1.1.4'],
+    ['org.mockito:mockito-all:1.9.5'],
+    ['org.easytesting:fest-assert-core:2.0M10'],
+    // workaround for a known issue with TestNG 6.x: explicitly add Guice (Gradle will fail to run tests otherwise)
+    ['com.google.inject:guice:3.0']
+  )
 }
