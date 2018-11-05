@@ -28,15 +28,17 @@ public class Pool implements Serializable {
     public int currentGenome;
     public int currentFrame;
     public long maxFitness = Integer.MIN_VALUE;
-    public static final double Population = 300;
+    public static final double Population = 500;
     public static final double DeltaDisjoint = 2.0;
     public static final double DeltaWeights = 0.4;
-    public static final double DeltaThreshold = 1;
+    public static final double DeltaThreshold = 5;//5
+    public static final double DeltaActivation = 1;
     public static final double StaleSpecies = 15; // 15
     private static final double SPECIESPERCENTAGE = 0.5;// normally 0.5
     private static final int MINSPECIES = 5;
     private static final int MAXSPECIES = 15;
     private static final int SuperMutantsMax = 20;
+    public transient String fileName;
     public int superMutants = 0;
     public int Inputs = 42;
     public int Outputs = 3;
@@ -266,11 +268,34 @@ public class Pool implements Serializable {
         } else
             return 0;
     }
+    
+    public int activationFunctionDelta(ArrayList<Gene> g1, ArrayList<Gene> g2) {
+        ArrayList<Gene> i2 = new ArrayList<Gene>();
+        for (Gene g : g2) {
+            i2.add(g);
+        }
+
+        int sum = 0;
+        for (Gene g : g1) {
+            if (i2.size() > g.getInnovation()) {
+                if (i2.get(g.getInnovation()) != null) {
+                    Gene gene2 = i2.get(g.getInnovation());
+                    if(g.getActivition()!=gene2.getActivition()) {
+                        sum += 1;
+                    }
+
+                }
+            }
+        }
+        return sum;
+    }
 
     public boolean sameSpecies(Genome g1, Genome g2) {
         double dd = DeltaDisjoint * disjoint(g1.Genes, g2.Genes);
         double dw = DeltaWeights * weigths(g1.Genes, g2.Genes);
-        return (dd + dw < DeltaThreshold);
+        double ad = DeltaActivation * activationFunctionDelta(g1.Genes, g2.Genes);
+
+        return (dd + dw + ad < DeltaThreshold);
     }
 
     public void addToSpecies(Genome child) {
@@ -436,6 +461,9 @@ public class Pool implements Serializable {
                 // System.out.println(this.toString());
                 this.currentSpecies = 1;
                 this.currentGenome = 1;
+                
+                new File("./MarioAI").mkdirs();
+                this.save("./MarioAI/",fileName, 0);
             }
         }
     }
@@ -550,6 +578,21 @@ public class Pool implements Serializable {
     public static void log(String s) {
 
         try (FileWriter out = new FileWriter("ErrorLog.txt", true)) {
+
+            out.write(s);
+            out.flush();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    public static void log(String s, String name) {
+
+        try (FileWriter out = new FileWriter(name+".txt", true)) {
 
             out.write(s);
             out.flush();

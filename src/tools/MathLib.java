@@ -6,7 +6,7 @@ public class MathLib {
     
     public static double activition(int n, double value) {
         
-        return Math.scalb(activitionReduced(n, value),Double.MAX_EXPONENT/2);
+        return activitionReduced(n, value);//Math.scalb(activitionReduced(n, value),Double.MAX_EXPONENT/2);
 //        double factor =  100000; //1 * 10^5 = 100000
 //        return (activitionUnrounded(n, value)*factor)/factor;
         //return BigDecimal.valueOf(activitionUnrounded(n, value)).setScale(16, BigDecimal.ROUND_HALF_EVEN).doubleValue();
@@ -35,6 +35,7 @@ public class MathLib {
                     return 0.0;
                 }
             case 9:
+                //Sigmoid Bipolar
                 return 2.0 / (1.0 + Math.exp(-(value * 2))) - 1.0;
             case 10:
                 return 1 / (1 + Math.exp(-value));
@@ -128,6 +129,71 @@ public class MathLib {
         // case 7: return Math.cos(value);
         // case 8: return Math.sin(value);
 
+        
+    }
+    
+    public static double newAcitvation(EnumMath n, double aX, double aSlope, double aShift) {
+        double tY=0;
+        switch(n) {
+            case SigmoidUnsigned:
+                return 1.0 / (1.0 + Math.exp( - aSlope * aX - aShift));
+            case SigmoidSigned:
+                tY = newAcitvation(EnumMath.SigmoidUnsigned, aX, aSlope, aShift);
+                return (tY - 0.5) * 2.0;
+            case Tanh:
+                return Math.tanh(aX * aSlope);
+            case TanhCubic:
+                return Math.tanh(aX * aX * aX * aSlope);
+            case StepSigned:
+                
+                if (aX > aShift)
+                {
+                    tY = 1.0;
+                }
+                else
+                {
+                    tY = -1.0;
+                }
+
+                return tY;
+            case StepUnsigned:
+                if (aX > (0.5+aShift))
+                {
+                    return 1.0;
+                }
+                else
+                {
+                    return 0.0;
+                }
+            case GaussSigned:
+                tY = Math.exp( - aSlope * aX * aX + aShift); // TODO: Need separate a, b per activation function
+                return (tY-0.5)*2.0;
+            case GaussUnsigned:
+                return Math.exp( - aSlope * aX * aX + aShift);
+            case Abs:
+                return ((aX + aShift)< 0.0)? -(aX + aShift): (aX + aShift);
+            case SineSigned:
+                return Math.sin(aX * aSlope + aShift);
+            case SineUnsigned:
+                tY = Math.sin((aX * aSlope + aShift) );
+                return (tY + 1.0) / 2.0;
+            case Linear:
+                return (aX + aShift);
+            case Relu:
+                return (aX > 0)?aX:0;
+            case SoftPlus:
+                return Math.log(1 + Math.exp(aX));
+            case UnsignedSigmoidDerivative:
+                return aX * (1 - aX);
+            case TanhDerivative:
+                return 1 - aX * aX;
+            
+                
+                
+                
+        }
+        return aX;
+        
     }
 
 }

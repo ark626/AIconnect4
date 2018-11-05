@@ -70,6 +70,7 @@ public class Gene implements Serializable, Comparable<Gene> {
         temp.enabled = this.enabled;
         temp.excess = this.excess;
         temp.weigth = this.weigth;
+        temp.activition = this.activition;
         return temp;
     }
 

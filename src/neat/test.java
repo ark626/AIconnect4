@@ -3,6 +3,7 @@ package neat;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import hyperneat.HyperNeat;
+import tools.EnumMath;
 
 
 
@@ -70,7 +71,7 @@ public class test {
         }
     }
 
-    @Test
+    
     public void OrTest() {
 
         Pool test = new Pool(2, 1);
@@ -169,7 +170,7 @@ public class test {
             result = test.currentGenome()
                     .step(input);
 
-            if (result[0] <= 0.0 && result[1] <= 0.0) {
+            if (result[0] <= 0.5 && result[1] <= 0.5) {
                 // System.out.println("First");
                 test.currentGenome()
                         .setFitness(
@@ -181,7 +182,7 @@ public class test {
             result = test.currentGenome()
                     .step(input);
 
-            if (result[0] > 0.0 && result[1] <= 0.0) {
+            if (result[0] > 0.5 && result[1] <= 0.5) {
                 // System.out.println("Second");
                 test.currentGenome()
                         .setFitness(
@@ -192,7 +193,7 @@ public class test {
             input[1] = 1;
             result = test.currentGenome()
                     .step(input);
-            if (result[0] > 0.0 && result[1] > 0.0) {
+            if (result[0] > 0.5 && result[1] > 0.5) {
                 // System.out.println("Third");
                 test.currentGenome()
                         .setFitness(
@@ -202,7 +203,7 @@ public class test {
             input[0] = 0;
             result = test.currentGenome()
                     .step(input);
-            if (result[0] > 0.0 && result[1] <= 0.0) {
+            if (result[0] > 0.5 && result[1] <= 0.5) {
                 // System.out.println("Fourth");
                 test.currentGenome()
                         .setFitness(
@@ -221,8 +222,24 @@ public class test {
         System.out.println("Done in " + iterations + " iterations");
 
     }
-
+    
     @Test
+    public void MathTest() {
+        
+        System.out.println(tools.MathLib.newAcitvation(EnumMath.GaussSigned, 0, 1, 0));
+        System.out.println(tools.MathLib.newAcitvation(EnumMath.GaussSigned, 1, 1, 0));
+        System.out.println(tools.MathLib.newAcitvation(EnumMath.GaussSigned, 10, 1, 0));
+        System.out.println(tools.MathLib.newAcitvation(EnumMath.GaussSigned, -10, 1, 0));
+        System.out.println(tools.MathLib.newAcitvation(EnumMath.GaussSigned, 5, 1, 0));
+        
+        System.out.println(tools.MathLib.newAcitvation(EnumMath.GaussUnsigned, 0, 1, 0));
+        System.out.println(tools.MathLib.newAcitvation(EnumMath.GaussUnsigned, 1, 1, 0));
+        System.out.println(tools.MathLib.newAcitvation(EnumMath.GaussUnsigned, 10, 1, 0));
+        System.out.println(tools.MathLib.newAcitvation(EnumMath.GaussUnsigned, -10, 1, 0));
+        System.out.println(tools.MathLib.newAcitvation(EnumMath.GaussUnsigned, 5, 1, 0));
+    }
+
+    
     public void Benchmark() {
 
         long start = System.currentTimeMillis();
@@ -283,6 +300,16 @@ public class test {
 
 
 
+    }
+    
+    @Test
+    public void checkIfHyperNeatWorks() {
+        long started = System.currentTimeMillis();
+        neat.Pool test = new neat.Pool(5, 1);
+
+        // Input outpit hidden xsize y size
+        HyperNeat hyperNeat = new HyperNeat(9, 9, 1, 3, 3, test);
+        hyperNeat.neuronPath();
     }
 
     private int checkOrTest(int act, int gen) {

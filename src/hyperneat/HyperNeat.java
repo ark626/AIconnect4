@@ -6,6 +6,7 @@ import neat.Gene;
 import neat.Genome;
 import neat.Neuron;
 import neat.Pool;
+import tools.EnumMath;
 
 public class HyperNeat {
     private int Input;
@@ -16,11 +17,11 @@ public class HyperNeat {
     private Neuron Neurons[];
     private ArrayList<Gene> Links;
     private Pool pool;
-    public transient  int GENERATIONFUNCTION = 150;
-    public transient  int ACTIVATIONFUNCTION = 0;
+    public transient int GENERATIONFUNCTION = 150;
+    public transient int ACTIVATIONFUNCTION = EnumMath.GaussSigned.ordinal();
     private transient static double ROUNDING = 1e3;
-    
-    
+
+
 
     public HyperNeat(int Input, int Output, int Hidden, int xsize, int ysize, Pool pool) {
         this.Input = Input;
@@ -154,14 +155,36 @@ public class HyperNeat {
 
     }
 
+    public void neuronPath() {
+
+        for (Gene g : this.Links) {
+            System.out.println("Out:" + g.getOut() + " In: " + g.getInto());
+        }
+
+        int i = 0;
+        for (Neuron n : this.Neurons) {
+            System.out.println("Out:"+ i++);
+            for (Gene g : n.getIncoming()) {
+                System.out.println("Out:" + g.getOut() + " In: " + g.getInto());
+            }
+            for (Gene g : n.getOutgoing()) {
+                System.out.println("Out:" + g.getOut() + " In: " + g.getInto());
+            }
+        }
+
+    }
+
     public long topFit() {
         return this.pool.getTopfitness();
     }
+
+
 
     public void generateweigths(Genome CPPN) {
         // Genome CPPN =
         // this.pool.Species.get(this.pool.currentSpecies-1).Genomes.get(this.pool.currentGenome-1);
         CPPN.generateNetwork();
+
         // int i = 0;
         for (Neuron n : Neurons) {
             n.setValue(0.0);
@@ -170,21 +193,30 @@ public class HyperNeat {
         int i = 0;
         for (Gene g : Links) {
             i++;
-            double[] Inputs = new double[4];
+            double[] Inputs = new double[5];
             Inputs[0] = (g.getInto() % x);
             Inputs[1] = (g.getInto() % x) * y;
             Inputs[2] = (g.getOut() % x);
             Inputs[3] = (g.getOut() % x) * y;
 
+            if (g.getInto() < x * y) {
+                Inputs[4] = 0;
+            }
+            if (g.getInto() >= x * y) {
+                Inputs[4] = 1;
+            }
+            if (g.getInto() >= 2 * x * y) {
+                Inputs[4] = 2;
+            }
+
             // System.out.println(Inputs[0]+" " +Inputs[1]+" " +Inputs[2]+" " +Inputs[3] );
             if (i >= Input * Input) {
-                double factor = ROUNDING; // = 1 * 10^5 = 100000.
+                // double factor = ROUNDING; // = 1 * 10^5 = 100000.
                 g.setWeigth(CPPN.step(Inputs, GENERATIONFUNCTION)[0]);
-                g.setWeigth((((g.getWeigth() * factor)) / factor));
+
             } else {
-                double factor = ROUNDING; // = 1 * 10^5 = 100000.
                 g.setWeigth(CPPN.step(Inputs, GENERATIONFUNCTION)[0]);// g.setWeigth((CPPN.step(Inputs,0)[0]));
-                g.setWeigth((g.getWeigth() * factor)/ factor);
+
             }
             if (g.getWeigth() != 0) {
                 Empty = false;
@@ -219,7 +251,7 @@ public class HyperNeat {
         }
         // System.out.println("Nodes"+CPPN.Network.Neurons.size()+" Genes "+CPPN.Genes.size());
         if (Empty) {
-            //CPPN.setFitness(-9999);
+            // CPPN.setFitness(-9999);
             // this.pool.nextGenome();
             // this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).generateNetwork();
             // this.generateweigths(this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1));
@@ -265,11 +297,12 @@ public class HyperNeat {
 
             }
         }
-         //Fixing 1 Layer Output
-         for(int i = Input;i<Input*2;i++){
-         double d = tools.MathLib.activition(ACTIVATIONFUNCTION,Neurons[i].getValue());
-         Neurons[i].setValue(d);
-         }
+        // Fixing 1 Layer Output
+        for (int i = Input; i < Input * 2; i++) {
+            double d = tools.MathLib.newAcitvation(EnumMath.GaussSigned, Neurons[i].getValue(), 1, 0);// tools.MathLib.activition(ACTIVATIONFUNCTION,
+                                                                                                      // Neurons[i].getValue());
+            Neurons[i].setValue(d);
+        }
 
         // From 1 Layer to Output
         for (int i = Input; i < Input * 2; i++) {
@@ -287,7 +320,8 @@ public class HyperNeat {
         }
         // Fixing Output
         for (int i = Input * 2; i < Neurons.length; i++) {
-            double d = tools.MathLib.activition(ACTIVATIONFUNCTION, Neurons[i].getValue());
+            double d = tools.MathLib.newAcitvation(EnumMath.SigmoidUnsigned, Neurons[i].getValue(), 1, 0);// tools.MathLib.activition(ACTIVATIONFUNCTION,
+                                                                                                          // Neurons[i].getValue());
             Neurons[i].setValue(d);
         }
 
@@ -295,7 +329,8 @@ public class HyperNeat {
         int j = 0;
         // String s = "Outputs: ";
         for (int i = Input * 2; i < this.Neurons.length; i++) {
-            Output[j++] = Neurons[i].getValue();//this.activition(ACTIVATIONFUNCTION, Neurons[i].getValue());
+            Output[j++] = Neurons[i].getValue();// this.activition(ACTIVATIONFUNCTION,
+                                                // Neurons[i].getValue());
 
             // s+= " "+Output[j]+"";
             // j++;
@@ -316,7 +351,7 @@ public class HyperNeat {
             // }
             // else{
             if (g.getWeigth() != 0 || Neurons[g.getOut()].getValue() != 0.0) {
-                d += (g.getWeigth() * Neurons[g.getOut()].getValue() ) ;
+                d += (g.getWeigth() * Neurons[g.getOut()].getValue());
                 // d += (g.getWeigth() * Neurons[g.getOut()].getValue() * f) / f;
             }
             // i=0;
@@ -488,12 +523,13 @@ public class HyperNeat {
 
     /**
      * Indicates a wrong config of ActivationFunction and GenerationFunction
+     * 
      * @param act
      * @param gen
      * @return
      */
     public static boolean wrongConfig(int act, int gen) {
-        switch(act) {
+        switch (act) {
             case 5:
                 return true;
             case 6:
@@ -507,7 +543,7 @@ public class HyperNeat {
             case 14:
                 return true;
         }
-        switch(gen) {
+        switch (gen) {
             case 6:
                 return true;
             case 7:
@@ -519,7 +555,7 @@ public class HyperNeat {
 
         }
         return false;
-        
+
     }
 
 }

@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
+import tools.EnumMath;
 
 public class Genome implements Serializable, Comparable<Genome> {
+    private static final int FUNCTIONSOFNODES = 15;
     /**
      * 
      */
@@ -25,6 +27,8 @@ public class Genome implements Serializable, Comparable<Genome> {
     private int Innovation = 0;
     private int Generation;
     private transient Pool parent;
+    private static transient double NodeShift = 0;
+    private static transient double NodeSlope = 1;
     // genome.mutationRates["connections"] = MutateConnectionsChance
     // genome.mutationRates["link"] = LinkMutationChance
     // genome.mutationRates["bias"] = BiasMutationChance
@@ -42,7 +46,7 @@ public class Genome implements Serializable, Comparable<Genome> {
     private static final double LinkMutationChance = 2.0;
     private static final double NodeMutationChance = 0.50;
     private static final double BiasMutationChance = 0.40;
-    private static final double ActivitionMutationChance = 0.5;
+    private static final double ActivitionMutationChance = 0.0125; //0.5
     private static final double StepSize = 0.1;
     private static final double DisableMutationChance = 0.4;
     private static final double EnableMutationChance = 0.2;
@@ -160,6 +164,7 @@ public class Genome implements Serializable, Comparable<Genome> {
             Collections.sort(g.Genes);
         }
         boolean Check = true;
+        
         for (Gene ge : g.Genes) {
             if (ge.isEnabled()) {
                 boolean checker = false;
@@ -168,15 +173,16 @@ public class Genome implements Serializable, Comparable<Genome> {
                     net.Neurons.add(new Neuron());
                     net.Neurons.get(net.Neurons.size() - 1)
                             .setActive(false);
-                    if (ge.getActivition() != 0) {
-                        net.Neurons.get(net.Neurons.size() - 1)
-                                .setActivition(ge.getActivition());
-                    }
+//                    if (ge.getActivition() != 0) {
+//                        net.Neurons.get(net.Neurons.size() - 1)
+//                                .setActivition(ge.getActivition());
+//                    }
                 }
                 net.Neurons.get(net.Neurons.size() - 1)
                         .setActive(true);
                 net.Neurons.get(ge.getOut())
                         .addIncoming(ge);
+                net.Neurons.get(ge.getOut()).setActivition(ge.getActivition());
                 checker = false;
                 while (net.Neurons.size() <= ge.getInto()) {
                     checker = true;
@@ -228,8 +234,9 @@ public class Genome implements Serializable, Comparable<Genome> {
                     .getInto() > Inputs
                     && this.Genes.get(i)
                             .getOut() != Inputs + Outputs) {
-                Neurons.add(this.Genes.get(i)
-                        .getInto());
+                Neurons.add(
+                        this.Genes.get(i)
+                                .getInto());
 
 
             }
@@ -237,8 +244,9 @@ public class Genome implements Serializable, Comparable<Genome> {
                     .getOut() >= Inputs
                     && this.Genes.get(i)
                             .getOut() != Inputs + Outputs) {
-                Neurons.add(this.Genes.get(i)
-                        .getOut());
+                Neurons.add(
+                        this.Genes.get(i)
+                                .getOut());
             }
         }
 
@@ -294,6 +302,8 @@ public class Genome implements Serializable, Comparable<Genome> {
             return 0;
         }
         newLink.setInnovation(inovation++);
+        Random rand = new Random();
+        newLink.setActivition(rand.nextInt(EnumMath.values().length));
         newLink.setWeigth(Math.random() * 4 - 2);
         // System.out.println("From: "+newLink.out+" TO: "+newLink.into);
         this.Genes.add(newLink);
@@ -305,7 +315,8 @@ public class Genome implements Serializable, Comparable<Genome> {
             Random rand = new Random();
             int i = rand.nextInt(this.Genes.size());
             this.Genes.get(i)
-                    .setActivition(rand.nextInt(20));
+                    .setActivition(rand.nextInt(EnumMath.values().length));
+           //this.Genes.get(i).getOut()
             return inovation + 1;
         }
         return inovation;
@@ -450,15 +461,17 @@ public class Genome implements Serializable, Comparable<Genome> {
             double sum = 0;
 
             for (Gene g : n.getIncoming()) {
-                sum += tools.MathLib.activition(g.getActivition(),g.getWeigth() * this.Network.Neurons.get(g.getInto())
-                        .getValue());
+                sum += g.getWeigth() * this.Network.Neurons.get(g.getInto())
+                        .getValue();
 
             }
 
             if (n.getIncoming()
                     .size() > 1) {
-                n.setValue((tools.MathLib.activition(act, (sum))));
+                n.setValue((tools.MathLib.newAcitvation(EnumMath.values()[n.getActivition()], sum, NodeSlope, NodeShift)));
+                // n.setValue((tools.MathLib.activition(n.getActivition(), (sum))));
             }
+
             // }
 
         }
