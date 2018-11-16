@@ -18,7 +18,7 @@ public class Gene implements Serializable, Comparable<Gene> {
     public int layer;
     private double weigth;
     private boolean enabled;
-    private int innovation;
+    private long innovation;
     private int activition;
     private int excess = 0;
 
@@ -155,11 +155,11 @@ public class Gene implements Serializable, Comparable<Gene> {
         this.enabled = enabled;
     }
 
-    public int getInnovation() {
+    public long getInnovation() {
         return innovation;
     }
 
-    public void setInnovation(int innovation) {
+    public void setInnovation(long innovation) {
         this.innovation = innovation;
     }
 

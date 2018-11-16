@@ -23,18 +23,19 @@ public class Pool implements Serializable {
     public ArrayList<Species> Species;
     public transient Genome currentBest;
     public int generation;
-    public int Innovation;
+    public long Innovation;
     public int currentSpecies;
     public int currentGenome;
     public int currentFrame;
     public long maxFitness = Integer.MIN_VALUE;
-    public static final double Population = 500;
+    public static final double Population = 10000;
     public static final double DeltaDisjoint = 2.0;
     public static final double DeltaWeights = 0.4;
-    public static final double DeltaThreshold = 5;//5
-    public static final double DeltaActivation = 1;
+    public static final double DeltaThreshold = 1;// 5
+    public static final double DeltaActivation = 2;//Merged with DeltaDisjoint
     public static final double StaleSpecies = 15; // 15
-    private static final double SPECIESPERCENTAGE = 0.5;// normally 0.5
+    private static final double SPECIESPERCENTAGE = 0.3;// normally 0.5
+    private transient static final double  ELITISM = 0.05;// normally 0.5
     private static final int MINSPECIES = 5;
     private static final int MAXSPECIES = 15;
     private static final int SuperMutantsMax = 20;
@@ -144,9 +145,10 @@ public class Pool implements Serializable {
 
             if (s.Genomes.get(0)
                     .getFitness() > s.getTopFitness()) {
-                s.setTopFitness(s.getGenomes()
-                        .get(0)
-                        .getFitness());
+                s.setTopFitness(
+                        s.getGenomes()
+                                .get(0)
+                                .getFitness());
                 s.setStaleness(0);
             } else {
                 s.setStaleness(s.getStaleness() + 1);
@@ -199,41 +201,64 @@ public class Pool implements Serializable {
         }
     }
 
+//    public int disjoint(ArrayList<Gene> g1, ArrayList<Gene> g2) {
+//        ArrayList<Boolean> i1 = new ArrayList<Boolean>();
+//        int maxinovation = 0;
+//        for (Gene g : g1) {
+//            if (g.getInnovation() > maxinovation) {
+//                maxinovation = g.getInnovation();
+//            }
+//        }
+//        for (Gene g : g2) {
+//            if (g.getInnovation() > maxinovation) {
+//                maxinovation = g.getInnovation();
+//            }
+//        }
+//        for (int i = 0; i < maxinovation + 1; i++) {
+//            i1.add(false);
+//        }
+//        for (Gene g : g1) {
+//            i1.set(g.getInnovation(), true);
+//        }
+//        ArrayList<Boolean> i2 = new ArrayList<Boolean>();
+//        for (int i = 0; i < maxinovation + 1; i++) {
+//            i2.add(false);
+//        }
+//        for (Gene g : g2) {
+//            i2.set(g.getInnovation(), true);
+//        }
+//
+//        int disjointGenes = 0;
+//        for (Gene g : g1) {
+//            if (!i2.get(g.getInnovation())) {
+//                disjointGenes += 1;
+//            }
+//        }
+//        for (Gene g : g2) {
+//            if (!i1.get(g.getInnovation())) {
+//                disjointGenes += 1;
+//            }
+//        }
+//
+//        int n = Math.max(g1.size(), g2.size());
+//        if (n > 0) {
+//
+//            return disjointGenes / n;
+//        } else
+//            return 0;
+//    }
+    
     public int disjoint(ArrayList<Gene> g1, ArrayList<Gene> g2) {
-        ArrayList<Boolean> i1 = new ArrayList<Boolean>();
-        int maxinovation = 0;
-        for (Gene g : g1) {
-            if (g.getInnovation() > maxinovation) {
-                maxinovation = g.getInnovation();
-            }
-        }
-        for (Gene g : g2) {
-            if (g.getInnovation() > maxinovation) {
-                maxinovation = g.getInnovation();
-            }
-        }
-        for (int i = 0; i < maxinovation + 1; i++) {
-            i1.add(false);
-        }
-        for (Gene g : g1) {
-            i1.set(g.getInnovation(), true);
-        }
-        ArrayList<Boolean> i2 = new ArrayList<Boolean>();
-        for (int i = 0; i < maxinovation + 1; i++) {
-            i2.add(false);
-        }
-        for (Gene g : g2) {
-            i2.set(g.getInnovation(), true);
-        }
+      
 
         int disjointGenes = 0;
         for (Gene g : g1) {
-            if (!i2.get(g.getInnovation())) {
+            if (this.findGeneWithSameInnovationInList(g2, g)==null) {
                 disjointGenes += 1;
             }
         }
         for (Gene g : g2) {
-            if (!i1.get(g.getInnovation())) {
+            if (this.findGeneWithSameInnovationInList(g1, g)==null) {
                 disjointGenes += 1;
             }
         }
@@ -255,20 +280,29 @@ public class Pool implements Serializable {
         int sum = 0;
         int zufall = 0;
         for (Gene g : g1) {
-            if (i2.size() > g.getInnovation()) {
-                if (i2.get(g.getInnovation()) != null) {
-                    Gene gene2 = i2.get(g.getInnovation());
-                    sum += Math.abs(g.getWeigth() - (gene2.getWeigth()));
-                    zufall = zufall + 1;
-                }
+            Gene gene2 = findGeneWithSameInnovationInList(i2, g);
+            if (gene2 != null) {
+                sum += Math.abs(g.getWeigth() - (gene2.getWeigth()));
+                zufall = zufall + 1;
             }
         }
+
         if (zufall > 0) {
             return sum / zufall;
         } else
             return 0;
     }
-    
+
+    public Gene findGeneWithSameInnovationInList(ArrayList<Gene> g1, Gene g) {
+
+        for (Gene ge : g1) {
+            if (ge.getInnovation() == g.getInnovation()) {
+                return ge;
+            }
+        }
+        return null;
+    }
+
     public int activationFunctionDelta(ArrayList<Gene> g1, ArrayList<Gene> g2) {
         ArrayList<Gene> i2 = new ArrayList<Gene>();
         for (Gene g : g2) {
@@ -277,24 +311,28 @@ public class Pool implements Serializable {
 
         int sum = 0;
         for (Gene g : g1) {
-            if (i2.size() > g.getInnovation()) {
-                if (i2.get(g.getInnovation()) != null) {
-                    Gene gene2 = i2.get(g.getInnovation());
-                    if(g.getActivition()!=gene2.getActivition()) {
-                        sum += 1;
-                    }
+            // if (i2.size() > g.getInnovation()) {
 
+            // if (i2.get(g.getInnovation()) != null) {
+            // Gene gene2 = i2.get(g.getInnovation());
+
+            Gene gene2 = findGeneWithSameInnovationInList(i2, g);
+            if (gene2 != null) {
+                if (g.getActivition() != gene2.getActivition()) {
+                    sum += 1;
                 }
             }
         }
+        // }
         return sum;
+
     }
 
     public boolean sameSpecies(Genome g1, Genome g2) {
         double dd = DeltaDisjoint * disjoint(g1.Genes, g2.Genes);
         double dw = DeltaWeights * weigths(g1.Genes, g2.Genes);
         double ad = DeltaActivation * activationFunctionDelta(g1.Genes, g2.Genes);
-
+        //System.out.println("Delta for new Generations Species  "+dd + dw + ad+" =>" + (dd + dw + ad < DeltaThreshold));
         return (dd + dw + ad < DeltaThreshold);
     }
 
@@ -310,6 +348,7 @@ public class Pool implements Serializable {
             Species childSpecies = new Species(this.Inputs, this.Outputs, this);
             childSpecies.Genomes.add(child);
             this.Species.add(childSpecies);
+            //System.out.println("New Species Generated"+this.Species.size()+" "+ this.Species.indexOf(childSpecies));
         }
 
 
@@ -357,11 +396,12 @@ public class Pool implements Serializable {
             Collections.sort(s.Genomes, Genome.Comparators.DESCENDING);
 
             int remain = (int) Math.ceil(s.Genomes.size() * SPECIESPERCENTAGE);
+            if (cutToOne) {
+                remain = (int) Math.ceil(s.Genomes.size() * ELITISM);//1;
+            }
             if (remain < 1)
                 remain = 1;
-            if (cutToOne) {
-                remain = 1;
-            }
+
 
             while (s.Genomes.size() > remain) {
                 s.Genomes.remove(s.Genomes.size() - 1);
@@ -429,20 +469,20 @@ public class Pool implements Serializable {
         }
 
         // If only 1. Species, try to create supermutants.
-        if (this.Species.size() == 1) {
-            // this.superMutants++;
-        } else {
-            this.superMutants = 0;
-        }
-        if (this.superMutants >= SuperMutantsMax) {
-            System.out.println("Bottleneck Triggered! Creating Supermutants");
-
-            for (Genome g : children) {
-                for (int i = 0; i < 100; i++) {
-                    this.Innovation = g.mutate(this.Innovation);
-                }
-            }
-        }
+//        if (this.Species.size() == 1) {
+//            this.superMutants++;
+//        } else {
+//            this.superMutants = 0;
+//        }
+//        if (this.superMutants >= SuperMutantsMax) {
+//            System.out.println("Bottleneck Triggered! Creating Supermutants");
+//
+//            for (Genome g : children) {
+//                for (int i = 0; i < 100; i++) {
+//                    this.Innovation = g.mutate(this.Innovation);
+//                }
+//            }
+//        }
         for (Genome g : children) {
             this.addToSpecies(g);
         }
@@ -461,9 +501,9 @@ public class Pool implements Serializable {
                 // System.out.println(this.toString());
                 this.currentSpecies = 1;
                 this.currentGenome = 1;
-                
+
                 new File("./MarioAI").mkdirs();
-                this.save("./MarioAI/",fileName, 0);
+                this.save("./MarioAI/", fileName, 0);
             }
         }
     }
@@ -507,7 +547,7 @@ public class Pool implements Serializable {
             out.writeInt(this.Inputs);
             out.writeInt(this.Outputs);
             out.writeInt(this.generation);
-            out.writeInt(this.Innovation);
+            out.writeLong(this.Innovation);
             out.writeLong(this.maxFitness);
             out.writeInt(this.Species.size());
             int speciesIndex = -1;
@@ -529,15 +569,15 @@ public class Pool implements Serializable {
             }
             out.close();
             fileOut.close();
-            String saveStatement =
-                    "Serialized data is saved in " + f.getAbsolutePath() + " with Generation " + this.generation + " Fitness " + this.getbest()
-                            .getFitness() + " First: "
-                            + this.Species.get(0)
-                                    .getGenomes()
-                                    .get(0)
-                                    .getFitness()
-                            + "/" + this.Species.get(0)
-                                    .getAverageFitness();
+            String saveStatement = "Serialized data is saved in " + f.getAbsolutePath() + " with Generation " + this.generation + " Fitness "
+                    + this.getbest()
+                            .getFitness()
+                    + " First: " + this.Species.get(0)
+                            .getGenomes()
+                            .get(0)
+                            .getFitness()
+                    + "/" + this.Species.get(0)
+                            .getAverageFitness();
             if (this.Species.size() > 2) {
                 saveStatement += " Second: " + this.Species.get(1)
                         .getGenomes()
@@ -589,10 +629,10 @@ public class Pool implements Serializable {
             e.printStackTrace();
         }
     }
-    
+
     public static void log(String s, String name) {
 
-        try (FileWriter out = new FileWriter(name+".txt", true)) {
+        try (FileWriter out = new FileWriter(name + ".txt", true)) {
 
             out.write(s);
             out.flush();
@@ -622,7 +662,7 @@ public class Pool implements Serializable {
             p.Inputs = inn;
             p.Outputs = out;
             p.generation = in.readInt();
-            p.Innovation = in.readInt();
+            p.Innovation = in.readLong();
             p.maxFitness = in.readLong();
             p.currentGenome = 1;
             p.currentSpecies = 1;
@@ -656,8 +696,9 @@ public class Pool implements Serializable {
             p.rankGlobally();
             return p;
         } catch (FileNotFoundException i) {
-            System.out.println(i.getMessage() + i.toString() + i.getStackTrace()
-                    .toString() + " Couldnt load file");
+            System.out.println(
+                    i.getMessage() + i.toString() + i.getStackTrace()
+                            .toString() + " Couldnt load file");
             Pool.log(i.getMessage() + "; Pool line 612");
             throw i;
             // return new Pool();
@@ -727,7 +768,7 @@ public class Pool implements Serializable {
         System.out.println("Time taken by Stream Copy = " + (System.nanoTime() - start));
         return true;
     }
-    
+
 
 
 }

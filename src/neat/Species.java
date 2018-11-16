@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.Random;
 import neat.Genome.Comparators;
 
-public class Species implements Serializable,  Comparable<Species> {
+public class Species implements Serializable, Comparable<Species> {
     private long topFitness;
     private int staleness;
     public ArrayList<Genome> Genomes;
@@ -31,6 +31,7 @@ public class Species implements Serializable,  Comparable<Species> {
 
     /**
      * Only for Testing purposes
+     * 
      * @param in
      * @param out
      */
@@ -79,26 +80,26 @@ public class Species implements Serializable,  Comparable<Species> {
         for (Gene gene : g2.Genes) {
             Innovation.add(gene);
         }
-        
-        for(Gene gene: g1.Genes){
-            int times=0;
-            for(Gene gene2:g2.Genes){
-                if(gene.getInto() == gene2.getInto()&&gene.getOut()==gene2.getOut()&&gene.getWeigth()==gene2.getWeigth()){
+
+        for (Gene gene : g1.Genes) {
+            int times = 0;
+            for (Gene gene2 : g2.Genes) {
+                if (gene.getInto() == gene2.getInto() && gene.getOut() == gene2.getOut() && gene.getWeigth() == gene2.getWeigth()) {
                     times += 1;
                 }
             }
-            if(times >0||gene.isExcess()>0){
-                
-                if(gene.isExcess()<2){
-                gene.setExcess(1);
+            if (times > 0 || gene.isExcess() > 0) {
+
+                if (gene.isExcess() < 2) {
+                    gene.setExcess(1);
                 }
-                
-//                for(int j = 0;j<EXCESSMULTIPLIKANT;j++){
-//                    
-//                    Gene g = gene.copyGene();
-//                    g.setExcess(2);
-//                    Innovation.add(g);
-//                }
+
+                // for(int j = 0;j<EXCESSMULTIPLIKANT;j++){
+                //
+                // Gene g = gene.copyGene();
+                // g.setExcess(2);
+                // Innovation.add(g);
+                // }
             }
         }
 
@@ -112,21 +113,22 @@ public class Species implements Serializable,  Comparable<Species> {
             }
             int rand = (int) Math.round(Math.random());
             Gene geneToAdd = null;
-            if (gene2 != null && rand == 1 && gene2.isEnabled()) {
-                 geneToAdd =  gene2.copyGene();
-                if(geneToAdd.isExcess()>0){
+            if (gene2 != null && rand == 1) {
+                geneToAdd = gene2.copyGene();
+                if (geneToAdd.isExcess() > 0) {
                     geneToAdd.setExcess(2);
                 }
-                
+
             } else {
-                geneToAdd =  gene1.copyGene();
-               if(geneToAdd.isExcess()>0){
-                   geneToAdd.setExcess(2);
-               }
+                geneToAdd = gene1.copyGene();
+                if (geneToAdd.isExcess() > 0) {
+                    geneToAdd.setExcess(2);
+                }
             }
             child.Genes.add(geneToAdd);
         }
         child.setMaxneuron(Math.max(g1.getMaxneuron(), g2.getMaxneuron()));
+        child.setInnovation(Math.max(g1.getInnovation(), g2.getInnovation()));
         return child;
 
     }
@@ -137,7 +139,7 @@ public class Species implements Serializable,  Comparable<Species> {
         if (Math.random() < CrossoverChance) {
             int rand = r.nextInt(this.Genomes.size());
             Genome g1 = this.Genomes.get(rand);
-            //child = new Genome(this.Inputs, this.Outputs, 1, p);
+            // child = new Genome(this.Inputs, this.Outputs, 1, p);
             rand = r.nextInt(this.Genomes.size());
             Genome g2 = this.Genomes.get(rand);
             child = this.crossover(g1, g2);
@@ -212,7 +214,7 @@ public class Species implements Serializable,  Comparable<Species> {
 
 
         return Comparators.DESCENDING.compare(this, arg0);// (int) (((Genome) arg0).fitness -
-                                                         // this.fitness);
+                                                          // this.fitness);
     }
 
     public static class Comparators {
@@ -220,13 +222,13 @@ public class Species implements Serializable,  Comparable<Species> {
         public static Comparator<Species> DESCENDING = new Comparator<Species>() {
 
             public int compare(Species o1, Species o2) {
-                return (int)(o1.getAverageFitness()- (o2.getAverageFitness()));
+                return (int) (o1.getAverageFitness() - (o2.getAverageFitness()));
             }
         };
         public static Comparator<Species> ASCENDING = new Comparator<Species>() {
 
             public int compare(Species o1, Species o2) {
-                return (int)(o2.getAverageFitness() - (o1.getAverageFitness()));
+                return (int) (o2.getAverageFitness() - (o1.getAverageFitness()));
             }
         };
 

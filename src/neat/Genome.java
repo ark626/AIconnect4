@@ -24,7 +24,7 @@ public class Genome implements Serializable, Comparable<Genome> {
     private int maxneuron;
     private int globalRank;
     private double[] mutationrates;
-    private int Innovation = 0;
+    private long Innovation = 0;
     private int Generation;
     private transient Pool parent;
     private static transient double NodeShift = 0;
@@ -46,7 +46,7 @@ public class Genome implements Serializable, Comparable<Genome> {
     private static final double LinkMutationChance = 2.0;
     private static final double NodeMutationChance = 0.50;
     private static final double BiasMutationChance = 0.40;
-    private static final double ActivitionMutationChance = 0.0125; //0.5
+    private static final double ActivitionMutationChance = 0.5; //0.5
     private static final double StepSize = 0.1;
     private static final double DisableMutationChance = 0.4;
     private static final double EnableMutationChance = 0.2;
@@ -141,6 +141,7 @@ public class Genome implements Serializable, Comparable<Genome> {
         temp.Generation = this.Generation;
         temp.maxneuron = this.maxneuron;
         temp.mutationrates = new double[8];
+        temp.Innovation = this.parent.Innovation;
         for (int i = 0; i < this.mutationrates.length; i++) {
             temp.mutationrates[i] = this.mutationrates[i];
         }
@@ -277,7 +278,7 @@ public class Genome implements Serializable, Comparable<Genome> {
         }
     }
 
-    public int linkMutate(boolean forceBias, int inovation) {
+    public long linkMutate(boolean forceBias, long inovation) {
 
         int neuron1 = this.randomNeuron(false);
         int neuron2 = this.randomNeuron(true);
@@ -285,7 +286,7 @@ public class Genome implements Serializable, Comparable<Genome> {
         Gene newLink = new Gene();
 
         if ((neuron1 < Inputs || neuron1 == Inputs + Outputs) && (neuron2 < Inputs || neuron2 == Inputs + Outputs)) {
-            return 0;
+            return inovation;
         }
         if (neuron2 < Inputs || neuron2 == Inputs + Outputs) {
             int temp = neuron1;
@@ -299,7 +300,7 @@ public class Genome implements Serializable, Comparable<Genome> {
         }
 
         if (this.containsLink(newLink)) {
-            return 0;
+            return inovation;
         }
         newLink.setInnovation(inovation++);
         Random rand = new Random();
@@ -310,21 +311,25 @@ public class Genome implements Serializable, Comparable<Genome> {
         return inovation;
     }
 
-    public int activitionMutate(int inovation) {
+    public long activitionMutate(long inovation) {
         if (this.Genes.size() > 0) {
             Random rand = new Random();
             int i = rand.nextInt(this.Genes.size());
-            this.Genes.get(i)
+            Gene newGene = this.Genes.get(i).copyGene();
+            this.Genes.get(i).setEnabled(false);
+            newGene
                     .setActivition(rand.nextInt(EnumMath.values().length));
-           //this.Genes.get(i).getOut()
-            return inovation + 1;
+            newGene
+            .setInnovation(inovation++);;
+            this.Genes.add(newGene);
+
         }
         return inovation;
     }
 
-    public int nodeMutate(int inovation) {
+    public long nodeMutate(long inovation) {
         if (this.Genes.size() == 0) {
-            return 0;
+            return inovation;
         }
         this.maxneuron += 1;
         Random r = new Random();
@@ -332,7 +337,7 @@ public class Genome implements Serializable, Comparable<Genome> {
         Gene gene = this.Genes.get(rand);
 
         if (!gene.isEnabled()) {
-            return 0;
+            return inovation;
         }
         gene.setEnabled(false);
 
@@ -372,7 +377,7 @@ public class Genome implements Serializable, Comparable<Genome> {
 
 
 
-    public int mutate(int inovation) {
+    public long mutate(long inovation) {
 
         // Random r = new Random();
         for (int i = 0; i < this.mutationrates.length; i++) {
@@ -434,6 +439,7 @@ public class Genome implements Serializable, Comparable<Genome> {
             p -= 1;
         }
         this.Innovation = inovation;
+        this.parent.Innovation = inovation;
         return inovation;
     }
 
@@ -467,7 +473,7 @@ public class Genome implements Serializable, Comparable<Genome> {
             }
 
             if (n.getIncoming()
-                    .size() > 1) {
+                    .size() > -1) {
                 n.setValue((tools.MathLib.newAcitvation(EnumMath.values()[n.getActivition()], sum, NodeSlope, NodeShift)));
                 // n.setValue((tools.MathLib.activition(n.getActivition(), (sum))));
             }
@@ -559,13 +565,13 @@ public class Genome implements Serializable, Comparable<Genome> {
 
 
 
-    public int getInnovation() {
+    public long getInnovation() {
         return Innovation;
     }
 
 
 
-    public void setInnovation(int innovation) {
+    public void setInnovation(long innovation) {
         Innovation = innovation;
     }
 
@@ -661,7 +667,7 @@ public class Genome implements Serializable, Comparable<Genome> {
             oos.writeInt(gene.layer);
             oos.writeDouble(gene.getWeigth());
             oos.writeBoolean(gene.isEnabled());
-            oos.writeInt(gene.getInnovation());
+            oos.writeLong(gene.getInnovation());
             oos.writeInt(gene.getActivition());
             oos.writeInt(gene.isExcess());
 
@@ -682,7 +688,7 @@ public class Genome implements Serializable, Comparable<Genome> {
             gene.layer = ois.readInt();
             gene.setWeigth(ois.readDouble());
             gene.setEnabled(ois.readBoolean());
-            gene.setInnovation(ois.readInt());
+            gene.setInnovation(ois.readLong());
             gene.setActivition(ois.readInt());
             gene.setExcess(ois.readInt());
             this.Genes.add(gene);

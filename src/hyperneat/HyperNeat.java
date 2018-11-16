@@ -284,46 +284,63 @@ public class HyperNeat {
 
         // Just 1 layer
         // From Input to first Layer
-        int sum = 0;
-        for (int i = 0; i < Input; i++) {
+//        int sum = 0;
+//        for (int i = 0; i < Input; i++) {
+//            Neuron n = this.Neurons[i];
+//            if (n.getValue() != 0.0) {
+//                for (Gene g : n.getOutgoing()) {
+//                    if (g.getWeigth() != 0) {
+//                        Neurons[g.getInto()].setValue(Neurons[g.getInto()].getValue() + g.getWeigth() * Neurons[g.getOut()].getValue());// this.activition(11,n.value*g.weigth+Neurons[g.into].value);
+//                        // Neurons[g.into].value += n.value*g.weigth;
+//                    }
+//                }
+//
+//            }
+//        }
+        
+        
+        for (int i = Input; i < Input*2; i++) {
+            int sum = 0;
             Neuron n = this.Neurons[i];
-            if (n.getValue() != 0.0) {
-                for (Gene g : n.getOutgoing()) {
+                for (Gene g : n.getIncoming()) {
                     if (g.getWeigth() != 0) {
-                        Neurons[g.getInto()].setValue(Neurons[g.getInto()].getValue() + g.getWeigth() * Neurons[g.getOut()].getValue());// this.activition(11,n.value*g.weigth+Neurons[g.into].value);
+                        //Neurons[g.getInto()].setValue();// this.activition(11,n.value*g.weigth+Neurons[g.into].value);
+                        sum += g.getWeigth() * Neurons[g.getOut()].getValue();
                         // Neurons[g.into].value += n.value*g.weigth;
                     }
                 }
 
-            }
+            
+            n.setValue(tools.MathLib.newAcitvation(EnumMath.SigmoidSigned, sum, 1, 0));
         }
-        // Fixing 1 Layer Output
-        for (int i = Input; i < Input * 2; i++) {
-            double d = tools.MathLib.newAcitvation(EnumMath.GaussSigned, Neurons[i].getValue(), 1, 0);// tools.MathLib.activition(ACTIVATIONFUNCTION,
-                                                                                                      // Neurons[i].getValue());
-            Neurons[i].setValue(d);
-        }
+//        // Fixing 1 Layer Output
+//        for (int i = Input; i < Input * 2; i++) {
+//            double d = tools.MathLib.newAcitvation(EnumMath.GaussSigned, Neurons[i].getValue(), 1, 0);// tools.MathLib.activition(ACTIVATIONFUNCTION,
+//                                                                                                      // Neurons[i].getValue());
+//            Neurons[i].setValue(d);
+//        }
 
         // From 1 Layer to Output
-        for (int i = Input; i < Input * 2; i++) {
+        for (int i = Input*2; i < Neurons.length; i++) {
+            int sum = 0;
             Neuron n = this.Neurons[i];
-            if (n.getValue() != 0.0) {
-                for (Gene g : n.getOutgoing()) {
+                for (Gene g : n.getIncoming()) {
                     if (g.getWeigth() != 0) {
-                        Neurons[g.getInto()].setValue(Neurons[g.getInto()].getValue() + g.getWeigth() * Neurons[g.getOut()].getValue());
+                        sum += g.getWeigth() * Neurons[g.getOut()].getValue();
                         // Neurons[g.into].value += n.value*g.weigth;
                         // Neurons[g.into].value +=
                         // this.activition(11,n.value*g.weigth+Neurons[g.into].value);
                     }
                 }
-            }
+            
+            n.setValue(tools.MathLib.newAcitvation(EnumMath.SigmoidSigned, sum, 1, 0));
         }
         // Fixing Output
-        for (int i = Input * 2; i < Neurons.length; i++) {
-            double d = tools.MathLib.newAcitvation(EnumMath.SigmoidUnsigned, Neurons[i].getValue(), 1, 0);// tools.MathLib.activition(ACTIVATIONFUNCTION,
-                                                                                                          // Neurons[i].getValue());
-            Neurons[i].setValue(d);
-        }
+//        for (int i = Input * 2; i < Neurons.length; i++) {
+//            double d = tools.MathLib.newAcitvation(EnumMath.SigmoidSigned, Neurons[i].getValue(), 1, 0);// tools.MathLib.activition(ACTIVATIONFUNCTION,
+//                                                                                                          // Neurons[i].getValue());
+//            Neurons[i].setValue(d);
+//        }
 
         double[] Output = new double[this.Output];
         int j = 0;
