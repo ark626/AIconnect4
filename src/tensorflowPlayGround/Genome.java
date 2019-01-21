@@ -1,4 +1,4 @@
-package neat;
+package tensorflowPlayGround;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
