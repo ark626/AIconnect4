@@ -207,6 +207,17 @@ public class Species implements Serializable, Comparable<Species> {
     public void setP(Pool p) {
         this.p = p;
     }
+    
+    public long getTopFitnessCalculated() {
+        
+        long best = Long.MIN_VALUE;
+        for(Genome genome:this.Genomes) {
+            if(genome.getFitness()>best) {
+                best = genome.getFitness();
+            }
+        }
+        return best;
+    }
 
 
 
@@ -235,6 +246,7 @@ public class Species implements Serializable, Comparable<Species> {
 
 
     }
+    
 
 
 

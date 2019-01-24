@@ -389,6 +389,25 @@ public class Pool implements Serializable {
 
         // TODO: Save
     }
+    
+    public boolean checkIfNextGenomeWouldGenerateNextStation() {
+        int storeCurrentGenome = this.currentGenome;
+        int storeCurrentSpecies = this.currentSpecies;
+        
+        this.currentGenome += 1;
+        if (this.currentGenome > this.Species.get(this.currentSpecies - 1).Genomes.size()) {
+            currentGenome = 1;
+            currentSpecies += 1;
+            if (currentSpecies > this.Species.size()) {
+                
+                // System.out.println(this.toString());
+                this.currentSpecies = storeCurrentSpecies;
+                this.currentGenome = storeCurrentGenome;
+                return true;
+            }
+        }
+       return false; 
+    }
 
     public void nextGenome() {
         this.currentGenome += 1;

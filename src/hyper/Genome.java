@@ -172,12 +172,13 @@ public class Genome implements Serializable, Comparable<Genome> {
         
         double[] outputs = new double[Outputs];
         for(int i = 0;i<outputs.length;i++){
-            if(Network.Neurons[MaxNodes+i].getValue()>0){
-                outputs[i] = 1.0;
-            }
-            else{
-                outputs[i] = 0.0;
-            }
+//            if(Network.Neurons[MaxNodes+i].getValue()>0){
+//                outputs[i] = 1.0;
+//            }
+//            else{
+//                outputs[i] = 0.0;
+//            }
+            outputs[i] = Network.Neurons[MaxNodes+i].getValue();
         }
         return outputs;
     }

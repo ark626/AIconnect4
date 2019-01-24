@@ -127,6 +127,7 @@ public class Genome implements Serializable, Comparable<Genome> {
         if (parent != null && fitness > this.parent.maxFitness&&updateMaxfit) {
             // this.parent.Species.get(parent.currentSpecies-1).staleness = 0;
             this.parent.maxFitness = fitness;
+         
         }
         this.fitness = fitness;
         if (fitness == 0 && setZeroToOne) {

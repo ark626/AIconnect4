@@ -286,7 +286,7 @@ public class HyperNeat {
         // From Input to first Layer
 //        int sum = 0;
 //        for (int i = 0; i < Input; i++) {
-//            Neuron n = this.Neurons[i];
+//               Neuron n = this.Neurons[i];
 //            if (n.getValue() != 0.0) {
 //                for (Gene g : n.getOutgoing()) {
 //                    if (g.getWeigth() != 0) {
