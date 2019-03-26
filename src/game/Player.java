@@ -133,12 +133,12 @@ public class Player {
 		this.ki.fitness =(int)fitness;
 		}
 		if(Playertype == 3||Playertype == 4){
-			this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).setFitness(fitness);//= fitness;
+			this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).setFitness(fitness,false, false);//= fitness;
 //			if(fitness > pool.maxFitness){
 //				pool.maxFitness = fitness;
 //			}
 			if(fitness == -9999){
-				this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).setFitness(-999998);
+				this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).setFitness(-999998, false, false);
 			}
 		}
 		}

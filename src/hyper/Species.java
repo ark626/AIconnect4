@@ -6,14 +6,14 @@ import java.util.Comparator;
 import java.util.Random;
 
 public class Species implements Serializable, Comparable<Species> {
-    private long topFitness;
-    private int staleness;
+    public long topFitness;
+    public int staleness;
     public ArrayList<Genome> Genomes;
-    private long averageFitness;
+    public long averageFitness;
     private static final double CrossoverChance = 0.70;
     private static final int EXCESSMULTIPLIKANT = 1;
-    private int Inputs = 42;
-    private int Outputs = 3;
+    public int Inputs = 42;
+    public int Outputs = 3;
     // public static final int MaxNodes = 1000000;
 
     public transient Pool p;
@@ -27,6 +27,14 @@ public class Species implements Serializable, Comparable<Species> {
         this.Genomes = new ArrayList<Genome>();
         this.averageFitness = 0;
     }
+    
+    
+
+    public Species() {
+        super();
+    }
+
+
 
     public long calculateAverageFitness() {
         int total = 0;

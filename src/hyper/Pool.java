@@ -65,6 +65,10 @@ public class Pool implements Serializable {
         }
         return p;
     }
+    
+    public Pool() {
+        super();
+    }
 
     public Genome getbest() {
         Genome temp = this.Species.get(0).Genomes.get(0);

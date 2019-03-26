@@ -17,15 +17,15 @@ public class Genome implements Serializable, Comparable<Genome> {
      */
     private static final long serialVersionUID = -4198647103860678421L;
     public transient ArrayList<Gene> Genes;
-    private long fitness;
-    private int adjustedfitness;
+    public long fitness;
+    public int adjustedfitness;
     private transient Network Network;
     // public transient Pool pool;
-    private int maxneuron;
-    private int globalRank;
-    private double[] mutationrates;
-    private long Innovation = 0;
-    private int Generation;
+    public int maxneuron;
+    public int globalRank;
+    public double[] mutationrates;
+    public long Innovation = 0;
+    public int Generation;
     private transient Pool parent;
     private static transient double NodeShift = 0;
     private static transient double NodeSlope = 1;
@@ -121,7 +121,7 @@ public class Genome implements Serializable, Comparable<Genome> {
         return g;
     }
 
-    public void setFitness(long fitness,boolean setZeroToOne, boolean updateMaxfit) {
+    public void setFitness(long fitness,boolean setZeroToOneWillSetToOne, boolean updateMaxfit) {
         
         
         if (parent != null && fitness > this.parent.maxFitness&&updateMaxfit) {
@@ -130,7 +130,7 @@ public class Genome implements Serializable, Comparable<Genome> {
          
         }
         this.fitness = fitness;
-        if (fitness == 0 && setZeroToOne) {
+        if (fitness == 0 && setZeroToOneWillSetToOne) {
             this.fitness = 1;
         }
     }
