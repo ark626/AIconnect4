@@ -79,7 +79,7 @@ public class Player {
 			}
 			double[] Output = null;
 			if(Playertype == 3){
-			Output = this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).step(Input);
+			Output = this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).step(Input,true);
 			}
 			if(Playertype == 4){
 			Output = this.h.step(Input);
@@ -126,19 +126,19 @@ public class Player {
 		}
 	}
 	
-
+	
 	
 	public void receivefeedback(long fitness){
 		if(Playertype ==0){
 		this.ki.fitness =(int)fitness;
 		}
 		if(Playertype == 3||Playertype == 4){
-			this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).setFitness(fitness);//= fitness;
+			this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).setFitness(fitness,true,true);//= fitness;
 //			if(fitness > pool.maxFitness){
 //				pool.maxFitness = fitness;
 //			}
 			if(fitness == -9999){
-				this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).setFitness(-999998);
+				this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).setFitness(-999998,true,true);
 			}
 		}
 		}

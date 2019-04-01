@@ -11,7 +11,7 @@ public class GenomeTest {
    public void testThatGenomeWillGoStep(){
         Genome genome = testUtils.getTestGenome();
         genome.generateNetwork();
-        double[] result = genome.step(new double[5]);
+        double[] result = genome.step(new double[5],false);
         
         assert(result.length ==5);
     }

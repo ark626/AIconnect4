@@ -56,7 +56,7 @@ public class testUtils {
     public static Genome getGenome(long fitness){
         
         Genome genome = new Genome(5, 5, 1);
-        genome.setFitness(fitness);
+        genome.setFitness(fitness,true,true);
         return genome;
         
     }

@@ -27,6 +27,7 @@ public class Pool implements Serializable {
     //public transient Genome currentBest;
     public transient ArrayList<Situation> situations = new ArrayList<>();
     public transient ArrayList<Situation> tempSituations = new ArrayList<>();
+ 
     public int generation;
     public long Innovation;
     public int currentSpecies;
@@ -34,7 +35,7 @@ public class Pool implements Serializable {
     public int currentFrame;
     public transient boolean reevaluationProgress = false;
     public long maxFitness = Integer.MIN_VALUE;
-    public static final double Population = 300;
+    public static final double Population = 100;
     public static final double DeltaDisjoint = 2.0;
     public static final double DeltaWeights = 0.4;
     public static final double DeltaThreshold = 1;// 5
@@ -139,7 +140,7 @@ public class Pool implements Serializable {
 
         double[] result = genome.step(
                 situation.getInputSituation()
-                        .getImage());
+                        .getImage(),false);
 
         Image resultImage = new Image();
         resultImage.setImage(result);
@@ -280,6 +281,7 @@ public class Pool implements Serializable {
     }
 
     public Genome getbest() {
+        this.rankGlobally();
         Genome temp = this.Species.get(0).Genomes.get(0);
         long maxfit = Integer.MIN_VALUE;// temp.fitness;
         for (Species s : this.Species) {
@@ -370,7 +372,7 @@ public class Pool implements Serializable {
             } else {
                 s.setStaleness(s.getStaleness() + 1);
             }
-            if (s.getStaleness() < StaleSpecies || this.maxFitness <= s.getTopFitnessCalculated()) {//this.getTopfitness() ) {// ||(survivors.size()<MINSPECIES&&s.calculateAverageFitness()>this.totalAverageFitness()/this.Species.size()))
+            if (s.getStaleness() < StaleSpecies || this.getbest().getFitness() <= s.getTopFitnessCalculated()) {//this.getTopfitness() ) {// ||(survivors.size()<MINSPECIES&&s.calculateAverageFitness()>this.totalAverageFitness()/this.Species.size()))
                 // {
                 survivors.add(s);
             }
@@ -400,7 +402,7 @@ public class Pool implements Serializable {
             s.calculateAverageFitness();
             int breed = (int) Math.floor(((double) s.getAverageFitness() / (double) sum * Population));
 
-            if (breed >= 1 || this.maxFitness <= s.getTopFitnessCalculated()) { // ||(survivors.size() < MINSPECIES &&
+            if (breed >= 1 || this.getbest().getFitness() <= s.getTopFitnessCalculated()) { // ||(survivors.size() < MINSPECIES &&
                                                         // s.calculateAverageFitness() >
                 // (this.totalAverageFitness() / this.Species.size()))) {
                 survivors.add(s);
@@ -429,53 +431,7 @@ public class Pool implements Serializable {
         }
     }
 
-    // public int disjoint(ArrayList<Gene> g1, ArrayList<Gene> g2) {
-    // ArrayList<Boolean> i1 = new ArrayList<Boolean>();
-    // int maxinovation = 0;
-    // for (Gene g : g1) {
-    // if (g.getInnovation() > maxinovation) {
-    // maxinovation = g.getInnovation();
-    // }
-    // }
-    // for (Gene g : g2) {
-    // if (g.getInnovation() > maxinovation) {
-    // maxinovation = g.getInnovation();
-    // }
-    // }
-    // for (int i = 0; i < maxinovation + 1; i++) {
-    // i1.add(false);
-    // }
-    // for (Gene g : g1) {
-    // i1.set(g.getInnovation(), true);
-    // }
-    // ArrayList<Boolean> i2 = new ArrayList<Boolean>();
-    // for (int i = 0; i < maxinovation + 1; i++) {
-    // i2.add(false);
-    // }
-    // for (Gene g : g2) {
-    // i2.set(g.getInnovation(), true);
-    // }
-    //
-    // int disjointGenes = 0;
-    // for (Gene g : g1) {
-    // if (!i2.get(g.getInnovation())) {
-    // disjointGenes += 1;
-    // }
-    // }
-    // for (Gene g : g2) {
-    // if (!i1.get(g.getInnovation())) {
-    // disjointGenes += 1;
-    // }
-    // }
-    //
-    // int n = Math.max(g1.size(), g2.size());
-    // if (n > 0) {
-    //
-    // return disjointGenes / n;
-    // } else
-    // return 0;
-    // }
-
+ 
     public int disjoint(ArrayList<Gene> g1, ArrayList<Gene> g2) {
 
 
@@ -761,6 +717,10 @@ public class Pool implements Serializable {
         issueLogger(old, newBest, "TOTAL");
         // TODO: Save
     }
+    
+    public boolean wouldGenerateNextGeneration() {
+        return (this.currentGenome+1 > this.Species.get(this.currentSpecies - 1).Genomes.size())&&(currentSpecies > this.Species.size());
+    }
 
     public void nextGenome() {
         this.currentGenome += 1;
@@ -774,27 +734,27 @@ public class Pool implements Serializable {
                 this.currentGenome = 1;
                 //this.resetEveryEvaluation();
 
-                if (!this.reevaluationProgress) {
-                    new File("./MarioAI").mkdirs();
-                    this.save("./MarioAI/", fileName, 0);
-                }
+//                if (!this.reevaluationProgress) {
+//                    new File("./MarioAI").mkdirs();
+//                    this.save("./MarioAI/", fileName, 0);
+//                }
             }
         }
     }
 
-    @Override
-    public String toString() {
-        String test = "";
-        for (Species s : this.Species) {
-            for (Genome g : s.Genomes) {
-                if (s.Genomes.size() < 1) {
-                    test += " Error in " + Species.indexOf(s);
-                }
-            }
-        }
-        return test;
-
-    }
+//    @Override
+//    public String toString() {
+//        String test = "";
+//        for (Species s : this.Species) {
+//            for (Genome g : s.Genomes) {
+//                if (s.Genomes.size() < 1) {
+//                    test += " Error in " + Species.indexOf(s);
+//                }
+//            }
+//        }
+//        return test;
+//
+//    }
 
     public boolean alreadyMeasured() {
 
@@ -1087,6 +1047,18 @@ public class Pool implements Serializable {
             }
         }
        return false; 
+    }
+    
+    public String toString() {
+        
+        String result = "";
+        result += "Generation " +this.generation;
+        result += " Innovations " +this.Innovation;
+        result += " TopFitness " +this.getTopfitness();
+        result += " Species Amount " +this.Species.size();
+        
+        
+        return result;
     }
 
 }

@@ -2,6 +2,7 @@ package hyperneat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.datavec.api.transform.MathFunction;
 import neat.Gene;
 import neat.Genome;
 import neat.Neuron;
@@ -17,8 +18,8 @@ public class HyperNeat {
     private Neuron Neurons[];
     private ArrayList<Gene> Links;
     private Pool pool;
-    public transient int GENERATIONFUNCTION = 150;
-    public transient int ACTIVATIONFUNCTION = EnumMath.GaussSigned.ordinal();
+    public transient int GENERATIONFUNCTION = EnumMath.SigmoidSigned.ordinal();
+    public transient int ACTIVATIONFUNCTION = EnumMath.SigmoidSigned.ordinal();
     private transient static double ROUNDING = 1e3;
 
 
@@ -212,10 +213,10 @@ public class HyperNeat {
             // System.out.println(Inputs[0]+" " +Inputs[1]+" " +Inputs[2]+" " +Inputs[3] );
             if (i >= Input * Input) {
                 // double factor = ROUNDING; // = 1 * 10^5 = 100000.
-                g.setWeigth(CPPN.step(Inputs, GENERATIONFUNCTION)[0]);
+                g.setWeigth(CPPN.step(Inputs, GENERATIONFUNCTION, false)[0]);//step(Inputs, GENERATIONFUNCTION)[0],false);
 
             } else {
-                g.setWeigth(CPPN.step(Inputs, GENERATIONFUNCTION)[0]);// g.setWeigth((CPPN.step(Inputs,0)[0]));
+                g.setWeigth(CPPN.step(Inputs, GENERATIONFUNCTION,false)[0]);// g.setWeigth((CPPN.step(Inputs,0)[0]));
 
             }
             if (g.getWeigth() != 0) {
@@ -274,9 +275,9 @@ public class HyperNeat {
     public double[] step(double[] Inputs) {
         // String test = "Input: ";
         // Inputs im Netzwerk setzen
-        for (Neuron n : Neurons) {
-            n.setValue(0.0);
-        }
+//        for (Neuron n : Neurons) {
+//            n.setValue(0.0);
+//        }
         for (int i = 0; i < Inputs.length; i++) {
             this.Neurons[i].setValue(Inputs[i]);
             // test+=i+" ";
@@ -357,7 +358,7 @@ public class HyperNeat {
         return Output;
     }
 
-    private double getValues(int n, int act) {
+    private double getValues(int n, int act,double backup) {
         double d = 0;
         double f = 1e5;
         // int i = 0;
@@ -375,7 +376,7 @@ public class HyperNeat {
             // }
         }
 
-        return tools.MathLib.activition(act, d);
+        return tools.MathLib.activition(act, backup+tools.MathLib.activition(act, d));
     }
 
     public double[] stepold(double[] Inputs) {
@@ -395,8 +396,8 @@ public class HyperNeat {
             // double sum =0;
             // for(Gene g:n.getIncoming()){
             // if(Neurons[g.getOut()].getValue() != 0.0&&g.getWeigth() !=0.0){
-
-            Neurons[i].setValue(this.getValues(i, 12));// this.activition(12,g.weigth *
+            double backup = Neurons[i].getValue();
+            Neurons[i].setValue(this.getValues(i, tools.EnumMath.SigmoidSigned.ordinal(),backup));// this.activition(12,g.weigth *
                                                        // this.Neurons[g.out].value+n.value);
             // System.out.println("LOL: "+sum);
             // }
@@ -423,6 +424,53 @@ public class HyperNeat {
 
 
     }
+    
+    public double[] stepWithRespectToPast(double[] Inputs) {
+
+        // Inputs im Netzwerk setzen
+        int z = 0;
+        for (double i : Inputs) {
+            this.Neurons[z].setValue(i);
+            z++;
+        }
+        // if(this.Neurons.length > Output+this.Input){
+        // //this.Neurons.get(this.Input+Output).value = 1.0;
+        // }
+
+        for (int i = this.Input; i < this.Neurons.length; i++) {
+            // Neuron n = this.Neurons[i];
+            // double sum =0;
+            // for(Gene g:n.getIncoming()){
+            // if(Neurons[g.getOut()].getValue() != 0.0&&g.getWeigth() !=0.0){
+            double backup = Neurons[i].getValue();
+            Neurons[i].setValue(this.getValues(i, tools.EnumMath.SigmoidSigned.ordinal(),backup));// this.activition(12,g.weigth *
+                                                       // this.Neurons[g.out].value+n.value);
+            // System.out.println("LOL: "+sum);
+            // }
+            //
+            // }
+
+            // if(n.incoming.size() >1){
+            // // n.value = (2/(1+Math.exp(-4.9*sum))-1);
+            // }
+        }
+
+        double[] Output = new double[this.Output];
+        int j = 0;
+        // String s = "Outputs: ";
+        for (int i = this.Neurons.length - this.Output; i < this.Neurons.length; i++) {
+            Output[j++] = this.Neurons[i].getValue();// this.activition(12,this.Neurons[i].getValue());
+
+            // s+= " "+Output[j];
+
+        }
+        // System.out.println(s);
+        return Output;
+
+
+
+    }
+
 
     @Override
     public int hashCode() {

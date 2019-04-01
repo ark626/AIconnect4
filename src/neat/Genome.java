@@ -454,13 +454,13 @@ public class Genome implements Serializable, Comparable<Genome> {
         return inovation;
     }
 
-    public double[] step(double[] Inputs) {
-        return this.step(Inputs, 13);
+    public double[] step(double[] Inputs, boolean respectPast) {
+        return this.step(Inputs, 13, respectPast);
 
     }
 
 
-    public double[] step(double[] Inputs, int act) {
+    public double[] step(double[] Inputs, int act, boolean respectPast) {
         // Inputs im Netzwerk setzen
         int z = 0;
         for (double i : Inputs) {
@@ -483,11 +483,16 @@ public class Genome implements Serializable, Comparable<Genome> {
 
             }
 
-            if (n.getIncoming()
-                    .size() > -1) {
-                n.setValue((tools.MathLib.newAcitvation(EnumMath.values()[n.getActivition()], sum, NodeSlope, NodeShift)));
-                // n.setValue((tools.MathLib.activition(n.getActivition(), (sum))));
+//            if (n.getIncoming()
+//                    .size() > -1) {
+            if(respectPast) {
+                n.setValue((tools.MathLib.newAcitvation(EnumMath.values()[n.getActivition()], sum+n.getValue(), NodeSlope, NodeShift)));
             }
+            else {
+                n.setValue((tools.MathLib.newAcitvation(EnumMath.values()[n.getActivition()], sum, NodeSlope, NodeShift)));
+            }
+                // n.setValue((tools.MathLib.activition(n.getActivition(), (sum))));
+//            }
 
             // }
 
@@ -707,6 +712,18 @@ public class Genome implements Serializable, Comparable<Genome> {
             // ... more code
         }
 
+    }
+    
+    public String toString() {
+        
+        String result = "";
+        result += "Generation " +this.Generation;
+        result += " Innovations " +this.Innovation;
+        result += " GlobalRank " +this.globalRank;
+        result += " Fitness " +this.fitness;
+        result += " AdjustedFitness " +this.adjustedfitness;
+        
+        return result;
     }
 
 

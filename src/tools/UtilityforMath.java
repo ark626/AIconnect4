@@ -1,4 +1,4 @@
-package eshyperneat;
+package tools;
 
 public class UtilityforMath {
     

@@ -1,7 +1,7 @@
 package neat;
 
 import java.io.Serializable;
-import eshyperneat.UtilityforMath;
+import tools.UtilityforMath;
 
 /**
  * 
