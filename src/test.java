@@ -1,15 +1,15 @@
-//import static org.junit.Assert.fail;
-//import java.io.IOException;
-//import org.junit.Test;
+import static org.junit.Assert.fail;
+import java.io.IOException;
+import org.junit.Test;
 //
 //import eshyperneat.EsHyperNeat;
-//import hyperneat.HyperNeat;
-//import neat.Gene;
-//import neat.Genome;
-//import neat.Pool;
-//
-//public class test {
-//
+import hyperneat.HyperNeat;
+import neat.Gene;
+import neat.Genome;
+import neat.Pool;
+
+public class test {
+
 //    @Test
 //    public void Estest() {
 //        Pool pool = new Pool(5, 1);
@@ -223,4 +223,4 @@
 //        // System.out.println(g.step(inputs,9)[0]);
 //        g.pool.Species.get(g.pool.currentSpecies - 1).Genomes.get(g.pool.currentGenome - 1).setFitness(fitness);
 //    }
-//}
+}

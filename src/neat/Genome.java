@@ -9,6 +9,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 import tools.EnumMath;
+import tools.EnumMathSum;
+import tools.EnumMathSumNormalize;
+import tools.MathLib;
 
 public class Genome implements Serializable, Comparable<Genome> {
     private static final int FUNCTIONSOFNODES = 15;
@@ -43,13 +46,24 @@ public class Genome implements Serializable, Comparable<Genome> {
     // public static final double StaleSpecies = 15;
     private static final double MutateConnectionsChance = 0.25;
     private static final double PerturbChance = 0.90;
-    private static final double LinkMutationChance = 2.0;
-    private static final double NodeMutationChance = 0.50;
-    private static final double BiasMutationChance = 0.40;
-    private static final double ActivitionMutationChance = 0.5; //0.5
-    private static final double StepSize = 0.1;
+    private static final double LinkMutationChance = 2.0;//0.03;//2.0;
+    private static final double NodeMutationChance = 0.5;//0.50;
+    private static final double BiasMutationChance = 0.4;
+    private static final double StepSize = 0.02;//0,1
     private static final double DisableMutationChance = 0.4;
     private static final double EnableMutationChance = 0.2;
+    private static final double ActivitionMutationChance = 0.1; //0.5
+    
+//    private static final double MutateConnectionsChance = 0.25;
+//    private static final double PerturbChance = 0.90;
+//    private static final double LinkMutationChance = 2.0;
+//    private static final double NodeMutationChance = 0.50;
+//    private static final double BiasMutationChance = 0.40;
+//    private static final double ActivitionMutationChance = 0.5; //0.5
+//    private static final double StepSize = 0.1;
+//    private static final double DisableMutationChance = 0.4;
+//    private static final double EnableMutationChance = 0.2;
+    
     private int Inputs = 42;
     private int Outputs = 3;
     // private static final int MaxNodes = 10000;
@@ -475,22 +489,27 @@ public class Genome implements Serializable, Comparable<Genome> {
         }
 
         for (Neuron n : this.Network.Neurons) {
+            
             double sum = 0;
+            int size = 0;
+            if(respectPast) 
+                sum = n.getValue();
 
             for (Gene g : n.getIncoming()) {
-                sum += g.getWeigth() * this.Network.Neurons.get(g.getInto())
-                        .getValue();
+//                sum += g.getWeigth() * this.Network.Neurons.get(g.getInto())
+//                        .getValue();
+                sum = MathLib.summFunctionSingle(g.getWeigth() * this.Network.Neurons.get(g.getInto())
+                      .getValue(), sum, EnumMathSum.ADD);
+                size++;
 
             }
 
 //            if (n.getIncoming()
 //                    .size() > -1) {
-            if(respectPast) {
-                n.setValue((tools.MathLib.newAcitvation(EnumMath.values()[n.getActivition()], sum+n.getValue(), NodeSlope, NodeShift)));
-            }
-            else {
+            
+
                 n.setValue((tools.MathLib.newAcitvation(EnumMath.values()[n.getActivition()], sum, NodeSlope, NodeShift)));
-            }
+   
                 // n.setValue((tools.MathLib.activition(n.getActivition(), (sum))));
 //            }
 

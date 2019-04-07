@@ -1,23 +1,25 @@
 package tools;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class MathLib {
-    
+
     public static double activition(int n, double value) {
-        
-        return activitionReduced(n, value);//Math.scalb(activitionReduced(n, value),Double.MAX_EXPONENT/2);
-//        double factor =  100000; //1 * 10^5 = 100000
-//        return (activitionUnrounded(n, value)*factor)/factor;
-        //return BigDecimal.valueOf(activitionUnrounded(n, value)).setScale(16, BigDecimal.ROUND_HALF_EVEN).doubleValue();
+
+        return activitionReduced(n, value);// Math.scalb(activitionReduced(n,
+                                           // value),Double.MAX_EXPONENT/2);
+        // double factor = 100000; //1 * 10^5 = 100000
+        // return (activitionUnrounded(n, value)*factor)/factor;
+        // return BigDecimal.valueOf(activitionUnrounded(n, value)).setScale(16,
+        // BigDecimal.ROUND_HALF_EVEN).doubleValue();
     }
-    
+
     public static double activitionReduced(int n, double value) {
         switch (n) {
             case 0:
                 return Math.sin(value);
             case 1:
-                return Math.cos(value);         
+                return Math.cos(value);
             case 3:
                 return Math.tanh(value);
             case 4:
@@ -35,19 +37,19 @@ public class MathLib {
                     return 0.0;
                 }
             case 9:
-                //Sigmoid Bipolar
+                // Sigmoid Bipolar
                 return 2.0 / (1.0 + Math.exp(-(value * 2))) - 1.0;
             case 10:
                 return 1 / (1 + Math.exp(-value));
             case 11:
-                return value*value;
+                return value * value;
             case 12:
                 return Math.expm1(value);
             case 13:
                 return Math.log(value);
             case 14:
                 return Math.signum(value);
-                
+
         }
         return value;
         // Sigmoid
@@ -65,7 +67,7 @@ public class MathLib {
         // case 8: return Math.sin(value);
 
     }
-    
+
     public static double activitionUnrounded(int n, double value) {
         switch (n) {
             case 0:
@@ -129,14 +131,14 @@ public class MathLib {
         // case 7: return Math.cos(value);
         // case 8: return Math.sin(value);
 
-        
+
     }
-    
+
     public static double newAcitvation(EnumMath n, double aX, double aSlope, double aShift) {
-        double tY=0;
-        switch(n) {
+        double tY = 0;
+        switch (n) {
             case SigmoidUnsigned:
-                return 1.0 / (1.0 + Math.exp( - aSlope * aX - aShift));
+                return 1.0 / (1.0 + Math.exp(-aSlope * aX - aShift));
             case SigmoidSigned:
                 tY = newAcitvation(EnumMath.SigmoidUnsigned, aX, aSlope, aShift);
                 return (tY - 0.5) * 2.0;
@@ -145,55 +147,85 @@ public class MathLib {
             case TanhCubic:
                 return Math.tanh(aX * aX * aX * aSlope);
             case StepSigned:
-                
-                if (aX > aShift)
-                {
+
+                if (aX > aShift) {
                     tY = 1.0;
-                }
-                else
-                {
+                } else {
                     tY = -1.0;
                 }
 
                 return tY;
             case StepUnsigned:
-                if (aX > (0.5+aShift))
-                {
+                if (aX > (0.5 + aShift)) {
                     return 1.0;
-                }
-                else
-                {
+                } else {
                     return 0.0;
                 }
             case GaussSigned:
-                tY = Math.exp( - aSlope * aX * aX + aShift); // TODO: Need separate a, b per activation function
-                return (tY-0.5)*2.0;
+                tY = Math.exp(-aSlope * aX * aX + aShift); // TODO: Need separate a, b per
+                                                           // activation function
+                return (tY - 0.5) * 2.0;
             case GaussUnsigned:
-                return Math.exp( - aSlope * aX * aX + aShift);
+                return Math.exp(-aSlope * aX * aX + aShift);
             case Abs:
-                return ((aX + aShift)< 0.0)? -(aX + aShift): (aX + aShift);
+                return ((aX + aShift) < 0.0) ? -(aX + aShift) : (aX + aShift);
             case SineSigned:
                 return Math.sin(aX * aSlope + aShift);
             case SineUnsigned:
-                tY = Math.sin((aX * aSlope + aShift) );
+                tY = Math.sin((aX * aSlope + aShift));
                 return (tY + 1.0) / 2.0;
             case Linear:
                 return (aX + aShift);
             case Relu:
-                return (aX > 0)?aX:0;
+                return (aX > 0) ? aX : 0;
             case SoftPlus:
                 return Math.log(1 + Math.exp(aX));
             case UnsignedSigmoidDerivative:
                 return aX * (1 - aX);
             case TanhDerivative:
                 return 1 - aX * aX;
-            
-                
-                
-                
+
+
+
         }
         return aX;
+
+    }
+
+    public static double normalizeSum(double current, double size, EnumMathSumNormalize sumNormalize) {
+
+            
+
+        switch (sumNormalize) {
+            case DIVIDEBYAMOUNT:
+                return current / size;
+            case SQRT:
+                return Math.sqrt(current);
+            case SQUARE:
+                return current * current;
+            case SUBSTRACTBYAMOUNT:
+                return current - size;
+            case NOTHING:
+                return current;
+        }
         
+        return current;
+    }
+
+    public static double summFunctionSingle(double currentValue, double sum, EnumMathSum sumType) {
+
+//        if(sum == 0&&sumType.equals(EnumMathSum.MULTIPLY)) {
+//            sum = 1;
+//        }
+        switch (sumType) {
+            case ADD:
+                return currentValue + sum;
+            case MULTIPLY:
+                return currentValue * sum;
+
+        }
+
+        return currentValue + sum;
     }
 
 }

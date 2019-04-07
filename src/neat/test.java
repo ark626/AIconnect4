@@ -1,13 +1,13 @@
-//package neat;
-//
-//import static org.junit.Assert.fail;
-//import org.junit.Test;
-//import hyperneat.HyperNeat;
-//import tools.EnumMath;
-//
-//
-//
-//public class test {
+package neat;
+
+import static org.junit.Assert.fail;
+import org.junit.Test;
+import hyperneat.HyperNeat;
+import tools.EnumMath;
+
+
+
+public class test {
 //    static int input = 10;
 //    static int output = 10;
 //    static int geninmax = 100;
@@ -627,6 +627,6 @@
 //    private boolean isLongerThanXSeconds(long started) {
 //        return System.currentTimeMillis() - started > 10000;
 //    }
-//}
-//
-//
+}
+
+

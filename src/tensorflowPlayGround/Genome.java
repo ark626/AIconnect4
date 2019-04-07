@@ -16,7 +16,7 @@ public class Genome implements Serializable, Comparable<Genome> {
      * 
      */
     private static final long serialVersionUID = -4198647103860678421L;
-    public transient ArrayList<Gene> Genes;
+    private transient ArrayList<Gene> Genes;
     private long fitness;
     private int adjustedfitness;
     private transient Network Network;
@@ -317,7 +317,9 @@ public class Genome implements Serializable, Comparable<Genome> {
         newLink.setActivition(rand.nextInt(EnumMath.values().length));
         newLink.setWeigth(Math.random() * 4 - 2);
         // System.out.println("From: "+newLink.out+" TO: "+newLink.into);
-        this.Genes.add(newLink);
+         if(!this.addGene(newLink)) {
+             inovation--;
+         }
         return inovation;
     }
 
@@ -331,7 +333,10 @@ public class Genome implements Serializable, Comparable<Genome> {
                     .setActivition(rand.nextInt(EnumMath.values().length));
             newGene
             .setInnovation(inovation++);;
-            this.Genes.add(newGene);
+            
+            if(!this.addGene(newGene)) {
+                inovation--;
+            }
 
         }
         return inovation;
@@ -357,13 +362,17 @@ public class Genome implements Serializable, Comparable<Genome> {
         gene1.setInnovation(inovation++);
 
         gene1.setEnabled(true);
-        this.Genes.add(gene1);
+        if(!this.addGene(gene1)) {
+            inovation--;
+        }
 
         Gene gene2 = gene.copyGene();
         gene2.setInto(this.maxneuron);
         gene2.setInnovation(inovation++);
         gene2.setEnabled(true);
-        this.Genes.add(gene2);
+        if(!this.addGene(gene2)) {
+            inovation--;
+        }
         return inovation;
     }
 
@@ -707,7 +716,26 @@ public class Genome implements Serializable, Comparable<Genome> {
         }
 
     }
+    
+    public boolean addGene(Gene g) {
+        if(!Genes.contains(g)) {
+        this.Genes.add(g);
+        return true;
+        }
+        return false;
+    }
+    
+    public Gene get(int i) {
+        return this.Genes.get(i);
+    }
 
+    public int getGenesSize() {
+        return Genes.size();
+    }
+    
+    public ArrayList<Gene> getGenesArray(){
+        return Genes;
+    }
 
 
 }

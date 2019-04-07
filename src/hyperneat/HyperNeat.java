@@ -2,12 +2,14 @@ package hyperneat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import org.datavec.api.transform.MathFunction;
 import neat.Gene;
 import neat.Genome;
 import neat.Neuron;
 import neat.Pool;
 import tools.EnumMath;
+import tools.EnumMathSum;
+import tools.EnumMathSumNormalize;
+import tools.MathLib;
 
 public class HyperNeat {
     private int Input;
@@ -19,7 +21,7 @@ public class HyperNeat {
     private ArrayList<Gene> Links;
     private Pool pool;
     public transient int GENERATIONFUNCTION = EnumMath.SigmoidSigned.ordinal();
-    public transient int ACTIVATIONFUNCTION = EnumMath.SigmoidSigned.ordinal();
+    public transient int ACTIVATIONFUNCTION = EnumMath.Relu.ordinal();//SigmoidSigned.ordinal();
     private transient static double ROUNDING = 1e3;
 
 
@@ -285,7 +287,7 @@ public class HyperNeat {
 
         // Just 1 layer
         // From Input to first Layer
-//        int sum = 0;
+        
 //        for (int i = 0; i < Input; i++) {
 //               Neuron n = this.Neurons[i];
 //            if (n.getValue() != 0.0) {
@@ -299,20 +301,25 @@ public class HyperNeat {
 //            }
 //        }
         
-        
+        double sum = 0;
+        int size = 0;
         for (int i = Input; i < Input*2; i++) {
-            int sum = 0;
+            sum = 0;
             Neuron n = this.Neurons[i];
+            
                 for (Gene g : n.getIncoming()) {
                     if (g.getWeigth() != 0) {
                         //Neurons[g.getInto()].setValue();// this.activition(11,n.value*g.weigth+Neurons[g.into].value);
-                        sum += g.getWeigth() * Neurons[g.getOut()].getValue();
+                        //sum += g.getWeigth() * Neurons[g.getOut()].getValue();
+                        sum = MathLib.summFunctionSingle(g.getWeigth() * Neurons[g.getOut()].getValue(), sum, EnumMathSum.ADD);
+                        size++;
+                        
                         // Neurons[g.into].value += n.value*g.weigth;
                     }
                 }
 
             
-            n.setValue(tools.MathLib.newAcitvation(EnumMath.SigmoidSigned, sum, 1, 0));
+            n.setValue(tools.MathLib.newAcitvation(EnumMath.SigmoidSigned, MathLib.normalizeSum(sum, size, EnumMathSumNormalize.NOTHING), 0.25, 0));
         }
 //        // Fixing 1 Layer Output
 //        for (int i = Input; i < Input * 2; i++) {
@@ -323,18 +330,20 @@ public class HyperNeat {
 
         // From 1 Layer to Output
         for (int i = Input*2; i < Neurons.length; i++) {
-            int sum = 0;
+            sum = 0;
+            size = 0;
             Neuron n = this.Neurons[i];
                 for (Gene g : n.getIncoming()) {
                     if (g.getWeigth() != 0) {
-                        sum += g.getWeigth() * Neurons[g.getOut()].getValue();
+                        sum = MathLib.summFunctionSingle(g.getWeigth() * Neurons[g.getOut()].getValue(), sum, EnumMathSum.ADD);
                         // Neurons[g.into].value += n.value*g.weigth;
+                        size++;
                         // Neurons[g.into].value +=
                         // this.activition(11,n.value*g.weigth+Neurons[g.into].value);
                     }
                 }
             
-            n.setValue(tools.MathLib.newAcitvation(EnumMath.SigmoidSigned, sum, 1, 0));
+                n.setValue(tools.MathLib.newAcitvation(EnumMath.GaussSigned, MathLib.normalizeSum(sum, size, EnumMathSumNormalize.SUBSTRACTBYAMOUNT), 2, 0));
         }
         // Fixing Output
 //        for (int i = Input * 2; i < Neurons.length; i++) {
@@ -443,7 +452,7 @@ public class HyperNeat {
             // for(Gene g:n.getIncoming()){
             // if(Neurons[g.getOut()].getValue() != 0.0&&g.getWeigth() !=0.0){
             double backup = Neurons[i].getValue();
-            Neurons[i].setValue(this.getValues(i, tools.EnumMath.SigmoidSigned.ordinal(),backup));// this.activition(12,g.weigth *
+            Neurons[i].setValue(this.getValues(i, tools.EnumMath.Relu.ordinal(),backup));// this.activition(12,g.weigth *
                                                        // this.Neurons[g.out].value+n.value);
             // System.out.println("LOL: "+sum);
             // }

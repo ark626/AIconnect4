@@ -543,9 +543,9 @@ public class Pool implements Serializable {
     }
 
     public boolean sameSpecies(Genome g1, Genome g2) {
-        double dd = DeltaDisjoint * disjoint(g1.Genes, g2.Genes);
-        double dw = DeltaWeights * weigths(g1.Genes, g2.Genes);
-        double ad = DeltaActivation * activationFunctionDelta(g1.Genes, g2.Genes);
+        double dd = DeltaDisjoint * disjoint(g1.getGenes(), g2.getGenes());
+        double dw = DeltaWeights * weigths(g1.getGenes(), g2.getGenes());
+        double ad = DeltaActivation * activationFunctionDelta(g1.getGenes(), g2.getGenes());
         // System.out.println("Delta for new Generations Species "+dd + dw + ad+" =>" + (dd + dw +
         // ad < DeltaThreshold));
         return (dd + dw + ad < DeltaThreshold);
@@ -655,7 +655,7 @@ public class Pool implements Serializable {
                 for (int i = 0; i < breed * 300; i++) {
                     Genome ge = s.breedChild();
                     this.Innovation = ge.mutate(this.Innovation);
-                    while (ge.Genes.size() == 0) {
+                    while (ge.getGenesSize() == 0) {
                         ge = s.breedChild();
                         this.Innovation = ge.mutate(this.Innovation);
                     }
@@ -699,12 +699,12 @@ public class Pool implements Serializable {
             Genome ge = s.breedChild();
             this.Innovation = ge.mutate(this.Innovation);
 
-            while (ge.Genes.size() == 0) {
+            while (ge.getGenesSize() == 0) {
                 ge = s.breedChild();
                 this.Innovation = ge.mutate(this.Innovation);
             }
 
-            if (ge.Genes.size() > 0) {
+            if (ge.getGenesSize() > 0) {
                 children.add(ge);
             }
         }

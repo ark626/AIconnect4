@@ -41,8 +41,8 @@ public class Pool implements Serializable {
     public static final double DeltaThreshold = 1;// 5
     public static final double DeltaActivation = 2;// Merged with DeltaDisjoint
     public static final double StaleSpecies = 15; // 15
-    private static final double SPECIESPERCENTAGE = 0.3;// normally 0.5
-    private transient static final double ELITISM = 0.05;// normally 0.5
+    private static final double SPECIESPERCENTAGE = 0.2;// normally 0.5
+    private transient static final double ELITISM = 0.2;// normally 0.5
     private static final int MINSPECIES = 5;
     private static final int MAXSPECIES = 15;
     private static final int SuperMutantsMax = 20;
@@ -287,12 +287,16 @@ public class Pool implements Serializable {
         for (Species s : this.Species) {
             for (Genome g : s.Genomes) {
                 if (g.getFitness() != 0) {
-                    if ((g.getFitness() >= maxfit)) {
+                    if ((g.getFitness() > maxfit)) {
                         temp = g;
                         maxfit = temp.getFitness();
                         // this.currentGenome = s.Genomes.indexOf(temp)+1;
                         // this.currentSpecies = this.Species.indexOf(s)+1;
                     }
+//                    if ((g.getFitness() == maxfit&&g.getInnovation()<temp.getInnovation())) {
+//                        temp = g;
+//                        
+//                    }
                 }
             }
         }
