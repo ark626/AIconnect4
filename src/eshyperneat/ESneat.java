@@ -143,7 +143,7 @@ public class ESneat {
 
         // System.out.println("Nodes"+CPPN.Network.Neurons.size()+" Genes "+CPPN.Genes.size());
         if (Empty) {
-            CPPN.setFitness(-50,false,false);
+            CPPN.setFitness(-50);
         }
     }
 

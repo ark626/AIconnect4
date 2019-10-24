@@ -163,7 +163,7 @@ public class EsHyperNeat {
 		}
 	//	System.out.println("Nodes"+CPPN.Network.Neurons.size()+" Genes "+CPPN.Genes.size());
 		if(Empty){
-			CPPN.setFitness(-999999,false,false);
+			CPPN.setFitness(-999999);
 //			this.pool.nextGenome();
 //			this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1).generateNetwork();
 //			this.generateweigths(this.pool.Species.get(pool.currentSpecies-1).Genomes.get(pool.currentGenome-1));

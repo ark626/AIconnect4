@@ -7,8 +7,8 @@ import java.util.Random;
 import neat.Genome.Comparators;
 
 public class Species implements Serializable, Comparable<Species> {
-    public long topFitness;
-    public int staleness;
+    private long topFitness;
+    private int staleness;
     public ArrayList<Genome> Genomes;
     private long averageFitness;
     private static final double CrossoverChance = 0.70;

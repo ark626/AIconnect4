@@ -13,15 +13,15 @@ public class Genome implements Serializable, Comparable<Genome> {
      */
     private static final long serialVersionUID = -4198647103860678421L;
     public ArrayList<Gene> Genes;
-    public int fitness;
-    public int adjustedfitness;
-    public transient Network Network;
+    private int fitness;
+    private int adjustedfitness;
+    private transient Network Network;
     // public transient Pool pool;
-    public int maxneuron;
-    public int globalRank;
-    public double[] mutationrates;
-    public int Innovation = 0;
-    public int Generation;
+    private int maxneuron;
+    private int globalRank;
+    private double[] mutationrates;
+    private int Innovation = 0;
+    private int Generation;
     private transient Pool parent;
     // genome.mutationRates["connections"] = MutateConnectionsChance
     // genome.mutationRates["link"] = LinkMutationChance
