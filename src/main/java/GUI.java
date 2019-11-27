@@ -216,6 +216,7 @@ public class GUI {
                 // Initialize KIs and Pools
                 Pool p = new Pool(42, 3);
                 Pool p2 = new Pool(42, 3);
+               
                 KICluster test = new KICluster(40, 3, 4, 1);
 
 

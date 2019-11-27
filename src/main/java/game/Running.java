@@ -318,7 +318,7 @@ public class Running implements Runnable {
 						// data += hyper2.pool.getbest().fitness+"
 						// "+hyper2.pool.Species.get(hyper2.pool.currentSpecies-1).Genomes.get(hyper2.pool.currentGenome-1).fitness;
 					}
-					System.out.println(data);
+					//System.out.println(data);
 					game.reset();
 
 				}

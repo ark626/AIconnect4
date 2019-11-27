@@ -616,7 +616,7 @@ public class Pool implements Serializable {
         
         long old = this.getbest().getFitness();
 
-        //sortInSituations();
+        sortInSituations();
         this.cullSpecies(false);
         this.rankGlobally();
         this.removeStaleSpecies();
