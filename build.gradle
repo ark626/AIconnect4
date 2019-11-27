@@ -1,9 +1,22 @@
 apply plugin: 'java'
+apply plugin: 'maven'
+
+
 repositories {
     jcenter()
         mavenCentral()
 }
  
+sourceSets {
+    main {
+        /*
+        Kotlin examples do not use java sources, so let's exclude them all
+         */
+        java {
+            srcDir "src/main/java"
+        }
+    }
+}
 
 dependencies {
   compile(
