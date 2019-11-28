@@ -1,5 +1,7 @@
 package game;
 
+import java.util.Scanner;
+
 import aiAlgorithmes.hyperneat.visualizer;
 
 public class Game {
@@ -85,6 +87,7 @@ public class Game {
 		z.step(grid, xes, set, this.fallsim(set));
 		String s = " Player b ";
 		String b = "0";
+		
 		if (i > 9) {
 			b = "";
 		}
@@ -112,6 +115,8 @@ public class Game {
 
 	public int run(int reac, gameDisplay dis, int times) {
 		// ini
+
+		//this.printGrid(grid);
 		this.iteration = reac;
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid[i].length; j++) {
@@ -123,7 +128,8 @@ public class Game {
 		int x = 0;
 		while (2 > 1) {
 			// System.out.println("Round:"+reac);
-
+//			Scanner myInput = new Scanner( System.in );
+//			int asdf = myInput.nextInt();
 			// Player 1 Turn
 			if (a.getChips() > 0) {
 				// AI THinking
@@ -385,6 +391,16 @@ public class Game {
 
 		return false;
 
+	}
+	
+	private void printGrid(int[][] grid) {
+		for(int[] line:grid) {
+			String lineString = "";
+			for(int cell:line) {
+				lineString+=cell;
+			}
+			System.out.println(lineString);
+		}
 	}
 
 }

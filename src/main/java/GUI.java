@@ -62,7 +62,7 @@ public class GUI {
      */
     private void initialize() {
         frame = new JFrame();
-        frame.setBounds(100, 100, 450, 300);
+        frame.setBounds(100, 100, 600, 450);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
@@ -72,7 +72,7 @@ public class GUI {
 
         JLabel lblSettings = new JLabel("Settings");
         lblSettings.setFont(new Font("Tahoma", Font.PLAIN, 19));
-        lblSettings.setBounds(170, 11, 73, 32);
+        lblSettings.setBounds(170, 11, 160, 32);
         frame.getContentPane().add(lblSettings);
 
         final JComboBox comboBox = new JComboBox();
@@ -80,43 +80,37 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {}
         });
         comboBox.setModel(new DefaultComboBoxModel(new String[] {"Human", "Algorithm", "KI", "Neat", "HyperNeat"}));
-        comboBox.setBounds(88, 157, 89, 20);
+        comboBox.setBounds(118, 188, 140, 27);
         frame.getContentPane().add(comboBox);
 
         JLabel lblType = new JLabel("Type");
-        lblType.setBounds(20, 160, 46, 14);
+        lblType.setBounds(21, 191, 76, 24);
         frame.getContentPane().add(lblType);
 
         JLabel lblPlayerA = new JLabel("Player a");
-        lblPlayerA.setBounds(88, 132, 46, 14);
+        lblPlayerA.setBounds(103, 132, 89, 20);
         frame.getContentPane().add(lblPlayerA);
 
         JLabel lblPlayerB = new JLabel("Player b");
-        lblPlayerB.setBounds(235, 132, 46, 14);
+        lblPlayerB.setBounds(325, 132, 196, 20);
         frame.getContentPane().add(lblPlayerB);
 
         final JComboBox comboBox_1 = new JComboBox();
         comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Human", "Algorithm", "KI", "Neat", "HyperNeat"}));
-        comboBox_1.setBounds(235, 157, 73, 20);
+        comboBox_1.setBounds(325, 188, 196, 27);
         frame.getContentPane().add(comboBox_1);
 
         JLabel lblStrength = new JLabel("Strength");
-        lblStrength.setBounds(20, 188, 60, 14);
+        lblStrength.setBounds(10, 225, 100, 28);
         frame.getContentPane().add(lblStrength);
 
-
-
-        JLabel lblGamesettings = new JLabel("Gamesettings");
-        lblGamesettings.setBounds(170, 39, 73, 14);
-        frame.getContentPane().add(lblGamesettings);
-
         JLabel lblRunden = new JLabel("min. Fitness");
-        lblRunden.setBounds(154, 64, 104, 14);
+        lblRunden.setBounds(281, 64, 157, 24);
         frame.getContentPane().add(lblRunden);
 
         textField = new JTextField();
         textField.setText("0");
-        textField.setBounds(35, 89, 86, 20);
+        textField.setBounds(164, 91, 86, 20);
         frame.getContentPane().add(textField);
         textField.setColumns(10);
 
@@ -127,27 +121,27 @@ public class GUI {
 
             }
         });
-        chckbxShowNeurons.setBounds(294, 50, 115, 23);
+        chckbxShowNeurons.setBounds(384, 78, 173, 46);
         frame.getContentPane().add(chckbxShowNeurons);
 
         JCheckBox chckbxOnlyTakeBest = new JCheckBox("Only take best KI");
-        chckbxOnlyTakeBest.setBounds(235, 236, 121, 23);
+        chckbxOnlyTakeBest.setBounds(325, 285, 232, 35);
         frame.getContentPane().add(chckbxOnlyTakeBest);
 
         textField_1 = new JTextField();
         textField_1.setText("0");
-        textField_1.setBounds(88, 188, 86, 20);
+        textField_1.setBounds(118, 229, 140, 21);
         frame.getContentPane().add(textField_1);
         textField_1.setColumns(10);
 
         textField_2 = new JTextField();
         textField_2.setText("0");
-        textField_2.setBounds(232, 188, 86, 20);
+        textField_2.setBounds(325, 230, 196, 23);
         frame.getContentPane().add(textField_2);
         textField_2.setColumns(10);
 
         JCheckBox chckbxOnlyTakeBest_1 = new JCheckBox("Only take best KI");
-        chckbxOnlyTakeBest_1.setBounds(10, 236, 138, 23);
+        chckbxOnlyTakeBest_1.setBounds(111, 285, 219, 35);
         frame.getContentPane().add(chckbxOnlyTakeBest_1);
 
 
@@ -383,32 +377,32 @@ public class GUI {
 
             }
         });
-        btnStart.setBounds(154, 236, 73, 23);
+        btnStart.setBounds(215, 337, 115, 23);
         frame.getContentPane().add(btnStart);
 
         JLabel label_1 = new JLabel("Runden");
-        label_1.setBounds(35, 64, 46, 14);
+        label_1.setBounds(164, 58, 94, 27);
         frame.getContentPane().add(label_1);
 
         textField_3 = new JTextField();
         textField_3.setText("0");
-        textField_3.setBounds(157, 89, 86, 20);
+        textField_3.setBounds(281, 89, 86, 20);
         frame.getContentPane().add(textField_3);
         textField_3.setColumns(10);
 
         JLabel lblLoadpath = new JLabel("Loadpath");
-        lblLoadpath.setBounds(20, 215, 60, 14);
+        lblLoadpath.setBounds(10, 260, 100, 20);
         frame.getContentPane().add(lblLoadpath);
 
         txtCtmp = new JTextField();
         txtCtmp.setText("C:\\tmp\\");
-        txtCtmp.setBounds(88, 213, 86, 20);
+        txtCtmp.setBounds(118, 257, 140, 23);
         frame.getContentPane().add(txtCtmp);
         txtCtmp.setColumns(10);
 
         txtCtmp_1 = new JTextField();
         txtCtmp_1.setText("C:\\tmp\\");
-        txtCtmp_1.setBounds(232, 212, 86, 20);
+        txtCtmp_1.setBounds(325, 257, 196, 23);
         frame.getContentPane().add(txtCtmp_1);
         txtCtmp_1.setColumns(10);
     }

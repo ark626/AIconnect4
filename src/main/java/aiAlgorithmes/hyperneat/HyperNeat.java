@@ -2,6 +2,7 @@ package aiAlgorithmes.hyperneat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import aiAlgorithmes.neat.Gene;
 import aiAlgorithmes.neat.Genome;
@@ -25,9 +26,11 @@ public class HyperNeat {
     public transient int ACTIVATIONFUNCTION = EnumMath.Relu.ordinal();//SigmoidSigned.ordinal();
     private transient static double ROUNDING = 1e3;
 
-
-
     public HyperNeat(int Input, int Output, int Hidden, int xsize, int ysize, Pool pool) {
+    	 new HyperNeat(Input, Output, Hidden, xsize, ysize, pool,null);
+    }
+
+    public HyperNeat(int Input, int Output, int Hidden, int xsize, int ysize, Pool pool, List<EnumMath> activationFunctions) {
         this.Input = Input;
         this.Output = Output;
         this.Hidden = Hidden;
@@ -319,8 +322,9 @@ public class HyperNeat {
                     }
                 }
 
-            
+            if(n.getIncoming().size()>0) {
             n.setValue(tools.MathLib.newAcitvation(EnumMath.SigmoidSigned, MathLib.normalizeSum(sum, size, EnumMathSumNormalize.NOTHING), 0.25, 0));
+            }
         }
 //        // Fixing 1 Layer Output
 //        for (int i = Input; i < Input * 2; i++) {
@@ -343,9 +347,10 @@ public class HyperNeat {
                         // this.activition(11,n.value*g.weigth+Neurons[g.into].value);
                     }
                 }
-            
+                if(n.getIncoming().size()>0) {
                 n.setValue(tools.MathLib.newAcitvation(EnumMath.GaussSigned, MathLib.normalizeSum(sum, size, EnumMathSumNormalize.SUBSTRACTBYAMOUNT), 2, 0));
-        }
+                }
+                }
         // Fixing Output
 //        for (int i = Input * 2; i < Neurons.length; i++) {
 //            double d = tools.MathLib.newAcitvation(EnumMath.SigmoidSigned, Neurons[i].getValue(), 1, 0);// tools.MathLib.activition(ACTIVATIONFUNCTION,

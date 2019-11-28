@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
+import java.util.Scanner;
+
 import tools.EnumMath;
 import tools.EnumMathSum;
 import tools.EnumMathSumNormalize;
@@ -476,6 +478,7 @@ public class Genome implements Serializable, Comparable<Genome> {
 
     public double[] step(double[] Inputs, int act, boolean respectPast) {
         // Inputs im Netzwerk setzen
+
         int z = 0;
         for (double i : Inputs) {
             this.Network.Neurons.get(z)
@@ -504,14 +507,14 @@ public class Genome implements Serializable, Comparable<Genome> {
 
             }
 
-//            if (n.getIncoming()
-//                    .size() > -1) {
+            if (n.getIncoming()
+                    .size() > 0) {
             
 
                 n.setValue((tools.MathLib.newAcitvation(EnumMath.values()[n.getActivition()], sum, NodeSlope, NodeShift)));
    
                 // n.setValue((tools.MathLib.activition(n.getActivition(), (sum))));
-//            }
+                }
 
             // }
 

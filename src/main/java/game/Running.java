@@ -4,13 +4,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 import aiAlgorithmes.hyperneat.HyperNeat;
+import aiAlgorithmes.hyperneat.visualizer;
 import aiAlgorithmes.neat.Genome;
 import aiAlgorithmes.neat.Pool;
 import aiAlgorithmes.neat.Species;
 import aiAlogrithmes.ki.KICluster;
-import aiAlgorithmes.hyperneat.*;
 
 public class Running implements Runnable {
 	Game game;
@@ -144,7 +145,7 @@ public class Running implements Runnable {
 		this.time = System.currentTimeMillis();
 		try {
 			int currentki = 0;
-			int maxruns = 10;
+			int maxruns = 1;
 			int j = 0;
 			do {
 
@@ -178,110 +179,8 @@ public class Running implements Runnable {
 
 				}
 
-				if (game.a.Playertype == 3) {
-					game.a.ki = null;
-					game.a.pool = p;
-					game.a.pool.currentSpecies = 1;
-					game.a.pool.currentGenome = 1;
-					// System.out.println("MES"+game.a.pool.alreadyMeasured()+game.a.pool.Species.get(game.a.pool.currentSpecies-1).Genomes.get(game.a.pool.currentGenome-1).fitness);
-					while (game.a.pool.alreadyMeasured()) {
-						// System.out.println("MES");
-						game.a.pool.nextGenome();
-					}
-					dis.drawPanel.ki = null;
-					dis.drawPanel.update = true;
-					game.a.pool.Species.get(game.a.pool.currentSpecies - 1).Genomes.get(game.a.pool.currentGenome - 1)
-							.generateNetwork();
-					dis.drawPanel.g = game.a.pool.Species.get(game.a.pool.currentSpecies - 1).Genomes
-							.get(game.a.pool.currentGenome - 1);
-					dis.drawPanel.generation = game.a.pool.generation;
-					dis.drawPanel.update = false;
-
-				}
-				if (game.b.Playertype == 3) {
-					game.b.ki = null;
-					game.b.pool = p2;
-					game.b.pool.currentSpecies = 1;
-					game.b.pool.currentGenome = 1;
-					while (game.b.pool.alreadyMeasured()) {
-
-						game.b.pool.nextGenome();
-					}
-					dis.drawPanel.ki = null;
-					game.b.pool.Species.get(game.b.pool.currentSpecies - 1).Genomes.get(game.b.pool.currentGenome - 1)
-							.generateNetwork();
-					dis.drawPanel.update = true;
-					dis.drawPanel.g = game.b.pool.Species.get(game.b.pool.currentSpecies - 1).Genomes
-							.get(game.b.pool.currentGenome - 1);
-					dis.drawPanel.generation = game.b.pool.generation;
-					dis.drawPanel.update = false;
-
-				}
-				if (game.a.Playertype == 4) {
-					game.a.ki = null;
-					game.a.pool = hyper1.getPool();
-					game.a.h = hyper1;
-					// dis = null;
-
-					game.a.pool.currentGenome = 1;
-					game.a.pool.currentSpecies = 1;
-					while (game.a.pool.alreadyMeasured()) {
-						game.a.pool.nextGenome();
-					}
-
-					dis.drawPanel.update = true;
-					dis.drawPanel.g = game.a.pool.Species.get(game.a.pool.currentSpecies - 1).Genomes
-							.get(game.a.pool.currentGenome - 1);
-					dis.drawPanel.generation = game.a.pool.generation;
-					dis.drawPanel.update = false;
-
-					Genome current = game.a.pool.Species.get(game.a.pool.currentSpecies - 1).Genomes
-							.get(game.a.pool.currentGenome - 1);
-					current.generateNetwork();
-					game.a.h.generateweigths(current);
-
-					if (p.alreadyMeasured()) {
-						while (game.a.pool.alreadyMeasured()) {
-							game.a.pool.nextGenome();
-							current = game.a.pool.Species.get(game.a.pool.currentSpecies - 1).Genomes
-									.get(game.a.pool.currentGenome - 1);
-							current.generateNetwork();
-							game.a.h.generateweigths(current);
-						}
-					}
-				}
-
-				if (game.b.Playertype == 4) {
-					game.b.ki = null;
-					game.b.pool = hyper2.getPool();
-					game.b.h = hyper2;
-					// dis = null;
-					game.b.pool.currentGenome = 1;
-					game.b.pool.currentSpecies = 1;
-					while (game.b.pool.alreadyMeasured()) {
-						game.b.pool.nextGenome();
-					}
-					Genome current = game.b.pool.Species.get(game.b.pool.currentSpecies - 1).Genomes
-							.get(game.b.pool.currentGenome - 1);
-					current.generateNetwork();
-					game.b.h.generateweigths(current);
-
-					dis.drawPanel.update = true;
-					dis.drawPanel.g = game.b.pool.Species.get(game.b.pool.currentSpecies - 1).Genomes
-							.get(game.b.pool.currentGenome - 1);
-					dis.drawPanel.generation = game.b.pool.generation;
-					dis.drawPanel.update = false;
-
-					if (game.b.pool.alreadyMeasured()) {
-						while (game.b.pool.alreadyMeasured()) {
-							game.b.pool.nextGenome();
-							current = game.b.pool.Species.get(game.b.pool.currentSpecies - 1).Genomes
-									.get(game.b.pool.currentGenome - 1);
-							current.generateNetwork();
-							game.b.h.generateweigths(current);
-						}
-					}
-				}
+				initPlayerType3Or4(game.a);
+				initPlayerType3Or4(game.b);
 
 				for (int runs = 0; runs < maxruns; runs++) {
 					if (game.a.Playertype == 0 && game.b.Playertype == 0) {
@@ -291,34 +190,15 @@ public class Running implements Runnable {
 						}
 						game.b.ki = test.ranking.get(currentki++);
 					}
-					if (game.a.ki != null) {
-						for (int i = 0; i < game.a.ki.out + game.a.ki.in + game.a.ki.hid; i++) {
-							game.a.ki.Nodes.get(i).setValue(0.0);
-						}
-					}
-					if (game.b.ki != null) {
-						for (int i = 0; i < game.b.ki.out + game.b.ki.in + game.b.ki.hid; i++) {
-							game.b.ki.Nodes.get(i).setValue(0.0);
-						}
-					}
+					initializeAIType0();
 
 					game.run(j, dis, runs);
+
 					String data = "";
-					if (this.hyper1 != null) {
-						data += hyper1.getPool().generation + " " + (hyper1.getPool().currentSpecies - 1) + "/"
-								+ hyper1.getPool().Species.size() + " " + hyper1.getPool().currentGenome + "/"
-								+ hyper1.getPool().Species.get(hyper1.getPool().currentSpecies - 1).Genomes.size() + " "
-								+ hyper1.getPool().Species.size()
-								+ hyper1.getPool().Species.get(0).Genomes.get(0).getFitness() + " "
-								+ hyper1.getPool().Species.get(hyper1.getPool().currentSpecies - 1).Genomes
-										.get(hyper1.getPool().currentGenome - 1).getFitness()
-								+ " " + this.p.maxFitness;
-					}
-					if (this.hyper2 != null) {
-						// data += hyper2.pool.getbest().fitness+"
-						// "+hyper2.pool.Species.get(hyper2.pool.currentSpecies-1).Genomes.get(hyper2.pool.currentGenome-1).fitness;
-					}
-					//System.out.println(data);
+
+					data = prepareHyperData(data, hyper1);
+					data = prepareHyperData(data, hyper2);
+					// System.out.println(data);
 					game.reset();
 
 				}
@@ -440,8 +320,8 @@ public class Running implements Runnable {
 				for (Species s : p.Species) {
 					for (Genome g : s.Genomes) {
 						g.generateNetwork();
-						aiAlgorithmes.neat.visualizer.visualize(g, "C:/tmp/Neat/Shodan1 Species " + p.Species.indexOf(s) + " Genome "
-								+ s.Genomes.indexOf(g));
+						aiAlgorithmes.neat.visualizer.visualize(g, "C:/tmp/Neat/Shodan1 Species " + p.Species.indexOf(s)
+								+ " Genome " + s.Genomes.indexOf(g));
 					}
 				}
 
@@ -451,8 +331,8 @@ public class Running implements Runnable {
 				for (Species s : p2.Species) {
 					for (Genome g : s.Genomes) {
 						g.generateNetwork();
-						aiAlgorithmes.neat.visualizer.visualize(g, "C:/tmp/Neat/Shodan2 Species " + p2.Species.indexOf(s) + " Genome "
-								+ s.Genomes.indexOf(g));
+						aiAlgorithmes.neat.visualizer.visualize(g, "C:/tmp/Neat/Shodan2 Species "
+								+ p2.Species.indexOf(s) + " Genome " + s.Genomes.indexOf(g));
 					}
 				}
 
@@ -469,8 +349,8 @@ public class Running implements Runnable {
 						aiAlgorithmes.neat.visualizer.visualize(g,
 								"C:/tmp/Hyper/generator/generator Species " + Speci + " Genome " + Geno);
 						game.a.h.generateweigths(g);
-						visualizer.visualize(game.a.h,
-								"C:/tmp/Hyper/Hyper/Hyper Species " + Speci + " Genome " + Geno, Speci, Geno);
+						visualizer.visualize(game.a.h, "C:/tmp/Hyper/Hyper/Hyper Species " + Speci + " Genome " + Geno,
+								Speci, Geno);
 					}
 				}
 			}
@@ -485,8 +365,8 @@ public class Running implements Runnable {
 								"C:/tmp/Hyper/generator/generator Species " + Speci + " Genome " + Geno);
 
 						game.b.h.generateweigths(g);
-						visualizer.visualize(game.b.h,
-								"C:/tmp/Hyper/Hyper/Hyper Species " + Speci + " Genome " + Geno, Speci, Geno);
+						visualizer.visualize(game.b.h, "C:/tmp/Hyper/Hyper/Hyper Species " + Speci + " Genome " + Geno,
+								Speci, Geno);
 					}
 				}
 			}
@@ -499,6 +379,102 @@ public class Running implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+	}
+
+	private String prepareHyperData(String data, HyperNeat hyper1) {
+		if (this.hyper1 != null) {
+			data += hyper1.getPool().generation + " " + (hyper1.getPool().currentSpecies - 1) + "/"
+					+ hyper1.getPool().Species.size() + " " + hyper1.getPool().currentGenome + "/"
+					+ hyper1.getPool().Species.get(hyper1.getPool().currentSpecies - 1).Genomes.size() + " "
+					+ hyper1.getPool().Species.size() + hyper1.getPool().Species.get(0).Genomes.get(0).getFitness()
+					+ " " + hyper1.getPool().Species.get(hyper1.getPool().currentSpecies - 1).Genomes
+							.get(hyper1.getPool().currentGenome - 1).getFitness()
+					+ " " + this.p.maxFitness;
+
+		}
+		return data;
+	}
+
+	private void initializeAIType0() {
+		if (game.a.ki != null) {
+			for (int i = 0; i < game.a.ki.out + game.a.ki.in + game.a.ki.hid; i++) {
+				game.a.ki.Nodes.get(i).setValue(0.0);
+			}
+		}
+		if (game.b.ki != null) {
+			for (int i = 0; i < game.b.ki.out + game.b.ki.in + game.b.ki.hid; i++) {
+				game.b.ki.Nodes.get(i).setValue(0.0);
+			}
+		}
+	}
+
+	private void ifPlayerType4(Player player, Pool pool) {
+		player.ki = null;
+		player.pool = pool;
+
+		// dis = null;
+
+		player.pool.currentGenome = 1;
+		player.pool.currentSpecies = 1;
+		while (player.pool.alreadyMeasured()) {
+			player.pool.nextGenome();
+		}
+
+		dis.drawPanel.update = true;
+		dis.drawPanel.g = player.pool.Species.get(player.pool.currentSpecies - 1).Genomes
+				.get(player.pool.currentGenome - 1);
+		dis.drawPanel.generation = player.pool.generation;
+		dis.drawPanel.update = false;
+
+		Genome current = player.pool.Species.get(player.pool.currentSpecies - 1).Genomes
+				.get(player.pool.currentGenome - 1);
+		current.generateNetwork();
+		player.h.generateweigths(current);
+
+		if (p.alreadyMeasured()) {
+			while (player.pool.alreadyMeasured()) {
+				player.pool.nextGenome();
+				current = player.pool.Species.get(player.pool.currentSpecies - 1).Genomes
+						.get(player.pool.currentGenome - 1);
+				current.generateNetwork();
+				player.h.generateweigths(current);
+			}
+		}
+
+	}
+
+	private void initPlayerType3Or4(Player player) {
+		if (player.Playertype == 3) {
+			initPlayerAIfTypeIs3(player, p);
+		}
+		if (player.Playertype == 4) {
+			ifPlayerType4(player, hyper1.getPool());
+			player.h = hyper1;
+		}
+	}
+
+	private void initPlayerAIfTypeIs3(Player player, Pool pool) {
+
+		player.ki = null;
+		player.pool = p;
+		player.pool.currentSpecies = 1;
+		player.pool.currentGenome = 1;
+		// System.out.println("MES"+player.pool.alreadyMeasured()+player.pool.Species.get(player.pool.currentSpecies-1).Genomes.get(player.pool.currentGenome-1).fitness);
+		while (player.pool.alreadyMeasured()) {
+			// System.out.println("MES");
+			player.pool.nextGenome();
+		}
+		dis.drawPanel.ki = null;
+		dis.drawPanel.update = true;
+		player.pool.Species.get(player.pool.currentSpecies - 1).Genomes.get(player.pool.currentGenome - 1)
+				.generateNetwork();
+		dis.drawPanel.g = player.pool.Species.get(player.pool.currentSpecies - 1).Genomes
+				.get(player.pool.currentGenome - 1);
+		dis.drawPanel.generation = player.pool.generation;
+		dis.drawPanel.update = false;
+		//Scanner myInput = new Scanner( System.in );
+		//int a = myInput.nextInt();
 
 	}
 
