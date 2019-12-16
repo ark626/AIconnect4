@@ -9,14 +9,14 @@ import aiAlgorithmes.neat.Species;
 public class testUtils {
 
     public static Genome getTestGenome(){
-        Pool pool = new Pool( 5, 5);
+        Pool pool = new Pool( 5, 5,300);
         Genome genome = new Genome(5, 5, 1, pool);
         return genome;
     }
     
     public static Pool getExamplePool(){
         
-        Pool pool = new Pool(5, 5);
+        Pool pool = new Pool(5, 5,300);
         Species species = new Species(5,5,pool);
         
         

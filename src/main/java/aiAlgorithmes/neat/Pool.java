@@ -35,7 +35,7 @@ public class Pool implements Serializable {
     public int currentFrame;
     public transient boolean reevaluationProgress = false;
     public long maxFitness = Integer.MIN_VALUE;
-    public static final double Population = 100;
+    public static int Population = 100;
     public static final double DeltaDisjoint = 2.0;
     public static final double DeltaWeights = 0.4;
     public static final double DeltaThreshold = 1;// 5
@@ -53,10 +53,11 @@ public class Pool implements Serializable {
     public int Outputs = 3;
     // private static final int MaxNodes = 1000000;
 
-    public Pool(int in, int out) {
+    public Pool(int in, int out,int poolSize) {
         super();
         this.Inputs = in;
         this.Outputs = out;
+        Population=poolSize;
         Species = new ArrayList<Species>();
         this.generation = 0;
         Innovation = Outputs;
@@ -262,7 +263,7 @@ public class Pool implements Serializable {
     }
 
     public Pool copy() {
-        Pool p = new Pool(this.Inputs, this.Outputs);
+        Pool p = new Pool(this.Inputs, this.Outputs,Population);
 
         this.save("./", "copyPool.pl", 0);
         try {
@@ -345,10 +346,11 @@ public class Pool implements Serializable {
         return maxfit;
     }
 
-    public Pool(int i, int in, int out) {
+    public Pool(int i, int in, int out, int poolSize) {
         super();
         this.Inputs = in;
         this.Outputs = out;
+        this.Population = poolSize;
         Species = new ArrayList<Species>();
         this.generation = 0;
         Innovation = Outputs;
@@ -792,6 +794,7 @@ public class Pool implements Serializable {
             // writing KI's
             out.writeInt(this.Inputs);
             out.writeInt(this.Outputs);
+            out.writeInt(this.Population);
             out.writeInt(this.generation);
             out.writeLong(this.Innovation);
             out.writeLong(this.maxFitness);
@@ -921,8 +924,9 @@ public class Pool implements Serializable {
             // END
             int inn = in.readInt();
             int out = in.readInt();
+            int poolsize = in.readInt();
             //int currentBestFitness = Integer.MIN_VALUE;
-            Pool p = new Pool(1, inn, out);
+            Pool p = new Pool(1, inn, out,poolsize);
 
             p.situations = situations;
 

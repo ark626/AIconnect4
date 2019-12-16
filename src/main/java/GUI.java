@@ -208,8 +208,8 @@ public class GUI {
 
 
                 // Initialize KIs and Pools
-                Pool p = new Pool(42, 3);
-                Pool p2 = new Pool(42, 3);
+                Pool p = new Pool(42, 3,300);
+                Pool p2 = new Pool(42, 3,300);
                
                 KICluster test = new KICluster(40, 3, 4, 1);
 
@@ -234,7 +234,7 @@ public class GUI {
                         e.printStackTrace();
                     }
                     if (p == null) {
-                        p = new Pool(42, 3);
+                        p = new Pool(42, 3,300);
                     }
                 }
 
@@ -254,13 +254,13 @@ public class GUI {
                         e.printStackTrace();
                     }
                     if (p2 == null) {
-                        p2 = new Pool(42, 3);
+                        p2 = new Pool(42, 3,300);
                     }
 
                 }
                 // hyperneat
                 if (a.Playertype == 4 && !txtCtmp.getText().equals("")) {
-                    p = new Pool(4, 1);
+                    p = new Pool(4, 1,300);
                     try {
                         p = Pool.load("C:/tmp/Hyper/generator.ki");
                         load1 = 4;
@@ -272,19 +272,19 @@ public class GUI {
                         e.printStackTrace();
                     }
                     if (p == null) {
-                        p = new Pool(4, 1);
+                        p = new Pool(4, 1,300);
                     }
                     hyper1 = new HyperNeat(42, 3, 0, 7, 6, p);
                 }
 
                 if (a.Playertype == 4 && txtCtmp.getText().equals("")) {
-                    p = new Pool(4, 1);
+                    p = new Pool(4, 1,300);
                     hyper1 = new HyperNeat(42, 3, 0, 7, 6, p);
                 }
 
 
                 if (b.Playertype == 4 && !txtCtmp.getText().equals("")) {
-                    p2 = new Pool(4, 1);
+                    p2 = new Pool(4, 1,300);
                     try {
                         p2 = Pool.load("C:/tmp/Hyper/generator.ki");
                         load2 = 4;
@@ -296,13 +296,13 @@ public class GUI {
                         e.printStackTrace();
                     }
                     if (p2 == null) {
-                        p2 = new Pool(4, 1);
+                        p2 = new Pool(4, 1,300);
                     }
                     hyper2 = new HyperNeat(42, 3, 0, 7, 6, p2);
                 }
 
                 if (b.Playertype == 4 && txtCtmp.getText().equals("")) {
-                    p2 = new Pool(4, 1);
+                    p2 = new Pool(4, 1,300);
                     hyper2 = new HyperNeat(42, 3, 0, 7, 6, p2);
                 }
 

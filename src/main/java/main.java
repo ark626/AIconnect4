@@ -16,7 +16,7 @@ import aiAlgorithmes.hyperneat.*;
 public class main {
     public static void main(String[] args) {
 
-        Pool p = new Pool(4, 1);
+        Pool p = new Pool(4, 1,300);
         try {
             p = Pool.load("/KI/tmp/Hyper/Neat.ki");
         } catch (ClassNotFoundException e1) {
@@ -27,7 +27,7 @@ public class main {
             e.printStackTrace();
         }
         if (p == null) {
-            p = new Pool(4, 1);
+            p = new Pool(4, 1,300);
         }
         HyperNeat test = new HyperNeat(42, 3, 0, 7, 6, p);
         Player a = new Player(4, 4);

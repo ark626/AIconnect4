@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 
+group = 'org.ark626.ai'
 repositories {
     jcenter()
         mavenCentral()

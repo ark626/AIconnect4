@@ -21,7 +21,7 @@ public class neatPrinter {
 	public static void hyperNeatGenerator(String filePathPictures, String filePathOrigin)
 			throws ClassNotFoundException, IOException {
 
-		Pool p = new Pool(4, 1);
+		Pool p = new Pool(4, 1,300);
 		HyperNeat test = new HyperNeat(42, 3, 0, 7, 6, p);
 
 		p = Pool.load(filePathOrigin);
@@ -109,7 +109,7 @@ public class neatPrinter {
 	public static void neatGenerator(String filePathPictures, String filePathOrigin)
 			throws ClassNotFoundException, IOException {
 
-		Pool p = new Pool(4, 1);
+		Pool p = new Pool(4, 1,300);
 
 		p = Pool.load(filePathOrigin);
 

@@ -20,7 +20,7 @@ public class SpeciesTest {
     @Test
    public void testThatSpeciesCalculatesAverageFitness(){
         
-        Pool pool = new Pool(5, 5);
+        Pool pool = new Pool(5, 5,300);
         Species species = new Species(5,5,pool);
         
         
